@@ -10,6 +10,7 @@ import ListProduit from './ADMListProduit/page';
 import ADMAjoutPrduit2 from './ADMAjoutProduit2/page';
 import ListProduit2 from './ADMListProduit2/page';
 import ADMHistoriqueCommande from './ADMHistoriqueCommande/page';
+import CompositionMenu  from "./CompositionMenu/page";
 
 const RoutesComponent: React.FC = () => {
     return (
@@ -25,6 +26,7 @@ const RoutesComponent: React.FC = () => {
                 <Route path="/ajout-produit2" element={<ADMAjoutPrduit2/>} />
                 <Route path="/liste-produit2" element={<ListProduit2/>} />
                 <Route path="/historique-commande2" element={<ADMHistoriqueCommande/>} />
+                <Route path="/composition-menu" element={<CompositionMenu/>} />
 
                 {/* Ajoutez d'autres routes au besoin */}
             </Routes>
