@@ -6,34 +6,41 @@ export const menuItems = [
     name: 'Eat ease EPF',
   },
     {
-        name: 'Point de Vente',
+        name: 'Accueil',
         href: '/point-of-sale',
         icon: <PiCreditCardDuotone />,
+        allowedDomains: ['epfadmin.fr', 'epfedu.fr'], // Domaines autorisés
+
     },
  {
     name: 'Ajout de Produit',
     href: '/ADMAjoutProduit',
     icon: <PiCreditCardDuotone />,
+    allowedDomains: ['epfadmin.fr'], // Domaines autorisés
   },
   {
-    name: 'Mon Profile',
+    name: 'Mon profil',
     href: '/MonProfile',
     icon: <PiCreditCardDuotone />,
+    allowedDomains: ['epfedu.fr'], // Domaines autorisés
   },
   {
-    name: 'Historique de Commande',
+    name: 'Mes commandes',
     href: '/HistoriqueCommande',
     icon: <PiCreditCardDuotone />,
+    allowedDomains: ['epfedu.fr'], // Domaines autorisés
   },
   {
     name: 'Stock',
     href: '/ADMStock',
     icon: <PiCreditCardDuotone />,
+    allowedDomains: ['epfadmin.fr'], // Domaines autorisés
   },
  {
     name: 'Liste de Produits',
     href: '/ADMListProduit',
     icon: <PiCreditCardDuotone />,
+    allowedDomains: ['epfadmin.fr'], // Domaines autorisés
   },
   {
     name: 'Ajout de Produit2',
@@ -44,11 +51,13 @@ export const menuItems = [
     name: 'Liste de Produits2',
     href: '/ADMListProduit2',
     icon: <PiCreditCardDuotone />,
+    allowedDomains: ['epfadmin.fr'], // Domaines autorisés
   },
     {
         name: 'Historique de Commande',
         href: '/ADMHistoriqueCommande',
         icon: <PiCreditCardDuotone />,
+        allowedDomains: ['epfadmin.fr'], // Domaines autorisés
     }
 
 
