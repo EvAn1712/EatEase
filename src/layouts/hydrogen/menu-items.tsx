@@ -36,11 +36,6 @@ export const menuItems = [
     icon: <PiCreditCardDuotone />,
   },
   {
-    name: 'Ajout de Produit2',
-    href: '/ADMAjoutProduit2',
-    icon: <PiCreditCardDuotone />,
-  },
-  {
     name: 'Liste de Produits2',
     href: '/ADMListProduit2',
     icon: <PiCreditCardDuotone />,

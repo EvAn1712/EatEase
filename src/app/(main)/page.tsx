@@ -12,5 +12,5 @@ export const metadata = {
 
 export default function FileDashboardPage() {
   
-  return <ListProduit />;
+  return <PointOfSalePage />;
 }
