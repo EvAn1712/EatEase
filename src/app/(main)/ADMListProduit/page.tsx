@@ -1,83 +1,108 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
+import { getDatabase, ref, get, remove } from 'firebase/database';
+import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { FaTrash } from 'react-icons/fa';
 
-interface Product {
-    id: number;
-    name: string;
-    price: number;
+interface IProduct {
+    id: string;
+    nom: string;
+    prix: number;
     description: string;
-    listIdAllergenes: number[];
     typeProduit: string;
-    listIdMenu: number[];
+    idMenu: string;
+    allergenes: string[];
+    imageUrl: string;
+    stock: number;
+    [key: string]: any;
 }
 
-const productList: Product[] = [
-    {
-        id: 1,
-        name: 'Pâtes bolognaises',
-        price: 3.5,
-        description: 'Délicieuses pâtes accompagnées d\'une sauce bolognaise.',
-        listIdAllergenes: [1, 3],
-        typeProduit: 'Pâtes',
-        listIdMenu: [1, 2]
-    },
-    {
-        id: 2,
-        name: 'Salade César',
-        price: 4.0,
-        description: 'Salade fraîche avec du poulet grillé, des croûtons, du parmesan et de la sauce César.',
-        listIdAllergenes: [2],
-        typeProduit: 'Salades',
-        listIdMenu: [1]
-    },
-    {
-        id: 3,
-        name: 'Tartiflette',
-        price: 5.0,
-        description: 'Plat traditionnel savoyard à base de pommes de terre, de lardons, d\'oignons et de reblochon fondu.',
-        listIdAllergenes: [1, 4],
-        typeProduit: 'Plats chauds',
-        listIdMenu: [2]
-    },
-    // Ajoutez d'autres produits ici si nécessaire
-];
-
 const ProductListAdmin: React.FC = () => {
-    const [quantities, setQuantities] = useState<{[key: number]: number}>({});
+    const [products, setProducts] = useState<IProduct[]>([]);
+    const [menus, setMenus] = useState<{ [key: string]: string }>({});
+    const [image, setImage] = useState<File | null>(null);
 
-    const handleIncrement = (productId: number) => {
-        setQuantities(prevQuantities => ({
-            ...prevQuantities,
-            [productId]: (prevQuantities[productId] || 0) + 1
-        }));
+    const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            setImage(e.target.files[0]);
+        }
     };
 
-    const handleDecrement = (productId: number) => {
-        setQuantities(prevQuantities => ({
-            ...prevQuantities,
-            [productId]: Math.max((prevQuantities[productId] || 0) - 1, 0)
-        }));
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const db = getDatabase();
+                const productsRef = ref(db, 'Produit');
+                const snapshot = await get(productsRef);
+
+                if (snapshot.exists()) {
+                    const productsData = snapshot.val();
+                    const productList = Object.keys(productsData).map(key => ({
+                        id: key,
+                        ...productsData[key]
+                    }));
+                    setProducts(productList);
+                } else {
+                    console.log('No data available');
+                }
+
+                const menusRef = ref(db, 'Menu');
+                const menusSnapshot = await get(menusRef);
+
+                if (menusSnapshot.exists()) {
+                    const menusData = menusSnapshot.val();
+                    const menuMap: { [key: string]: string } = {};
+                    Object.keys(menusData).forEach(key => {
+                        menuMap[key] = menusData[key].nom;
+                    });
+                    setMenus(menuMap);
+                } else {
+                    console.log('No menu data available');
+                }
+            } catch (error) {
+                console.error('Error reading data:', error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    const handleDelete = async (productId: string) => {
+        try {
+            const db = getDatabase();
+            const productRef = ref(db, `Produit/${productId}`);
+            await remove(productRef);
+            setProducts(prevProducts => prevProducts.filter(product => product.id !== productId));
+            console.log(`Product ${productId} deleted successfully.`);
+        } catch (error) {
+            console.error('Error deleting product:', error);
+        }
     };
 
     return (
         <div className="w-4/5 mx-auto py-8">
             <h2 className="text-2xl font-bold mb-4">Liste des produits</h2>
             <div className="flex flex-col gap-4">
-                {productList.map(product => (
-                    <div key={product.id} className="flex flex-col border border-gray-300 rounded-md p-4">
-                        <h3 className="text-xl font-bold">{product.name}</h3>
-                        <p><span className="font-bold underline">Prix:</span> {product.price} €</p>
-                        <p><span className="font-bold underline">Description:</span> {product.description}</p>
-                        <p><span className="font-bold underline">Type de produit:</span> {product.typeProduit}</p>
-                        <p><span className="font-bold underline">Allergènes:</span> {product.listIdAllergenes.join(', ')}</p>
-                        <p><span className="font-bold underline">Menus:</span> {product.listIdMenu.join(', ')}</p>
-                        <button onClick={() => console.log(`Modifier le produit ${product.id}`)} className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600 my-2">Modifier</button>
-                        <button onClick={() => console.log(`Supprimer le produit ${product.id}`)} className="px-4 py-2 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 focus:outline-none focus:bg-red-600 my-2">Supprimer</button>
-                        <div className="flex items-center gap-2">
-                            <button onClick={() => handleDecrement(product.id)} className="px-4 py-2 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600 focus:outline-none focus:bg-green-600">-</button>
-                            <span>{quantities[product.id] || 0}</span>
-                            <button onClick={() => handleIncrement(product.id)} className="px-4 py-2 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600 focus:outline-none focus:bg-green-600">+</button>
+                {products.map((product: IProduct) => (
+                    <div key={product.id} className="flex flex-row border border-gray-300 rounded-md p-4 items-center">
+                        <div className="flex flex-col flex-grow">
+                            <h3 className="text-xl font-bold">{product.nom}</h3>
+                            <p><span className="font-bold underline">Prix:</span> {product.prix} €</p>
+                            <p><span className="font-bold underline">Description:</span> {product.description}</p>
+                            <p><span className="font-bold underline">Type de produit:</span> {product.typeProduit}</p>
+                            <p><span className="font-bold underline">Menu:</span> {menus[product.idMenu]}</p>
+                            <p><span
+                                className="font-bold underline">Allergènes:</span> {product.allergenes ? product.allergenes.join(', ') : 'Aucun'}
+                            </p>
+                            <p><span className="font-bold underline">Stock:</span> {product.stock}</p>
+                            <button onClick={() => handleDelete(product.id)}
+                                    className="p-2 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 focus:outline-none focus:bg-red-600 my-2 flex items-center justify-center" style={{ maxWidth: '40px', minHeight: '10px' }}>
+                                <FaTrash/>
+                            </button>
                         </div>
+                        {product.imageUrl && (
+                            <img src={product.imageUrl} alt={product.nom} className="w-32 h-32 object-cover" />
+                        )}
                     </div>
                 ))}
             </div>
