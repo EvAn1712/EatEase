@@ -1,5 +1,4 @@
 'use client';
-
 import Image from 'next/image';
 import { Title, Text, Button } from 'rizzui';
 import cn from '@/utils/class-names';
@@ -59,6 +58,7 @@ export default function ProductClassicCard({
             <del className="ps-1.5 text-[13px] font-normal text-gray-500">
               {toCurrency(Number(price))}
             </del>
+          
           )}
         </div>
         <div className="mt-3">

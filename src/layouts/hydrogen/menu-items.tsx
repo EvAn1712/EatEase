@@ -9,56 +9,56 @@ export const menuItems = [
         name: 'Accueil',
         href: '/point-of-sale',
         icon: <PiCreditCardDuotone />,
-        allowedDomains: ['epfadmin.fr', 'epfedu.fr'], // Domaines autorisés
+        //allowedDomains: ['epfadmin.fr', 'epfedu.fr'], // Domaines autorisés
 
     },
  {
     name: 'Ajout de Produit',
     href: '/ADMAjoutProduit',
     icon: <PiCreditCardDuotone />,
-    allowedDomains: ['epfadmin.fr'], // Domaines autorisés
+    //allowedDomains: ['epfadmin.fr'], // Domaines autorisés
   },
   {
     name: 'Mon profil',
     href: '/MonProfile',
     icon: <PiCreditCardDuotone />,
-    allowedDomains: ['epfedu.fr'], // Domaines autorisés
+    //allowedDomains: ['epfedu.fr'], // Domaines autorisés
   },
   {
     name: 'Mes commandes',
     href: '/HistoriqueCommande',
     icon: <PiCreditCardDuotone />,
-    allowedDomains: ['epfedu.fr'], // Domaines autorisés
+    //allowedDomains: ['epfedu.fr'], // Domaines autorisés
   },
   {
     name: 'Stock',
     href: '/ADMStock',
     icon: <PiCreditCardDuotone />,
-    allowedDomains: ['epfadmin.fr'], // Domaines autorisés
+    //allowedDomains: ['epfadmin.fr'], // Domaines autorisés
   },
  {
     name: 'Liste de Produits',
     href: '/ADMListProduit',
     icon: <PiCreditCardDuotone />,
-    allowedDomains: ['epfadmin.fr'], // Domaines autorisés
+    //allowedDomains: ['epfadmin.fr'], // Domaines autorisés
   },
   {
     name: 'Ajout de Produit2',
     href: '/ADMAjoutProduit2',
     icon: <PiCreditCardDuotone />,
-    allowedDomains: ['epfadmin.fr'], // Domaines autorisés
+    //allowedDomains: ['epfadmin.fr'], // Domaines autorisés
   },
   {
     name: 'Liste de Produits2',
     href: '/ADMListProduit2',
     icon: <PiCreditCardDuotone />,
-    allowedDomains: ['epfadmin.fr'], // Domaines autorisés
+    //allowedDomains: ['epfadmin.fr'], // Domaines autorisés
   },
     {
         name: 'Historique de Commande',
         href: '/ADMHistoriqueCommande',
         icon: <PiCreditCardDuotone />,
-        allowedDomains: ['epfadmin.fr'], // Domaines autorisés
+        //allowedDomains: ['epfadmin.fr'], // Domaines autorisés
     }
 
 
