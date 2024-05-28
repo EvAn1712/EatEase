@@ -32,7 +32,7 @@ const PasserCommande: React.FC = () => {
     const fetchLastCommande = async () => {
         try {
             const db = getDatabase(app);
-            const commandesRef = ref(db, "ADMCommande"); // Changed "Commande" to "ADMCommande"
+            const commandesRef = ref(db, "ADMCommande");
             const lastCommandeQuery = query(commandesRef, orderByKey(), limitToLast(1));
             const snapshot = await get(lastCommandeQuery);
             if (snapshot.exists()) {
@@ -49,7 +49,7 @@ const PasserCommande: React.FC = () => {
 
     const addCommande = async () => {
         const db = getDatabase(app);
-        const commandeRef = ref(db, "ADMCommande"); // Changed "Commande" to "ADMCommande"
+        const commandeRef = ref(db, "ADMCommande");
         const newCommandeRef = push(commandeRef);
         await set(newCommandeRef, {
             produits: commande,
@@ -76,11 +76,32 @@ const PasserCommande: React.FC = () => {
         setCommande(newCommande);
     };
 
-    const handleSubmit = (event: React.FormEvent) => {
+    const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-        addCommande();
-        console.log('Commande soumise:', { commande });
-        setCommande([{ produitId: '', quantite: '' }]);
+        try {
+            const db = getDatabase(app);
+            for (const item of commande) {
+                const produitRef = ref(db, `Produit/${item.produitId}`);
+                const produitSnapshot = await get(produitRef);
+                if (produitSnapshot.exists()) {
+                    const produitData = produitSnapshot.val();
+                    const quantiteCommandee = parseInt(item.quantite);
+                    if (!isNaN(quantiteCommandee) && quantiteCommandee >= 0) {
+                        const nouveauStock = produitData.stock + quantiteCommandee;
+                        await set(produitRef, { ...produitData, stock: nouveauStock });
+                    } else {
+                        console.error(`Invalid quantity for product ${item.produitId}`);
+                    }
+                } else {
+                    console.error(`Product ${item.produitId} not found`);
+                }
+            }
+            await addCommande();
+            console.log('Commande soumise:', { commande });
+            setCommande([{ produitId: '', quantite: '' }]);
+        } catch (error) {
+            console.error("Error submitting order:", error);
+        }
     };
 
     const pageHeader = {

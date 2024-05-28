@@ -1,7 +1,8 @@
 "use client";
-import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
+import React, { useState, useEffect, ChangeEvent, FormEvent, useRef } from 'react';
 import app from "../firebase-config";
 import { getDatabase, ref, set, push, get } from "firebase/database";
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
 import PageHeader from '@/app/shared/page-header';
 import { Select, MenuItem, FormControl, InputLabel } from '@material-ui/core';
 
@@ -15,6 +16,8 @@ export default function PointOfSalePage() {
     let [selectedMenu, setSelectedMenu] = useState("");
     let [saveStatus, setSaveStatus] = useState("");
     let [selectedAllergenes, setSelectedAllergenes] = useState<string[]>([]);
+    let [image, setImage] = useState<File | null>(null);
+    const imageInputRef = useRef<HTMLInputElement | null>(null);
     const allergenes = ["gluten", "oeuf", "lait", "arachide", "soja", "fruit à coque", "sésame", "sulfites", "moutarde", "lupin", "poisson", "crustacés", "mollusques", "céleri"];
 
     useEffect(() => {
@@ -40,19 +43,36 @@ export default function PointOfSalePage() {
         fetchMenus();
     }, []);
 
+    const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            setImage(e.target.files[0]);
+        }
+    };
+
     const Savedata = async (e: FormEvent) => {
         e.preventDefault();
         try {
             const db = getDatabase(app);
+            const storage = getStorage(app);
             const dbRef = ref(db, "Produit");
             const newProductRef = push(dbRef);
+            let imageUrl = '';
+
+            if (image) {
+                const storageReference = storageRef(storage, `produits/${newProductRef.key}/${image.name}`);
+                await uploadBytes(storageReference, image);
+                imageUrl = await getDownloadURL(storageReference);
+            }
+
             await set(newProductRef, {
                 nom: inputnom,
                 prix: inputprix,
                 description: inputDescription,
                 typeProduit: inputTypeProduit,
                 idMenu: menuMap[selectedMenu],
-                allergenes: selectedAllergenes
+                allergenes: selectedAllergenes,
+                imageUrl: imageUrl,
+                stock: 0,  // Ajout du champ stock avec une valeur de 0
             });
             console.log("Data saved");
             setSaveStatus("Data saved successfully!");
@@ -64,6 +84,10 @@ export default function PointOfSalePage() {
             setInputTypeProduit("");
             setSelectedMenu("");
             setSelectedAllergenes([]);
+            setImage(null);
+            if (imageInputRef.current) {
+                imageInputRef.current.value = "";
+            }
         } catch (error) {
             console.error("Error saving data:", error);
             setSaveStatus("Failed to save data.");
@@ -195,6 +219,18 @@ export default function PointOfSalePage() {
                             ))}
                         </Select>
                     </FormControl>
+                </div>
+                <div className="flex flex-col">
+                    <label htmlFor="image" className="text-lg font-bold">Image:</label>
+                    <input
+                        type="file"
+                        id="image"
+                        name="image"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        ref={imageInputRef}
+                        className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                    />
                 </div>
                 <div>
                     <button type="submit"
