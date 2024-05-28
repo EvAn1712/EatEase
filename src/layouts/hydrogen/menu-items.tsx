@@ -42,17 +42,6 @@ export const menuItems = [
     icon: <PiCreditCardDuotone />,
     allowedDomains: ['epfadmin.fr'], // Domaines autorisés
   },
-  {
-    name: 'Ajout de Produit2',
-    href: '/ADMAjoutProduit2',
-    icon: <PiCreditCardDuotone />,
-  },
-  {
-    name: 'Liste de Produits2',
-    href: '/ADMListProduit2',
-    icon: <PiCreditCardDuotone />,
-    allowedDomains: ['epfadmin.fr'], // Domaines autorisés
-  },
     {
         name: 'Historique de Commande',
         href: '/ADMHistoriqueCommande',
