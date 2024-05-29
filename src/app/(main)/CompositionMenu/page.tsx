@@ -1,10 +1,13 @@
 "use client";
 import React, {useState} from 'react';
 import PageHeader from '@/app/shared/page-header';
+import TestComponent from "@/app/(main)/CompositionMenu/temp";
+import Read from "@/app/(main)/CompositionMenu/Read/ReadAll";
+import ReadById from "@/app/(main)/CompositionMenu/Read/ReadById";
 
 const CompositionMenu: React.FC = () => {
 
-    //Header
+    //HEADER
     const pageHeader = {
         title: 'Composition de votre menu',
         breadcrumb: [],
@@ -46,6 +49,15 @@ const CompositionMenu: React.FC = () => {
                 breadcrumb={pageHeader.breadcrumb}
                 className={pageHeader.className}
             />
+
+            {/*TEST A SUPP*/}
+            <TestComponent/>
+
+            {/*TEST READ BY ID*/}
+            <ReadById productId="-Ny53Vz8Uq5icPiSAOm5" />
+
+            {/*TEST READ*/}
+            <Read/>
 
             {/*IMAGE PLAT*/}
             <div className="my-4">
