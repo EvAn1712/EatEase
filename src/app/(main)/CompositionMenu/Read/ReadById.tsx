@@ -13,9 +13,10 @@ interface Product {
 
 interface Props {
     productId: string;
+    attributes: string[];
 }
 
-function ReadById({ productId }: Props) {
+function ReadById({ productId, attributes }: Props) {
     const [product, setProduct] = useState<Product | null>(null);
 
     useEffect(() => {
@@ -43,12 +44,12 @@ function ReadById({ productId }: Props) {
 
     return (
         <div>
-            {product.nom && <h2>{product.nom}</h2>}
-            {product.prix !== undefined && product.prix !== null && <p>{product.prix} €</p>}
-            {product.description && <p>{product.description}</p>}
-            {product.listIdAllergenes && <p>Allergènes: {product.listIdAllergenes.join(', ')}</p>}
-            {product.typeProduit && <p>Type de produit: {product.typeProduit}</p>}
-            {product.listIdMenu && <p>Menus: {product.listIdMenu.join(', ')}</p>}
+            {attributes.includes('nom') && product.nom && <h2>{product.nom}</h2>}
+            {attributes.includes('prix') && product.prix !== undefined && product.prix !== null && <p>{product.prix} €</p>}
+            {attributes.includes('description') && product.description && <p>{product.description}</p>}
+            {attributes.includes('listIdAllergenes') && product.listIdAllergenes && <p>Allergènes: {product.listIdAllergenes.join(', ')}</p>}
+            {attributes.includes('typeProduit') && product.typeProduit && <p>Type de produit: {product.typeProduit}</p>}
+            {attributes.includes('listIdMenu') && product.listIdMenu && <p>Menus: {product.listIdMenu.join(', ')}</p>}
         </div>
     );
 }

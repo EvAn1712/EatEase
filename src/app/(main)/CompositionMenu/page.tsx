@@ -54,7 +54,7 @@ const CompositionMenu: React.FC = () => {
             <TestComponent/>
 
             {/*TEST READ BY ID*/}
-            <ReadById productId="-Ny53Vz8Uq5icPiSAOm5" />
+            <ReadById productId="-Ny53Vz8Uq5icPiSAOm5" attributes={['nom', 'prix', 'description', 'listIdAllergenes']} />
 
             {/*TEST READ*/}
             <Read/>
