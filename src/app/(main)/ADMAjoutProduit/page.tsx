@@ -179,11 +179,13 @@ export default function PointOfSalePage() {
                         className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
                     >
                         <option value="">Sélectionnez le type de produit</option>
-                        <option value="dessert">Dessert</option>
+                        <option value="plat">Plat</option>
+                        <option value="dessert">Dessert(fruits, compotes, madeleine,yaourt)</option>
                         <option value="viennoisserie">Viennoiserie</option>
-                        <option value="sandwiche">Sandwiche</option>
-                        <option value="repas">Repas</option>
                         <option value="boisson">Boisson</option>
+                        <option value="entree">Entrée(chips)</option>
+                        <option value="snack">Snack(barres chocolatées, bonbons ...)</option>
+
                     </select>
                 </div>
                 <div className="flex flex-col">

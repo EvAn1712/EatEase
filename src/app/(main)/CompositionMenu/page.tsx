@@ -51,7 +51,7 @@ const CompositionMenu: React.FC = () => {
                 className={pageHeader.className}
             />
 
-            <div>
+            {/*<div>
                 TEST A SUPP
             </div>
             <TestComponent/>
@@ -72,7 +72,7 @@ const CompositionMenu: React.FC = () => {
                 TEST READ BY TYPE
             </div>
 
-            <ReadByType typesProduit={['Sandwich']} attributes={['nom', 'prix','imageUrl']} />
+            <ReadByType typesProduit={['Sandwich']} attributes={['nom', 'prix','imageUrl']} />*/}
 
             {/*IMAGE PLAT*/}
             <div className="my-4">
@@ -93,33 +93,31 @@ const CompositionMenu: React.FC = () => {
                 </div>
                 {showAccompagnement &&
                     <div className="mt-4">
-                        <button onClick={() => handleCategoryClick("Dessert")}
-                                className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 mr-2">Dessert
-                        </button>
                         <button onClick={() => handleCategoryClick("Entree")}
                                 className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 mr-2">Entree
                         </button>
-                        <button onClick={() => handleCategoryClick("Boisson")}
-                                className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400">Boisson
+                        <button onClick={() => handleCategoryClick("Dessert")}
+                                className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 mr-2">Dessert
                         </button>
-
+                        <button onClick={() => handleCategoryClick("Boisson")}
+                                className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 mr-2">Boisson
+                        </button>
                         {selectedCategory === "Dessert" && (
                             <div className="mt-4">
-                                <button
-                                    className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 mr-2">fruit
-                                </button>
-                                <button
-                                    className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 mr-2">madeleine
-                                </button>
-                                <button
-                                    className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 mr-2">compote
-                                </button>
-                                <button
-                                    className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400">yaourt
-                                </button>
+                                <ReadByType typesProduit={['dessert']} attributes={['nom', 'prix', 'imageUrl']}/>
                             </div>
                         )}
-                        {/* Render other category buttons and their respective sub-buttons similarly */}
+                        {selectedCategory === "Entree" && (
+                            <div className="mt-4">
+                                <ReadByType typesProduit={['entree']} attributes={['nom', 'prix', 'imageUrl']}/>
+                            </div>
+                        )}
+                        {selectedCategory === "Boisson" && (
+                            <div className="mt-4">
+                                <ReadByType typesProduit={['boisson']} attributes={['nom', 'prix', 'imageUrl']}/>
+                            </div>
+                        )}
+
                     </div>
                 }
             </div>
