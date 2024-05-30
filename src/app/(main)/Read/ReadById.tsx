@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import app from "../../firebase-config";
+import app from "../firebase-config";
 import { getDatabase, ref, get } from "firebase/database";
 
 interface Product {

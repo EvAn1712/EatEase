@@ -2,8 +2,8 @@
 import React, {useState} from 'react';
 import PageHeader from '@/app/shared/page-header';
 import TestComponent from "@/app/(main)/CompositionMenu/temp";
-import Read from "@/app/(main)/CompositionMenu/Read/ReadAll";
-import ReadById from "@/app/(main)/CompositionMenu/Read/ReadById";
+import ReadAll from "@/app/(main)/Read/ReadAll";
+import ReadById from "@/app/(main)/Read/ReadById";
 
 const CompositionMenu: React.FC = () => {
 
@@ -57,7 +57,7 @@ const CompositionMenu: React.FC = () => {
             <ReadById productId="-Ny53Vz8Uq5icPiSAOm5" attributes={['nom', 'prix', 'description', 'listIdAllergenes']} />
 
             {/*TEST READ*/}
-            <Read/>
+            <ReadAll attributes={['nom', 'prix']} />
 
             {/*IMAGE PLAT*/}
             <div className="my-4">
