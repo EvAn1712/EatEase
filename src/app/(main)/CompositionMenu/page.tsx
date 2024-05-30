@@ -61,18 +61,18 @@ const CompositionMenu: React.FC = () => {
                 TEST READ BY ID
             </div>
 
-            <ReadById productId="-Ny53Vz8Uq5icPiSAOm5" attributes={['nom', 'prix', 'description', 'listIdAllergenes']}/>
+            <ReadById productId="-Nyz9xGdFM-JcXj4oCEk" attributes={['nom', 'prix', 'description', 'listIdAllergenes', 'imageUrl']}/>
 
             <div>
                 TEST READ ALL
             </div>
-            <ReadAll attributes={['nom', 'prix']}/>
+            <ReadAll attributes={['nom', 'prix', 'imageUrl']}/>
 
             <div>
                 TEST READ BY TYPE
             </div>
 
-            <ReadByType typesProduit={['Sandwich']} attributes={['nom', 'prix']} />
+            <ReadByType typesProduit={['Sandwich']} attributes={['nom', 'prix','imageUrl']} />
 
             {/*IMAGE PLAT*/}
             <div className="my-4">

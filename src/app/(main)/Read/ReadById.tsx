@@ -9,6 +9,7 @@ interface Product {
     listIdAllergenes?: string[];
     typeProduit?: string;
     listIdMenu?: string[];
+    imageUrl?: string; // new optional property
 }
 
 interface Props {
@@ -50,6 +51,7 @@ function ReadById({ productId, attributes }: Props) {
             {attributes.includes('listIdAllergenes') && product.listIdAllergenes && <p>Allergènes: {product.listIdAllergenes.join(', ')}</p>}
             {attributes.includes('typeProduit') && product.typeProduit && <p>Type de produit: {product.typeProduit}</p>}
             {attributes.includes('listIdMenu') && product.listIdMenu && <p>Menus: {product.listIdMenu.join(', ')}</p>}
+            {attributes.includes('imageUrl') && product.imageUrl && <img src={product.imageUrl} alt={product.nom || ''} width="100" height="100" />} {/* new conditional rendering block */}
         </div>
     );
 }
