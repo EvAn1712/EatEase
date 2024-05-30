@@ -4,6 +4,7 @@ import PageHeader from '@/app/shared/page-header';
 import TestComponent from "@/app/(main)/CompositionMenu/temp";
 import ReadAll from "@/app/(main)/Read/ReadAll";
 import ReadById from "@/app/(main)/Read/ReadById";
+import ReadByType from "@/app/(main)/Read/ReadByType";
 
 const CompositionMenu: React.FC = () => {
 
@@ -50,18 +51,33 @@ const CompositionMenu: React.FC = () => {
                 className={pageHeader.className}
             />
 
-            {/*TEST A SUPP*/}
+            <div>
+                TEST A SUPP
+            </div>
             <TestComponent/>
 
-            {/*TEST READ BY ID*/}
-            <ReadById productId="-Ny53Vz8Uq5icPiSAOm5" attributes={['nom', 'prix', 'description', 'listIdAllergenes']} />
 
-            {/*TEST READ*/}
-            <ReadAll attributes={['nom', 'prix']} />
+            <div>
+                TEST READ BY ID
+            </div>
+
+            <ReadById productId="-Ny53Vz8Uq5icPiSAOm5" attributes={['nom', 'prix', 'description', 'listIdAllergenes']}/>
+
+            <div>
+                TEST READ ALL
+            </div>
+            <ReadAll attributes={['nom', 'prix']}/>
+
+            <div>
+                TEST READ BY TYPE
+            </div>
+
+            <ReadByType typesProduit={['Sandwich']} attributes={['nom', 'prix']} />
 
             {/*IMAGE PLAT*/}
             <div className="my-4">
-                <img src={imagePath} alt="image plat ici,si tu vois ce texte c'est que ça marche pas lol" className="w-full h-auto rounded-md shadow-md"/>
+                <img src={imagePath} alt="image plat ici,si tu vois ce texte c'est que ça marche pas lol"
+                     className="w-full h-auto rounded-md shadow-md"/>
             </div>
 
             {/*TEXTE EXPLICATIF*/}
@@ -70,22 +86,37 @@ const CompositionMenu: React.FC = () => {
             {/*BANNIERE ACCOMPAGNEMENT*/}
             <div className="rectangular-section bg-gray-200 p-4 rounded-md shadow-md">
                 <div>
-                    <button onClick={toggleAccompagnement} className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                    <button onClick={toggleAccompagnement}
+                            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
                         {showAccompagnement ? 'Fermer' : 'Ouvrir'} Accompagnement 1
                     </button>
                 </div>
                 {showAccompagnement &&
                     <div className="mt-4">
-                        <button onClick={() => handleCategoryClick("Dessert")} className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 mr-2">Dessert</button>
-                        <button onClick={() => handleCategoryClick("Entree")} className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 mr-2">Entree</button>
-                        <button onClick={() => handleCategoryClick("Boisson")} className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400">Boisson</button>
+                        <button onClick={() => handleCategoryClick("Dessert")}
+                                className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 mr-2">Dessert
+                        </button>
+                        <button onClick={() => handleCategoryClick("Entree")}
+                                className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 mr-2">Entree
+                        </button>
+                        <button onClick={() => handleCategoryClick("Boisson")}
+                                className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400">Boisson
+                        </button>
 
                         {selectedCategory === "Dessert" && (
                             <div className="mt-4">
-                                <button className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 mr-2">fruit</button>
-                                <button className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 mr-2">madeleine</button>
-                                <button className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 mr-2">compote</button>
-                                <button className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400">yaourt</button>
+                                <button
+                                    className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 mr-2">fruit
+                                </button>
+                                <button
+                                    className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 mr-2">madeleine
+                                </button>
+                                <button
+                                    className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 mr-2">compote
+                                </button>
+                                <button
+                                    className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400">yaourt
+                                </button>
                             </div>
                         )}
                         {/* Render other category buttons and their respective sub-buttons similarly */}
@@ -94,7 +125,8 @@ const CompositionMenu: React.FC = () => {
             </div>
 
             {/*VALIDER BUTTON*/}
-            <button onClick={handleSubmit} className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600 mt-4">
+            <button onClick={handleSubmit}
+                    className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600 mt-4">
                 Valider
             </button>
 
