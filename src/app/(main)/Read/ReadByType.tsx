@@ -6,7 +6,7 @@ interface Product {
     nom?: string;
     prix?: number;
     description?: string;
-    listIdAllergenes?: string[];
+    allergenes?: string[]; // Change listIdAllergenes to allergenes
     typeProduit?: string;
     listIdMenu?: string[];
     imageUrl?: string; // new optional property
@@ -31,7 +31,16 @@ function ReadByType({ typesProduit, attributes }: Props) {
                     snapshot.forEach((childSnapshot) => {
                         const childData = childSnapshot.val();
                         if (typesProduit.includes(childData.typeProduit)) {
-                            allProducts.push(childData);
+                            const product: Product = {
+                                nom: childData.nom,
+                                prix: childData.prix,
+                                description: childData.description,
+                                allergenes: childData.allergenes,
+                                typeProduit: childData.typeProduit,
+                                listIdMenu: childData.listIdMenu,
+                                imageUrl: childData.imageUrl
+                            };
+                            allProducts.push(product);
                         }
                     });
                     setProducts(allProducts);
@@ -54,7 +63,7 @@ function ReadByType({ typesProduit, attributes }: Props) {
                         {attributes.includes('nom') && product.nom && <p>{product.nom}</p>}
                         {attributes.includes('prix') && product.prix !== undefined && product.prix !== null && <p>{product.prix} €</p>}
                         {attributes.includes('description') && product.description && <p>{product.description}</p>}
-                        {attributes.includes('listIdAllergenes') && product.listIdAllergenes && <p>Allergènes: {product.listIdAllergenes.join(', ')}</p>}
+                        {attributes.includes('allergenes') && product.allergenes && <p>Allergènes: {product.allergenes.join(', ')}</p>}
                         {attributes.includes('typeProduit') && product.typeProduit && <p>Type de produit: {product.typeProduit}</p>}
                         {attributes.includes('listIdMenu') && product.listIdMenu && <p>Menus: {product.listIdMenu.join(', ')}</p>}
                         {attributes.includes('imageUrl') && product.imageUrl && <img src={product.imageUrl} alt={product.nom || ''} width="100" height="100" />} {/* new conditional rendering block */}

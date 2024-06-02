@@ -5,11 +5,13 @@ import ImagePlat from '@/app/(main)/CompositionMenu/Components/imagePlat';
 import TexteExplicatif from '@/app/(main)/CompositionMenu/Components/texteExplicatif';
 import BanniereAccompagnement from '@/app/(main)/CompositionMenu/Components/banniereAccompagnent';
 import ValiderBtn from '@/app/(main)/CompositionMenu/Components/ValiderBtn';
+import ReadByType from '@/app/(main)/Read/ReadByType';
 
 const CompositionMenu: React.FC = () => {
 
         return (
             <div className="w-4/5 mx-auto py-8">
+                <ReadByType typesProduit={['dessert']} attributes={['nom','allergenes']}/>
                 <Header/>
                 <ImagePlat/>
                 <TexteExplicatif/>

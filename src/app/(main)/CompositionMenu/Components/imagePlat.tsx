@@ -7,7 +7,7 @@ const ImagePlat: React.FC = () => {
 
     return (
         <div className="my-4">
-            <img src={imagePath} alt="image plat ici,si tu vois ce texte c'est que ça marche pas lol" className="w-full h-auto rounded-md shadow-md"/>
+            <img src={imagePath} alt="image plat ici,tqt ça vient" className="w-full h-auto rounded-md shadow-md"/>
         </div>
     );
 };
