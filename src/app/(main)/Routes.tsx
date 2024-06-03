@@ -15,7 +15,7 @@ const RoutesComponent: React.FC = () => {
         <Router>
             <Routes>
                 <Route path="/point-of-sale" element={<PointOfSalePage/>} />
-                <Route path="/connexion" element={<LoginPage/>} />
+                
                 <Route path="/ajout-produit" element={<ADMAjoutPrduit/>} />
                 <Route path="/mon-profile" element={<MonProfile/>} />
                 <Route path="/historique-commande" element={<HistoriqueCommande/>} />

@@ -9,6 +9,7 @@ const EyeIcon = () => (
     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
     <circle cx="12" cy="12" r="3"></circle>
   </svg>
+  
 );
 
 const EyeOffIcon = () => (
@@ -16,6 +17,7 @@ const EyeOffIcon = () => (
     <path d="M17.94 17.94L1 1m17.12 3.88C18.72 6.85 19 9.28 19 12c0 1.12-.08 2.23-.24 3.32M5.07 7.07C4.25 8.43 4 9.97 4 12c0 1.12.08 2.23.24 3.32m9.5 2.34l3.26 3.26a1 1 0 0 0 1.42 0l2-2a1 1 0 0 0 0-1.42L4.24 1.24a1 1 0 0 0-1.41 0l-2 2a1 1 0 0 0 0 1.42z"></path>
     <circle cx="12" cy="12" r="3"></circle>
   </svg>
+ 
 );
 const SignupForm = () => {
   const me  = useAuthContext(); // Retrieve user context

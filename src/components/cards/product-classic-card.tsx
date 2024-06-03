@@ -1,4 +1,6 @@
 'use client';
+
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { Title, Text, Button } from 'rizzui';
 import cn from '@/utils/class-names';
@@ -6,6 +8,7 @@ import { CartItem, PosProduct } from '@/types';
 import { toCurrency } from '@/utils/to-currency';
 import { PiMinus, PiPlus } from 'react-icons/pi';
 import { useCart } from '@/store/quick-cart/cart.context';
+import Modal from '@/app/(main)/modal/page';
 
 interface ProductProps {
   product: PosProduct;
@@ -19,6 +22,18 @@ export default function ProductClassicCard({
   const { name, description, price, image, salePrice, discount } = product;
 
   const { addItemToCart, isInCart } = useCart();
+ // État pour gérer la visibilité de la modal
+ const [isModalOpen, setIsModalOpen] = useState(false);
+
+ // État pour gérer l'option sélectionnée
+ const [selectedOption, setSelectedOption] = useState('Simple');
+
+ const openModal = () => setIsModalOpen(true);
+ const closeModal = () => setIsModalOpen(false);
+
+ const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+   setSelectedOption(event.target.value);
+ };
 
   return (
     <div className={cn('pb-0.5', className)}>
@@ -66,7 +81,7 @@ export default function ProductClassicCard({
             <QuantityControl item={product} />
           ) : (
             <Button
-              onClick={() => addItemToCart(product, 1)}
+              onClick={openModal}
               className="w-full"
               variant="outline"
             >
@@ -75,6 +90,46 @@ export default function ProductClassicCard({
           )}
         </div>
       </div>
+
+      {/* Modal */}
+      <Modal show={isModalOpen} onClose={closeModal}>
+        <div>
+          <h2 className="text-xl font-semibold">Choisissez une option</h2>
+          <div className="mt-4">
+            <label className="inline-flex items-center">
+              <input
+                type="radio"
+                className="form-radio"
+                name="option"
+                value="Simple"
+                checked={selectedOption === 'Simple'}
+                onChange={handleOptionChange}
+              />
+              <span className="ml-2">Simple</span>
+            </label>
+            <label className="inline-flex items-center ml-6">
+              <input
+                type="radio"
+                className="form-radio"
+                name="option"
+                value="Menu"
+                checked={selectedOption === 'Menu'}
+                onChange={handleOptionChange}
+              />
+              <span className="ml-2">Menu</span>
+            </label>
+          </div>
+          <Button
+            onClick={() => {
+              addItemToCart(product, 1);
+              closeModal();
+            }}
+            className="mt-4 w-full"
+          >
+            Ajouter au panier
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 }
@@ -94,7 +149,7 @@ function QuantityControl({ item }: { item: CartItem }) {
         {getItemFromCart(item.id).quantity}
       </span>
       <button
-        title="Decrement"
+        title="Increment"
         className="flex items-center justify-center rounded p-2 duration-200 hover:bg-gray-100 hover:text-gray-900"
         onClick={() => addItemToCart(item, 1)}
       >

@@ -10,6 +10,7 @@ const EyeIcon = () => (
     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
     <circle cx="12" cy="12" r="3"></circle>
   </svg>
+  
 );
 
 const EyeOffIcon = () => (
@@ -20,7 +21,7 @@ const EyeOffIcon = () => (
 );
 
 const SignupForm = () => {
-  const me = useAuthContext(); // Retrieve user context
+  const user = useAuthContext(); // Retrieve user context
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -30,11 +31,11 @@ const SignupForm = () => {
   const [error, setError] = useState("");  // Ajout de l'état pour gérer les erreurs
 
   const router = useRouter();
-  const [user, setUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
+      setCurrentUser(currentUser);
     });
 
     return () => unsubscribe();
@@ -58,17 +59,31 @@ const SignupForm = () => {
     }
     return null;
   };
-  const register = async () => {
-    const emailDomain = registerEmail.split('@')[1];
+
+  const validateEmail = (email: string): string | null => {
+    const emailDomain = email.split('@')[1];
     if (emailDomain !== 'epfedu.fr' && emailDomain !== 'epfadmin.fr') {
-      setError("L'adresse e-mail doit se terminer par @epfedu.fr ou @epfadmin.fr");
+      return "L'adresse e-mail doit se terminer par @epfedu.fr ou @epfadmin.fr";
+    }
+    return null;
+  };
+
+  const register = async () => {
+    setError(""); // Reset error state
+    setMessage(""); // Reset message state
+
+    const emailError = validateEmail(registerEmail);
+    if (emailError) {
+      setError(emailError);
       return;
     }
- const passwordError = validatePassword(registerPassword);
+
+    const passwordError = validatePassword(registerPassword);
     if (passwordError) {
       setError(passwordError);
       return;
     }
+
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, registerEmail, registerPassword);
       // Mettre à jour le profil avec le prénom et le nom
@@ -103,6 +118,11 @@ const SignupForm = () => {
             )}
           </div>
         )}
+        {message && (
+          <div className="mb-4 p-4 bg-green-100 text-green-700 rounded">
+            {message}
+          </div>
+        )}
         <div className="mb-4">
           <label htmlFor="firstName" className="block text-gray-700 font-medium mb-1">Prénom :</label>
           <input type="text" id="firstName" className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500" required onChange={(e) => setFirstName(e.target.value)} />
@@ -118,15 +138,14 @@ const SignupForm = () => {
         <label htmlFor="password" className="block text-gray-700 font-medium mb-1">Mot de passe :</label>
         <div className="mb-4 relative flex items-center">
           <div className="flex-grow relative">
-            <input type={passwordVisible ? "text" : "password"} id="password1" className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500" required onChange={(e) => setRegisterPassword(e.target.value)} />
+            <input type={passwordVisible ? "text" : "password"} id="password" className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500" required onChange={(e) => setRegisterPassword(e.target.value)} />
             <button type="button" onClick={() => setPasswordVisible(!passwordVisible)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5" aria-label={passwordVisible ? "Cacher le mot de passe" : "Afficher le mot de passe"}>
               {passwordVisible ? <EyeOffIcon /> : <EyeIcon />}
             </button>
           </div>
         </div>
         <p className="text-sm text-gray-600 mb-4">Le mot de passe doit contenir au moins 8 caractères, incluant une lettre majuscule, une lettre minuscule, un chiffre et un symbole spécial.</p>
-        <button type="submit" className="w-full bg-blue-500 text-white font-semibold py-2 rounded-lg hover:bg-blue-600 transition duration-300">S&apos;inscrire</button>
-
+        <button type="submit" className="w-full bg-blue-500 text-white font-semibold py-2 rounded-lg hover:bg-blue-600 transition duration-300">S'inscrire</button>
       </form>
     </div>
   );
