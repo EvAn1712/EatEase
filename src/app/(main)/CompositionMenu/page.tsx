@@ -11,7 +11,6 @@ const CompositionMenu: React.FC = () => {
 
         return (
             <div className="w-4/5 mx-auto py-8">
-                <ReadByType typesProduit={['dessert']} attributes={['nom','allergenes']}/>
                 <Header/>
                 <ImagePlat/>
                 <TexteExplicatif/>
