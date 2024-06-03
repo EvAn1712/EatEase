@@ -6,16 +6,19 @@ import TexteExplicatif from '@/app/(main)/CompositionMenu/Components/texteExplic
 import BanniereAccompagnement from '@/app/(main)/CompositionMenu/Components/banniereAccompagnent';
 import ValiderBtn from '@/app/(main)/CompositionMenu/Components/ValiderBtn';
 import ReadByType from '@/app/(main)/Read/ReadByType';
+import ReadById from "@/app/(main)/Read/ReadById";
 
-// input : plat = -NzTumGjozaP3UoaT9Ie (salade vege)
+// input plat : temporaire
+const plat = "-NzTumGjozaP3UoaT9Ie";
+
 
 const CompositionMenu: React.FC = () => {
 
         return (
             <div className="w-4/5 mx-auto py-8">
                 <Header/>
-                <ImagePlat plat={"-NzTumGjozaP3UoaT9Ie"}/>
-                <TexteExplicatif/>
+                <ImagePlat plat={plat}/>
+                <TexteExplicatif plat={plat}/>
                 <BanniereAccompagnement/>
                 <ValiderBtn/>
             </div>

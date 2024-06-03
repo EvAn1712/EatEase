@@ -1,11 +1,17 @@
 "use client"
 import React from 'react';
+import ReadById from "@/app/(main)/Read/ReadById";
 
-const TexteExplicatif: React.FC = () => {
-    const plat = '';
+interface Props {
+    plat: string;
+}
 
+const TexteExplicatif: React.FC<Props> = ({ plat }) => {
     return (
-        <p className="text-lg mb-4">Vous allez composer votre menu avec {plat} et 2 accompagnements.</p>
+        <div className="text-lg mb-4 text-center">
+            Vous allez composer votre menu avec <ReadById productId={plat} attributes={['nom']}/> et 2 accompagnements
+        </div>
+
     );
 };
 
