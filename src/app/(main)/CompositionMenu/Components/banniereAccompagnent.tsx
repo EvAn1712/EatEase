@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import ReadByType from "@/app/(main)/Read/ReadByType";
 import SectionAccompagnement from "@/app/(main)/CompositionMenu/Components/sectionAccompagnement";
 
-interface BanniereAccompagnementProps {}
+interface BanniereAccompagnementProps {
+}
 
-const BanniereAccompagnement: React.FC<BanniereAccompagnementProps> = () => {
+interface BanniereAccompagnementProps {
+    onAccompagnementChange?: (value: (((prevState: string) => string) | string)) => void
+}
+
+const BanniereAccompagnement: React.FC<BanniereAccompagnementProps> = ({onAccompagnementChange}: BanniereAccompagnementProps) => {
     const [showAccompagnement, setShowAccompagnement] = useState(false);
     const toggleAccompagnement = () => {
         setShowAccompagnement(!showAccompagnement);
@@ -18,7 +23,7 @@ const BanniereAccompagnement: React.FC<BanniereAccompagnementProps> = () => {
                     {showAccompagnement ? 'Fermer' : 'Ouvrir'} choix Accompagnement 1
                 </button>
             </div>
-            {showAccompagnement && <SectionAccompagnement />}
+            {showAccompagnement && <SectionAccompagnement/>}
         </div>
     );
 };
