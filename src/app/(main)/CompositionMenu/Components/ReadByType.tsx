@@ -18,6 +18,7 @@ interface Props {
 
 function ReadByType({ typesProduit, attributes }: Props) {
     const [products, setProducts] = useState<Product[]>([]);
+    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -40,11 +41,16 @@ function ReadByType({ typesProduit, attributes }: Props) {
         fetchData();
     }, [typesProduit]);
 
+    const handleProductClick = (product: Product) => {
+        setSelectedProduct(product);
+        // Save the selected product as "accompagnement1" or perform any other action here
+    };
+
     return (
         <div>
             <ul className="flex -mx-2">
                 {products.map((product) => (
-                    <li key={product.nom} className="w-40 sm:w-56 bg-white shadow-md rounded-lg overflow-hidden mx-2 my-2">
+                    <li key={product.nom} className={`w-40 sm:w-56 bg-white shadow-md rounded-lg overflow-hidden mx-2 my-2 ${selectedProduct === product ? 'border-2 border-red-700' : ''}`} onClick={() => handleProductClick(product)}>
                         <div className="px-4 py-2">
                             {attributes.includes('nom') && product.nom &&
                                 <p className="text-sm font-semibold mb-1">{product.nom}</p>}

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import ReadByType from "./ReadByType";
-import ReadAll from "@/app/(main)/Read/ReadAll";
 
 // Reusable button component
 const CategoryButton: React.FC<{ category: string, onClick: (category: string) => void }> = ({ category, onClick }) => (
