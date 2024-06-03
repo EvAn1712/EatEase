@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import { getDatabase, ref, get, remove } from 'firebase/database';
-import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { FaTrash } from 'react-icons/fa';
 
 interface IProduct {
@@ -10,7 +9,7 @@ interface IProduct {
     prix: number;
     description: string;
     typeProduit: string;
-    idMenu: string;
+    idMenus: string[];
     allergenes: string[];
     imageUrl: string;
     stock: number;
@@ -90,7 +89,7 @@ const ProductListAdmin: React.FC = () => {
                             <p><span className="font-bold underline">Prix:</span> {product.prix} €</p>
                             <p><span className="font-bold underline">Description:</span> {product.description}</p>
                             <p><span className="font-bold underline">Type de produit:</span> {product.typeProduit}</p>
-                            <p><span className="font-bold underline">Menu:</span> {menus[product.idMenu]}</p>
+                            <p><span className="font-bold underline">Menus:</span> {product.idMenus && Array.isArray(product.idMenus) ? product.idMenus.map(menuId => menus[menuId]).join(', ') : 'Aucun'}</p>
                             <p><span
                                 className="font-bold underline">Allergènes:</span> {product.allergenes ? product.allergenes.join(', ') : 'Aucun'}
                             </p>
