@@ -7,12 +7,14 @@ import BanniereAccompagnement from '@/app/(main)/CompositionMenu/Components/bann
 import ValiderBtn from '@/app/(main)/CompositionMenu/Components/ValiderBtn';
 import ReadByType from '@/app/(main)/Read/ReadByType';
 
+// input : plat = -NzTumGjozaP3UoaT9Ie (salade vege)
+
 const CompositionMenu: React.FC = () => {
 
         return (
             <div className="w-4/5 mx-auto py-8">
                 <Header/>
-                <ImagePlat/>
+                <ImagePlat plat={"-NzTumGjozaP3UoaT9Ie"}/>
                 <TexteExplicatif/>
                 <BanniereAccompagnement/>
                 <ValiderBtn/>

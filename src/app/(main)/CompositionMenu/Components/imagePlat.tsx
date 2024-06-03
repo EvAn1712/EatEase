@@ -1,13 +1,15 @@
-"use client"
+"use client";
 import React from 'react';
+import ReadById from "@/app/(main)/Read/ReadById";
 
-const ImagePlat: React.FC = () => {
+interface Props {
+    plat: string; // Add the 'plat' variable to props
+}
 
-    const imagePath = 'src/app/(main)/CompositionMenu/randomImageForTest.jpg';
-
+const ImagePlat: React.FC<Props> = ({ plat }) => {
     return (
-        <div className="my-4">
-            <img src={imagePath} alt="image plat ici,tqt ça vient" className="w-full h-auto rounded-md shadow-md"/>
+        <div>
+            <ReadById productId={plat} attributes={['imageUrl']}/>
         </div>
     );
 };

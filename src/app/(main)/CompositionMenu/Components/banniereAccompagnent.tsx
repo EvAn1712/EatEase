@@ -15,7 +15,7 @@ const BanniereAccompagnement: React.FC<BanniereAccompagnementProps> = () => {
             <div>
                 <button onClick={toggleAccompagnement}
                         className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
-                    {showAccompagnement ? 'Fermer' : 'Ouvrir'} Accompagnement 1
+                    {showAccompagnement ? 'Fermer' : 'Ouvrir'} choix Accompagnement 1
                 </button>
             </div>
             {showAccompagnement && <SectionAccompagnement />}
