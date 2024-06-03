@@ -48,6 +48,4 @@ export const menuItems = [
         icon: <PiCreditCardDuotone />,
         //allowedDomains: ['epfadmin.fr'], // Domaines autorisés
     }
-
-
 ];
