@@ -8,7 +8,7 @@ import { CartItem, PosProduct } from '@/types';
 import { toCurrency } from '@/utils/to-currency';
 import { PiMinus, PiPlus } from 'react-icons/pi';
 import { useCart } from '@/store/quick-cart/cart.context';
-import Modal from '@/app/(main)/modal/page';
+import Modal from '@/app/(main)/modal/page'; // Assurez-vous d'importer le bon chemin pour votre composant Modal
 
 interface ProductProps {
   product: PosProduct;
@@ -19,21 +19,26 @@ export default function ProductClassicCard({
   product,
   className,
 }: ProductProps) {
-  const { name, description, price, image, salePrice, discount } = product;
+  const { name, description, price, image, salePrice, discount} = product;
 
   const { addItemToCart, isInCart } = useCart();
- // État pour gérer la visibilité de la modal
- const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  // État pour gérer la visibilité de la modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
 
- // État pour gérer l'option sélectionnée
- const [selectedOption, setSelectedOption] = useState('Simple');
+  // État pour gérer l'option sélectionnée
+  const [selectedOption, setSelectedOption] = useState('Simple');
 
- const openModal = () => setIsModalOpen(true);
- const closeModal = () => setIsModalOpen(false);
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
- const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-   setSelectedOption(event.target.value);
- };
+  const openInfoModal = () => setIsInfoModalOpen(true);
+  const closeInfoModal = () => setIsInfoModalOpen(false);
+
+  const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedOption(event.target.value);
+  };
 
   return (
     <div className={cn('pb-0.5', className)}>
@@ -48,6 +53,12 @@ export default function ProductClassicCard({
             sizes="(max-width: 768px) 100vw"
             className="h-full w-full object-cover"
           />
+          <button
+            onClick={openInfoModal}
+            className="font-mono font-bold absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center focus:outline-none"
+          >
+            i
+          </button>
         </div>
         {discount ? (
           <Text
@@ -73,7 +84,6 @@ export default function ProductClassicCard({
             <del className="ps-1.5 text-[13px] font-normal text-gray-500">
               {toCurrency(Number(price))}
             </del>
-          
           )}
         </div>
         <div className="mt-3">
@@ -91,7 +101,7 @@ export default function ProductClassicCard({
         </div>
       </div>
 
-      {/* Modal */}
+      {/* Modal pour ajouter au panier */}
       <Modal show={isModalOpen} onClose={closeModal}>
         <div>
           <h2 className="text-xl font-semibold">Choisissez une option</h2>
@@ -127,6 +137,18 @@ export default function ProductClassicCard({
             className="mt-4 w-full"
           >
             Ajouter au panier
+          </Button>
+        </div>
+      </Modal>
+
+      {/* Modal pour afficher les informations du produit */}
+      <Modal show={isInfoModalOpen} onClose={closeInfoModal}>
+        <div>
+          <h2 className="text-xl font-semibold">{name}</h2>
+          <p>{description}</p>
+          
+          <Button onClick={closeInfoModal} className="mt-4 w-full">
+            Fermer
           </Button>
         </div>
       </Modal>
