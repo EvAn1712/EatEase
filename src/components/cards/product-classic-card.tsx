@@ -7,6 +7,7 @@ import cn from '@/utils/class-names';
 import { CartItem, PosProduct } from '@/types';
 import { toCurrency } from '@/utils/to-currency';
 import { PiMinus, PiPlus } from 'react-icons/pi';
+import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai'; // Import des icônes de cœur
 import { useCart } from '@/store/quick-cart/cart.context';
 import Modal from '@/app/(main)/modal/page'; // Assurez-vous d'importer le bon chemin pour votre composant Modal
 
@@ -19,22 +20,18 @@ export default function ProductClassicCard({
   product,
   className,
 }: ProductProps) {
-  const { name, description, price, image, salePrice, discount, allergenes} = product;
+  const { name, description, price, image, salePrice, discount, allergenes } = product;
 
   const { addItemToCart, isInCart } = useCart();
   
-  // État pour gérer la visibilité de la modal
+  // État pour gérer la modal d'ajout au panier
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
 
   // État pour gérer l'option sélectionnée
   const [selectedOption, setSelectedOption] = useState('Simple');
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
-
-  const openInfoModal = () => setIsInfoModalOpen(true);
-  const closeInfoModal = () => setIsInfoModalOpen(false);
 
   const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedOption(event.target.value);
@@ -54,10 +51,9 @@ export default function ProductClassicCard({
             className="h-full w-full object-cover"
           />
           <button
-            onClick={openInfoModal}
-            className="font-mono font-bold absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center focus:outline-none"
+            className="font-mono font-bold absolute top-2 right-2 text-red-500 rounded-full w-10 h-10 flex items-center justify-center focus:outline-none"
           >
-            i
+            <AiOutlineHeart className="w-40 h-40" />
           </button>
         </div>
         {discount ? (
@@ -76,9 +72,7 @@ export default function ProductClassicCard({
         </Title>
 
         <Text as="p" className="truncate">
-          
-        Allergènes : {allergenes ? allergenes.join(', ') : 'Aucun'}
-           
+          Allergènes : {allergenes ? allergenes.join(', ') : 'Aucun'}
         </Text>
         <div className="mt-2 flex items-center font-semibold text-gray-900">
           {toCurrency(Number(salePrice))}
@@ -92,11 +86,7 @@ export default function ProductClassicCard({
           {isInCart(product.id) ? (
             <QuantityControl item={product} />
           ) : (
-            <Button
-              onClick={openModal}
-              className="w-full"
-              variant="outline"
-            >
+            <Button onClick={openModal} className="w-full" variant="outline">
               Ajouter
             </Button>
           )}
@@ -139,18 +129,6 @@ export default function ProductClassicCard({
             className="mt-4 w-full"
           >
             Ajouter au panier
-          </Button>
-        </div>
-      </Modal>
-
-      {/* Modal pour afficher les informations du produit */}
-      <Modal show={isInfoModalOpen} onClose={closeInfoModal}>
-        <div>
-          <h2 className="text-xl font-semibold">{name}</h2>
-          <p>{description}</p>
-          
-          <Button onClick={closeInfoModal} className="mt-4 w-full">
-            Fermer
           </Button>
         </div>
       </Modal>

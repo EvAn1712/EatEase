@@ -5,6 +5,7 @@ import { siteConfig } from '@/config/site.config';
 import { inter, lexendDeca } from '@/app/fonts';
 import cn from '@/utils/class-names';
 import NextProgress from '@/components/next-progress';
+import BackToTopButton from '@/components/BackToTopButton'; // Assurez-vous du bon chemin d'importation
 
 // styles
 import '@/app/globals.css';
@@ -15,7 +16,7 @@ export const metadata = {
   description: siteConfig.description,
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -32,14 +33,15 @@ export default async function RootLayout({
         suppressHydrationWarning
         className={cn(inter.variable, lexendDeca.variable, 'font-inter')}
       >
-       <AuthContextProvider>
+        <AuthContextProvider>
           <ThemeProvider>
             <NextProgress />
             {children}
             <GlobalDrawer />
             <GlobalModal />
+            <BackToTopButton /> {/* Ajout du bouton "Retour en haut" ici */}
           </ThemeProvider>
-          </AuthContextProvider>
+        </AuthContextProvider>
       </body>
     </html>
   );
