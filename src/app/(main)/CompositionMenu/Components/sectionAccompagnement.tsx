@@ -13,7 +13,7 @@ const CategoryButton: React.FC<{ category: string, onClick: (category: string) =
 );
 
 interface Props {
-    onAccompagnementChange: (accompagnement: string) => void;
+    onAccompagnementChange: (accompagnement: { id: string, nom: string }) => void;
 }
 
 const SectionAccompagnement: React.FC<Props> = ({ onAccompagnementChange }) => {

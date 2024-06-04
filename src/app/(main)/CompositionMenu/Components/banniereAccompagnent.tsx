@@ -3,19 +3,19 @@ import SectionAccompagnement from "@/app/(main)/CompositionMenu/Components/secti
 
 interface BanniereAccompagnementProps {
     title: string;
-    onAccompagnementChange: (value: string) => void;
+    onAccompagnementChange: (accompagnement: { id: string, nom: string }) => void;
 }
 
 const BanniereAccompagnement: React.FC<BanniereAccompagnementProps> = ({ title, onAccompagnementChange }) => {
     const [showAccompagnement, setShowAccompagnement] = useState(false);
-    const [accompagnement, setAccompagnement] = useState('');
+    const [selectedAccompagnement, setSelectedAccompagnement] = useState<{ id: string, nom: string }>({ id: '', nom: '' });
 
     const toggleAccompagnement = () => {
         setShowAccompagnement(!showAccompagnement);
     };
 
-    const handleAccompagnementChange = (accompagnement: string) => {
-        setAccompagnement(accompagnement);
+    const handleAccompagnementChange = (accompagnement: { id: string, nom: string }) => {
+        setSelectedAccompagnement(accompagnement);
         onAccompagnementChange(accompagnement);
     };
 
@@ -28,7 +28,7 @@ const BanniereAccompagnement: React.FC<BanniereAccompagnementProps> = ({ title, 
                 >
                     {showAccompagnement ? 'Fermer' : 'Ouvrir'}
                 </button>
-                <p className="ml-2 text-sm font-semibold text-gray-700">{title}: {accompagnement}</p>
+                <p className="ml-2 text-sm font-semibold text-gray-700">{title}: {selectedAccompagnement.nom}</p>
             </div>
             {showAccompagnement && <SectionAccompagnement onAccompagnementChange={handleAccompagnementChange} />}
         </div>

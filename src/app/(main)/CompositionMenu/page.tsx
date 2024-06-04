@@ -5,17 +5,15 @@ import ImagePlat from '@/app/(main)/CompositionMenu/Components/imagePlat';
 import TexteExplicatif from '@/app/(main)/CompositionMenu/Components/texteExplicatif';
 import BanniereAccompagnement from '@/app/(main)/CompositionMenu/Components/banniereAccompagnent';
 import ValiderBtn from '@/app/(main)/CompositionMenu/Components/ValiderBtn';
-import ReadByType from '@/app/(main)/Read/ReadByType';
-import ReadById from "@/app/(main)/Read/ReadById";
 
 const CompositionMenu: React.FC = () => {
         const [menu, setMenu] = useState<any[]>([]);
         //choix temporaire
         const [plat, setPlat] = useState<string>("-NzTumGjozaP3UoaT9Ie");
-        const [accompagnement1, setAccompagnement1] = useState<string>("");
-        const [accompagnement2, setAccompagnement2] = useState<string>("");
+        const [accompagnement1, setAccompagnement1] = useState<{ id: string, nom: string }>({ id: '', nom: '' });
+        const [accompagnement2, setAccompagnement2] = useState<{ id: string, nom: string }>({ id: '', nom: '' });
 
-        // Function to update menu when accompagnement1 changes
+    // Function to update menu when accompagnement1 changes
         const updateMenu = () => {
                 setMenu([plat, accompagnement1, accompagnement2]);
         };
@@ -29,11 +27,6 @@ const CompositionMenu: React.FC = () => {
                 <div className="mb-4"></div>
                 <BanniereAccompagnement onAccompagnementChange={setAccompagnement2} title={" Choix Accompagnement 2 "}/>
                 <ValiderBtn updateMenu={updateMenu}/>
-                <div className="mt-4"> {/* Adding a div with a margin top */}
-                    {menu.map((item, index) => (
-                        <p key={index}>{`Item ${index + 1}: ${item}`}</p>
-                    ))}
-                </div>
             </div>
         );
 }

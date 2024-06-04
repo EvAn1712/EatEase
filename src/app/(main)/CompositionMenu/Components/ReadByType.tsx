@@ -15,7 +15,7 @@ interface Product {
 interface Props {
     typesProduit: string[];
     attributes: string[];
-    onAccompagnementChange: (accompagnement: string) => void;
+    onAccompagnementChange: (accompagnement: { id: string, nom: string }) => void;
     showAccompagnement: boolean; // add this prop to track the banner's open/close state
     selectedAccompagnement?: Product; // add this prop to track the selected product
 }
@@ -58,7 +58,7 @@ function ReadByType({ typesProduit, attributes, onAccompagnementChange, showAcco
 
     const handleProductClick = (product: Product) => {
         setSelectedProduct(product);
-        onAccompagnementChange(product.nom);
+        onAccompagnementChange({ id: product.id, nom: product.nom });
     };
 
     return (
