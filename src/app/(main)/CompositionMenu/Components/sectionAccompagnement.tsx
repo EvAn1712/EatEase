@@ -42,6 +42,7 @@ const SectionAccompagnement: React.FC<Props> = ({ onAccompagnementChange }) => {
                                 typesProduit={[type]}
                                 attributes={['nom', 'imageUrl']}
                                 onAccompagnementChange={onAccompagnementChange}
+                                showAccompagnement={true}
                             />
                         </div>
                     )

@@ -9,7 +9,7 @@ interface Props {
 const TexteExplicatif: React.FC<Props> = ({ plat }) => {
     return (
         <div className="text-lg mb-4 text-center">
-            Vous allez composer votre menu avec <ReadById productId={plat} attributes={['nom']}/> et 2 accompagnements
+            Vous allez composer votre menu avec <ReadById productId={plat} attributes={['typeProduit','nom']}/> et 2 accompagnements
         </div>
 
     );

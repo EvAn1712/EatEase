@@ -49,7 +49,7 @@ function ReadByType({ typesProduit, attributes, onAccompagnementChange, showAcco
         fetchData();
     }, [typesProduit]);
 
-    // add this useEffect to update the selectedProduct state when the showAccompagnement state changes
+
     useEffect(() => {
         if (showAccompagnement && selectedAccompagnement) {
             setSelectedProduct(selectedAccompagnement);
@@ -58,7 +58,7 @@ function ReadByType({ typesProduit, attributes, onAccompagnementChange, showAcco
 
     const handleProductClick = (product: Product) => {
         setSelectedProduct(product);
-        onAccompagnementChange(product.nom); // assuming that "accompagnement1" is the product name
+        onAccompagnementChange(product.nom);
     };
 
     return (

@@ -45,11 +45,11 @@ function ReadById({ productId, attributes }: Props) {
 
     return (
         <div>
-            {attributes.includes('nom') && product.nom && <h2>{product.nom}</h2>}
+            {attributes.includes('typeProduit') && product.typeProduit && <b>{product.typeProduit} {product.nom} </b>}
+            {/*{attributes.includes('nom') && product.nom && <b>{product.nom}</b>}*/}
             {attributes.includes('prix') && product.prix !== undefined && product.prix !== null && <p>{product.prix} €</p>}
             {attributes.includes('description') && product.description && <p>{product.description}</p>}
             {attributes.includes('listIdAllergenes') && product.listIdAllergenes && <p>Allergènes: {product.listIdAllergenes.join(', ')}</p>}
-            {attributes.includes('typeProduit') && product.typeProduit && <p>Type de produit: {product.typeProduit}</p>}
             {attributes.includes('listIdMenu') && product.listIdMenu && <p>Menus: {product.listIdMenu.join(', ')}</p>}
             {attributes.includes('imageUrl') && product.imageUrl && <img src={product.imageUrl} alt={product.nom || ''} width="100" height="100" />} {/* new conditional rendering block */}
         </div>

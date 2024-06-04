@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import ReadByType from "@/app/(main)/Read/ReadByType";
 import SectionAccompagnement from "@/app/(main)/CompositionMenu/Components/sectionAccompagnement";
 
 interface BanniereAccompagnementProps {
+    title: string;
     onAccompagnementChange: (value: string) => void;
 }
 
-const BanniereAccompagnement: React.FC<BanniereAccompagnementProps> = ({ onAccompagnementChange }) => {
+const BanniereAccompagnement: React.FC<BanniereAccompagnementProps> = ({ title, onAccompagnementChange }) => {
     const [showAccompagnement, setShowAccompagnement] = useState(false);
     const [accompagnement, setAccompagnement] = useState('');
 
@@ -28,7 +28,7 @@ const BanniereAccompagnement: React.FC<BanniereAccompagnementProps> = ({ onAccom
                 >
                     {showAccompagnement ? 'Fermer' : 'Ouvrir'}
                 </button>
-                <p className="ml-2 text-sm font-semibold text-gray-700">Choix Accompagnement 1: {accompagnement}</p>
+                <p className="ml-2 text-sm font-semibold text-gray-700">{title}: {accompagnement}</p>
             </div>
             {showAccompagnement && <SectionAccompagnement onAccompagnementChange={handleAccompagnementChange} />}
         </div>
