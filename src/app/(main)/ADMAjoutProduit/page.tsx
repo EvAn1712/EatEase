@@ -13,7 +13,7 @@ export default function PointOfSalePage() {
     let [inputTypeProduit, setInputTypeProduit] = useState("");
     let [menuOptions, setMenuOptions] = useState<string[]>([]);
     let [menuMap, setMenuMap] = useState<{ [key: string]: string }>({});
-    let [selectedMenu, setSelectedMenu] = useState("");
+    let [selectedMenus, setSelectedMenus] = useState<string[]>([]);
     let [saveStatus, setSaveStatus] = useState("");
     let [selectedAllergenes, setSelectedAllergenes] = useState<string[]>([]);
     let [image, setImage] = useState<File | null>(null);
@@ -64,12 +64,14 @@ export default function PointOfSalePage() {
                 imageUrl = await getDownloadURL(storageReference);
             }
 
+            const selectedMenuIds = selectedMenus.map(menu => menuMap[menu]);
+
             await set(newProductRef, {
                 nom: inputnom,
                 prix: inputprix,
                 description: inputDescription,
                 typeProduit: inputTypeProduit,
-                idMenu: menuMap[selectedMenu],
+                idMenus: selectedMenuIds,
                 allergenes: selectedAllergenes,
                 imageUrl: imageUrl,
                 stock: 0,  // Ajout du champ stock avec une valeur de 0
@@ -82,7 +84,7 @@ export default function PointOfSalePage() {
             setInputprix(null);
             setInputDescription("");
             setInputTypeProduit("");
-            setSelectedMenu("");
+            setSelectedMenus([]);
             setSelectedAllergenes([]);
             setImage(null);
             if (imageInputRef.current) {
@@ -109,8 +111,8 @@ export default function PointOfSalePage() {
             case "inputTypeProduit":
                 setInputTypeProduit(value as string);
                 break;
-            case "selectedMenu":
-                setSelectedMenu(value as string);
+            case "selectedMenus":
+                setSelectedMenus(value as string[]);
                 break;
             case "selectedAllergenes":
                 setSelectedAllergenes(value as string[]);
@@ -179,29 +181,37 @@ export default function PointOfSalePage() {
                         className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
                     >
                         <option value="">Sélectionnez le type de produit</option>
-                        <option value="plat">Plat</option>
-                        <option value="dessert">Dessert(fruits, compotes, madeleine,yaourt)</option>
-                        <option value="viennoisserie">Viennoiserie</option>
-                        <option value="boisson">Boisson</option>
-                        <option value="entree">Entrée(chips)</option>
-                        <option value="snack">Snack(barres chocolatées, bonbons ...)</option>
-
+                        <option value="patisseries">Patisserie</option>
+                        <option value="viennoiserie">Viennoiserie</option>
+                        <option value="snacking">Snacking</option>
+                        <option value="salade">Salade</option>
+                        <option value="sandwich">Sandwich</option>
+                        <option value="dessert">Dessert</option>
+                        <option value="glace">Glaces</option>
+                        <option value="boisson_froide">Boisson froide</option>
+                        <option value="boisson_chaude">Boisson chaude</option>
+                        <option value="confisseries">Confisserie</option>
+                        <option value="service">Service</option>
                     </select>
                 </div>
                 <div className="flex flex-col">
-                    <label htmlFor="selectedMenu" className="text-lg font-bold">Menu:</label>
-                    <select
-                        id="selectedMenu"
-                        name="selectedMenu"
-                        value={selectedMenu}
-                        onChange={handleChange}
-                        className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                    >
-                        <option value="">Aucun</option>
-                        {menuOptions.map((menu) => (
-                            <option key={menu} value={menu}>{menu}</option>
-                        ))}
-                    </select>
+                    <label htmlFor="selectedMenus" className="text-lg font-bold">Menus:</label>
+                    <FormControl>
+                        <InputLabel id="menus-label" className="text-lg font-bold"></InputLabel>
+                        <Select
+                            labelId="menus-label"
+                            id="selectedMenus"
+                            name="selectedMenus"
+                            multiple
+                            value={selectedMenus}
+                            onChange={handleChange}
+                            className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                        >
+                            {menuOptions.map((menu) => (
+                                <MenuItem key={menu} value={menu}>{menu}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                 </div>
                 <div className="flex flex-col">
                     <label htmlFor="selectedallergenes" className="text-lg font-bold">Allergènes:</label>

@@ -90,7 +90,7 @@ export default function POSDrawerView({
               isLoading={loading}
               onClick={handleOrder}
             >
-              Commander 
+              Commander
             </Button>
           </div>
         </div>

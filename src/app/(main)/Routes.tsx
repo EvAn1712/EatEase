@@ -7,7 +7,6 @@ import MonProfile from './MonProfile/page';
 import HistoriqueCommande from '@/app/(main)/HistoriqueCommande/page';
 import Stock from './ADMStock/page';
 import ListProduit from './ADMListProduit/page';
-import ListProduit2 from './ADMListProduit2/page';
 import ADMHistoriqueCommande from './ADMHistoriqueCommande/page';
 import CompositionMenu  from "./CompositionMenu/page";
 
@@ -22,7 +21,6 @@ const RoutesComponent: React.FC = () => {
                 <Route path="/historique-commande" element={<HistoriqueCommande/>} />
                 <Route path="/stock" element={<Stock/>} />
                 <Route path="/liste-produit" element={<ListProduit/>} />
-                <Route path="/liste-produit2" element={<ListProduit2/>} />
                 <Route path="/historique-commande2" element={<ADMHistoriqueCommande/>} />
                 <Route path="/composition-menu" element={<CompositionMenu/>} />
 

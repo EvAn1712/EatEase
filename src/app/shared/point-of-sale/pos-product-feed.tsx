@@ -1,31 +1,99 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Empty, SearchNotFoundIcon, Button } from 'rizzui';
 import ProductClassicCard from '@/components/cards/product-classic-card';
 import { posFilterValue } from '@/app/shared/point-of-sale/pos-search';
 import { useAtomValue } from 'jotai';
-import { posData } from '@/data/pos-data';
 import hasSearchedParams from '@/utils/has-searched-params';
 import shuffle from 'lodash/shuffle';
+import { getDatabase, ref, get } from 'firebase/database';
+import Image from 'next/image';
 
 const PER_PAGE = 12;
 
+interface IProduct {
+  id: string;
+  nom: string;
+  prix: number;
+  description: string;
+  typeProduit: string;
+  idMenu: string;
+  allergenes: string[];
+  imageUrl: string;
+  stock: number;
+  [key: string]: any;
+}
+
+export interface IPosProduct {
+  id: number;
+  name: string;
+  description: string;
+  image: string;
+  price: number;
+  salePrice: number;
+  quantity: number;
+  size: number;
+  discount: number;
+}
+
+async function fetchProductsFromFirebase(): Promise<IPosProduct[]> {
+  const db = getDatabase();
+  const productsRef = ref(db, 'Produit');
+  const snapshot = await get(productsRef);
+
+  if (snapshot.exists()) {
+    const productsData = snapshot.val();
+    return Object.keys(productsData).map((key) => {
+      const product: IProduct = {
+        id: key,
+        ...productsData[key],
+      };
+
+      // Convert IProduct to IPosProduct
+      return {
+        id: parseInt(key),
+        name: product.nom,
+        description: product.description,
+        image: product.imageUrl,
+        price: product.prix,
+        salePrice: product.prix * 0.9, // Example sale price 10% off
+        quantity: product.stock,
+        size: 50, // Example size
+        discount: 15, // Example discount percentage
+      };
+    });
+  } else {
+    console.log('No data available');
+    return [];
+  }
+}
+
 export default function POSProductsFeed() {
+  const [products, setProducts] = useState<IPosProduct[]>([]);
   const [isLoading, setLoading] = useState(false);
   const [nextPage, setNextPage] = useState(PER_PAGE);
   const searchText = useAtomValue(posFilterValue);
 
-  let productItemsFiltered = [...posData].sort((a, b) =>
+  useEffect(() => {
+    const fetchData = async () => {
+      const productsFromFirebase = await fetchProductsFromFirebase();
+      setProducts(productsFromFirebase);
+    };
+
+    fetchData();
+  }, []);
+  console.log(products)
+
+  let productItemsFiltered = [...products].sort((a, b) =>
     a.name.localeCompare(b.name)
   );
 
   if (searchText.length > 0) {
-    productItemsFiltered = posData.filter((item: any) => {
+    productItemsFiltered = products.filter((item) => {
       const label = item.name;
       return (
-        label.match(searchText.toLowerCase()) ||
-        (label.toLowerCase().match(searchText.toLowerCase()) && label)
+        label.toLowerCase().includes(searchText.toLowerCase())
       );
     });
   }
@@ -49,7 +117,15 @@ export default function POSProductsFeed() {
           {productItemsFiltered
             ?.slice(0, nextPage)
             ?.map((product) => (
-              <ProductClassicCard key={product.id} product={product} />
+              <ProductClassicCard key={product.id} product={product}>
+                <Image
+                  src={product.image}
+                  alt={product.name}
+                  width={500}
+                  height={500}
+                  layout="responsive"
+                />
+              </ProductClassicCard>
             ))}
         </div>
       ) : (
@@ -62,8 +138,8 @@ export default function POSProductsFeed() {
 
       {nextPage < productItemsFiltered?.length ? (
         <div className="mb-4 mt-5 flex flex-col items-center xs:pt-6 sm:pt-8">
-          <Button isLoading={isLoading} onClick={() => handleLoadMore()}>
-            Voir plus 
+          <Button isLoading={isLoading} onClick={handleLoadMore}>
+            Voir plus
           </Button>
         </div>
       ) : null}

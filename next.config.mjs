@@ -3,6 +3,7 @@ import './src/env.mjs';
 
 const nextConfig = {
   images: {
+    domains: ['firebasestorage.googleapis.com'],
     remotePatterns: [
       {
         protocol: 'https',
