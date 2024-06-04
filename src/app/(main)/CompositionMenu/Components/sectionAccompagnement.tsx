@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ReadByType from "./ReadByType";
 
-// Reusable button component
+
 const CategoryButton: React.FC<{ category: string, onClick: (category: string) => void }> = ({ category, onClick }) => (
     <button
         onClick={() => onClick(category)}
@@ -12,7 +12,11 @@ const CategoryButton: React.FC<{ category: string, onClick: (category: string) =
     </button>
 );
 
-const SectionAccompagnement: React.FC = () => {
+interface Props {
+    onAccompagnementChange: (accompagnement: string) => void;
+}
+
+const SectionAccompagnement: React.FC<Props> = ({ onAccompagnementChange }) => {
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
     const handleCategoryClick = (category: string) => {
@@ -34,7 +38,11 @@ const SectionAccompagnement: React.FC = () => {
                 {categories.map(({ name, type }) => (
                     selectedCategory === name && (
                         <div key={type} className="card p-4">
-                            <ReadByType typesProduit={[type]} attributes={['nom', 'imageUrl']} />
+                            <ReadByType
+                                typesProduit={[type]}
+                                attributes={['nom', 'imageUrl']}
+                                onAccompagnementChange={onAccompagnementChange}
+                            />
                         </div>
                     )
                 ))}
