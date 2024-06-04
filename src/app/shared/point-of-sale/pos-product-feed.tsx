@@ -35,6 +35,7 @@ export interface IPosProduct {
   quantity: number;
   size: number;
   discount: number;
+  allergenes: string[];
 }
 
 async function fetchProductsFromFirebase(): Promise<IPosProduct[]> {
@@ -61,6 +62,7 @@ async function fetchProductsFromFirebase(): Promise<IPosProduct[]> {
         quantity: product.stock,
         size: 50, // Example size
         discount: 15, // Example discount percentage
+        allergenes: product.allergenes,
       };
     });
   } else {

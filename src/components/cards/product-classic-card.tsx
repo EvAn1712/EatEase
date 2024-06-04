@@ -19,7 +19,7 @@ export default function ProductClassicCard({
   product,
   className,
 }: ProductProps) {
-  const { name, description, price, image, salePrice, discount} = product;
+  const { name, description, price, image, salePrice, discount, allergenes} = product;
 
   const { addItemToCart, isInCart } = useCart();
   
@@ -76,7 +76,9 @@ export default function ProductClassicCard({
         </Title>
 
         <Text as="p" className="truncate">
-          {description}
+          
+        Allergènes : {allergenes ? allergenes.join(', ') : 'Aucun'}
+           
         </Text>
         <div className="mt-2 flex items-center font-semibold text-gray-900">
           {toCurrency(Number(salePrice))}
