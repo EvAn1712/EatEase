@@ -31,6 +31,8 @@ function PostSidebar({
       setLoading(false);
       console.log('createOrder data ->', orderedItems);
       toast.success(<Text as="b">Commande créée </Text>);
+      // Redirection vers la page de paiement Stripe
+      window.location.href = 'https://buy.stripe.com/28o8x68Yn21p2Gc144';
     }, 600);
   }
 

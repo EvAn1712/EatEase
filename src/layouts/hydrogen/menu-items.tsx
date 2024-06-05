@@ -22,13 +22,13 @@ export const menuItems = [
     name: 'Mon profil',
     href: '/MonProfile',
     icon: <PiCreditCardDuotone />,
-    allowedDomains: ['epfedu.fr'], // Domaines autorisés
+    //allowedDomains: ['epfedu.fr'], // Domaines autorisés
   },
   {
     name: 'Mes commandes',
     href: '/HistoriqueCommande',
     icon: <PiCreditCardDuotone />,
-    allowedDomains: ['epfedu.fr'], // Domaines autorisés
+    //allowedDomains: ['epfedu.fr'], // Domaines autorisés
   },
   {
     name: 'Stock',

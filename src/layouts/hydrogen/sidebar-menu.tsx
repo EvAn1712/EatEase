@@ -27,7 +27,7 @@ export const SidebarMenu = () => {
   return (
     <div className="mt-4 pb-3 3xl:mt-6 text-center">
       <p className="text-gray-700 font-bold">
-        Rien à voir ici. Veuillez vous <Link href="/Connexion" className="text-blue-500 hover:underline">connecter</Link> ou vous <Link href="/Inscription" className="text-blue-500 hover:underline">inscrire</Link> pour accéder au contenu.
+        Rien à voir ici. Veuillez vous <Link href="/Connexion" className="underline">connecter</Link> ou vous <Link href="/Inscription" className="underline">inscrire</Link> pour accéder au contenu.
       </p>
     </div>
   );
