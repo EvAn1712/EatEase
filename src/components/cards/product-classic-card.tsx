@@ -1,11 +1,15 @@
 'use client';
+
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { Title, Text, Button } from 'rizzui';
 import cn from '@/utils/class-names';
 import { CartItem, PosProduct } from '@/types';
 import { toCurrency } from '@/utils/to-currency';
 import { PiMinus, PiPlus } from 'react-icons/pi';
+import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai'; // Import des icônes de cœur
 import { useCart } from '@/store/quick-cart/cart.context';
+import Modal from '@/app/(main)/modal/page'; // Assurez-vous d'importer le bon chemin pour votre composant Modal
 
 interface ProductProps {
   product: PosProduct;
@@ -16,9 +20,22 @@ export default function ProductClassicCard({
   product,
   className,
 }: ProductProps) {
-  const { name, description, price, image, salePrice, discount } = product;
+  const { name, description, price, image, salePrice, discount, allergenes } = product;
 
   const { addItemToCart, isInCart } = useCart();
+  
+  // État pour gérer la modal d'ajout au panier
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // État pour gérer l'option sélectionnée
+  const [selectedOption, setSelectedOption] = useState('Simple');
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
+  const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedOption(event.target.value);
+  };
 
   return (
     <div className={cn('pb-0.5', className)}>
@@ -33,6 +50,11 @@ export default function ProductClassicCard({
             sizes="(max-width: 768px) 100vw"
             className="h-full w-full object-cover"
           />
+          <button
+            className="font-mono font-bold absolute top-2 right-2 text-red-500 rounded-full w-10 h-10 flex items-center justify-center focus:outline-none"
+          >
+            <AiOutlineHeart className="w-30 h-30" />
+          </button>
         </div>
         {discount ? (
           <Text
@@ -50,7 +72,7 @@ export default function ProductClassicCard({
         </Title>
 
         <Text as="p" className="truncate">
-          {description}
+          Allergènes : {allergenes ? allergenes.join(', ') : 'Aucun'}
         </Text>
         <div className="mt-2 flex items-center font-semibold text-gray-900">
           {toCurrency(Number(salePrice))}
@@ -58,23 +80,58 @@ export default function ProductClassicCard({
             <del className="ps-1.5 text-[13px] font-normal text-gray-500">
               {toCurrency(Number(price))}
             </del>
-          
           )}
         </div>
         <div className="mt-3">
           {isInCart(product.id) ? (
             <QuantityControl item={product} />
           ) : (
-            <Button
-              onClick={() => addItemToCart(product, 1)}
-              className="w-full"
-              variant="outline"
-            >
+            <Button onClick={openModal} className="w-full" variant="outline">
               Ajouter
             </Button>
           )}
         </div>
       </div>
+
+      {/* Modal pour ajouter au panier */}
+      <Modal show={isModalOpen} onClose={closeModal}>
+        <div>
+          <h2 className="text-xl font-semibold">Choisissez une option</h2>
+          <div className="mt-4">
+            <label className="inline-flex items-center">
+              <input
+                type="radio"
+                className="form-radio"
+                name="option"
+                value="Simple"
+                checked={selectedOption === 'Simple'}
+                onChange={handleOptionChange}
+              />
+              <span className="ml-2">Simple</span>
+            </label>
+            <label className="inline-flex items-center ml-6">
+              <input
+                type="radio"
+                className="form-radio"
+                name="option"
+                value="Menu"
+                checked={selectedOption === 'Menu'}
+                onChange={handleOptionChange}
+              />
+              <span className="ml-2">Menu</span>
+            </label>
+          </div>
+          <Button
+            onClick={() => {
+              addItemToCart(product, 1);
+              closeModal();
+            }}
+            className="mt-4 w-full"
+          >
+            Ajouter au panier
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 }
@@ -94,7 +151,7 @@ function QuantityControl({ item }: { item: CartItem }) {
         {getItemFromCart(item.id).quantity}
       </span>
       <button
-        title="Decrement"
+        title="Increment"
         className="flex items-center justify-center rounded p-2 duration-200 hover:bg-gray-100 hover:text-gray-900"
         onClick={() => addItemToCart(item, 1)}
       >
