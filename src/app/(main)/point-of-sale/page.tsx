@@ -11,7 +11,7 @@ export const metadata = {
 };
 
 const pageHeader = {
-  title: 'Nos articles',
+  title: '',
   breadcrumb: [
    
   ],

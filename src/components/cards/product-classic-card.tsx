@@ -86,14 +86,17 @@ export default function ProductClassicCard({
           {isInCart(product.id) ? (
             <QuantityControl item={product} />
           ) : (
-            <Button onClick={openModal} className="w-full" variant="outline">
+            <Button onClick={() => {
+              addItemToCart(product, 1);
+              closeModal();
+            }} className="w-full" variant="outline">
               Ajouter
             </Button>
           )}
         </div>
       </div>
 
-      {/* Modal pour ajouter au panier */}
+      {/* Modal pour ajouter au panier
       <Modal show={isModalOpen} onClose={closeModal}>
         <div>
           <h2 className="text-xl font-semibold">Choisissez une option</h2>
@@ -131,7 +134,7 @@ export default function ProductClassicCard({
             Ajouter au panier
           </Button>
         </div>
-      </Modal>
+      </Modal> */}
     </div>
   );
 }

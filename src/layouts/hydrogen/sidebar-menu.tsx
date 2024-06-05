@@ -23,14 +23,15 @@ export const SidebarMenu = () => {
   console.log('User Email:', email);
   console.log('User Domain:', userDomain);
 
-  if (!user) {
-    return (
-      <div className="mt-4 pb-3 3xl:mt-6 text-center">
-        <p className="text-gray-700 font-bold">Rien à voir ici. Veuillez vous connecter pour accéder au contenu.</p>
-      </div>
-    );
-  }
-
+ if (!user) {
+  return (
+    <div className="mt-4 pb-3 3xl:mt-6 text-center">
+      <p className="text-gray-700 font-bold">
+        Rien à voir ici. Veuillez vous <Link href="/Connexion" className="text-blue-500 hover:underline">connecter</Link> ou vous <Link href="/Inscription" className="text-blue-500 hover:underline">inscrire</Link> pour accéder au contenu.
+      </p>
+    </div>
+  );
+}
   return (
     <div className="mt-4 pb-3 3xl:mt-6">
       {menuItems.map((item, index) => {

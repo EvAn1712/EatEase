@@ -115,6 +115,7 @@ export function NavMenuContentWrapper({
           !items[hovering!]?.component && 'border-none opacity-0 shadow-none'
         )}
       >
+        
         {items.map((item, index) => {
           const uiProps = {
             // @ts-ignore

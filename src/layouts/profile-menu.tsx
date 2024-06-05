@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { AuthContextType, auth, useAuthContext } from '@/app/(main)/authContext';
 import { signOut } from 'firebase/auth';
-
+import { useRouter } from 'next/navigation';
 export default function ProfileMenu({
   buttonClassName,
   avatarClassName,
@@ -64,9 +64,10 @@ function ProfileMenuPopover({ children }: React.PropsWithChildren<{}>) {
 
 function DropdownMenu() {
   const { user } = useAuthContext() as AuthContextType;
-
+  const router = useRouter();
   const logout = async () => {
     await signOut(auth);
+    router.push('/point-of-sale');
   };
 
   // Éléments de menu conditionnels en fonction de l'état de connexion de l'utilisateur

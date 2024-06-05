@@ -74,6 +74,7 @@ export type PosProduct = {
   quantity: number;
   size: number;
   discount?: number;
+  allergenes: string[];
 };
 export interface CalendarEvent {
   id?: string;

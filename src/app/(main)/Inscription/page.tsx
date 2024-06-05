@@ -122,8 +122,9 @@ const SignupForm = () => {
           <label htmlFor="email" className="block text-gray-700 font-medium mb-1">Email :</label>
           <input type="email" id="email" className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500" required onChange={(e) => setRegisterEmail(e.target.value)} />
         </div>
+        <label htmlFor="password" className="block text-gray-700 font-medium mb-1">Mot de passe :</label>
         <div className="mb-4 relative flex items-center">
-          <label htmlFor="password" className="block text-gray-700 font-medium mb-1">Mot de passe :</label>
+          
           <div className="flex-grow relative">
             <input type={passwordVisible ? "text" : "password"} id="password" className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500" required onChange={(e) => setRegisterPassword(e.target.value)} />
             <button type="button" onClick={() => setPasswordVisible(!passwordVisible)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5" aria-label={passwordVisible ? "Cacher le mot de passe" : "Afficher le mot de passe"}>
@@ -131,7 +132,7 @@ const SignupForm = () => {
             </button>
           </div>
         </div>
-        <button type="submit" className="w-full bg-blue-500 text-white font-semibold py-2 rounded-lg hover:bg-blue-600 transition duration-300">S'inscrire</button>
+        <button type="submit" className="w-full bg-primary text-white font-semibold py-2 rounded-lg hover:bg-blue-600 transition duration-300">S'inscrire</button>
       </form>
       {message && <p className="mt-4 text-center text-green-600">{message}</p>}
       {error && <p className="mt-4 text-center text-red-600">{error}</p>}

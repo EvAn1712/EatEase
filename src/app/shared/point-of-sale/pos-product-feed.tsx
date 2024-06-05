@@ -53,7 +53,7 @@ async function fetchProductsFromFirebase(): Promise<IPosProduct[]> {
 
       // Convert IProduct to IPosProduct
       return {
-        id: parseInt(key),
+        id: Math.floor(Math.random() * 1000000), 
         name: product.nom,
         description: product.description,
         image: product.imageUrl,
