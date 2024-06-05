@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import { PriceCalculation } from '@/app/shared/point-of-sale/pos-drawer-view';
 import POSOrderProductsTwo from '@/app/shared/point-of-sale/pos-order-products-two';
 import { useCart } from '@/store/quick-cart/cart.context';
+import { AuthContextType, auth, useAuthContext } from '@/app/(main)/authContext';
 
 type PosSidebarProps = {
   simpleBarClassName?: string;
@@ -23,7 +24,7 @@ function PostSidebar({
 }: PosSidebarProps) {
   const [loading, setLoading] = useState(false);
   const { resetCart } = useCart();
-
+  const { user } = useAuthContext() as AuthContextType;
   function handleOrder() {
     setLoading(true);
     setTimeout(() => {
@@ -76,6 +77,7 @@ function PostSidebar({
               className="h-11 w-full"
               isLoading={loading}
               onClick={handleOrder}
+              disabled={!user}
             >
               Commander
             </Button>

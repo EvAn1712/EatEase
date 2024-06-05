@@ -61,7 +61,7 @@ async function fetchProductsFromFirebase(): Promise<IPosProduct[]> {
         salePrice: product.prix * 0.9, // Example sale price 10% off
         quantity: product.stock,
         size: 50, // Example size
-        discount: 15, // Example discount percentage
+        discount: 5, // Example discount percentage
         allergenes: product.allergenes,
       };
     });
@@ -135,7 +135,7 @@ export default function POSProductsFeed() {
       ) : (
         <Empty
           image={<SearchNotFoundIcon />}
-          text="No Result Found"
+          text="Aucun résultat"
           className="h-full justify-center"
         />
       )}
