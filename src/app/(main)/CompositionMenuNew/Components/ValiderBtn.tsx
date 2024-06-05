@@ -1,3 +1,4 @@
+/*
 "use client"
 import React from 'react';
 import { useRouter } from 'next/router';
@@ -25,3 +26,4 @@ const ValiderBtn: React.FC<ValiderBtnProps> = ({ formule, items }) => {
 };
 
 export default ValiderBtn;
+*/
