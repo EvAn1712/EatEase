@@ -67,6 +67,7 @@ async function fetchProductsFromFirebase(): Promise<IPosProduct[]> {
     });
   } else {
     console.log('No data available');
+    
     return [];
   }
 }
@@ -86,6 +87,7 @@ export default function POSProductsFeed() {
     fetchData();
   }, []);
   console.log(products)
+  
 
   let productItemsFiltered = [...products].sort((a, b) =>
     a.name.localeCompare(b.name)

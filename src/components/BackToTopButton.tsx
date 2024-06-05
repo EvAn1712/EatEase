@@ -33,13 +33,10 @@ const BackToTopButton: React.FC = () => {
       {isVisible && (
         <button
           onClick={scrollToTop}
-          style={{
-            backgroundColor: '#E30613', // Couleur rouge Crous
-            color: '#ffffff', // Couleur du texte
-          }}
-          className="p-4 rounded-full shadow-lg hover:bg-opacity-80 transition duration-300"
+          
+          className="p-4 bg-primary rounded-full shadow-lg hover:bg-opacity-80 transition duration-300"
         >
-          <span className="text-2xl">↑</span> {/* Taille de la flèche ajustée ici */}
+          <span className="text-2xl font-bold text-white">↑</span> {/* Taille de la flèche ajustée ici */}
         </button>
       )}
     </div>

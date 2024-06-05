@@ -53,7 +53,7 @@ export default function ProductClassicCard({
           <button
             className="font-mono font-bold absolute top-2 right-2 text-red-500 rounded-full w-10 h-10 flex items-center justify-center focus:outline-none"
           >
-            <AiOutlineHeart className="w-40 h-40" />
+            <AiOutlineHeart className="w-30 h-30" />
           </button>
         </div>
         {discount ? (

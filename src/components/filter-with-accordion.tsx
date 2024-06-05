@@ -142,7 +142,7 @@ export default function FilterWithAccordion({
           ) : null}
 
           {!filteredData.length ? (
-            <div className="text-gray-500">No result found</div>
+            <div className="text-gray-500">Aucun résultat</div>
           ) : null}
         </div>
       </Collapse>

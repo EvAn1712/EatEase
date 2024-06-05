@@ -25,11 +25,11 @@ export default function ProfileMenu({
         <button
         
           className={cn(
-            'w-9 shrink-0 bg-primary text-white my-2 rounded-full outline-none focus-visible:ring-[1.5px] focus-visible:ring-gray-400 focus-visible:ring-offset-2 active:translate-y-px sm:w-16',
-            buttonClassName
+            'w-20 sm:w-28 p-2 shrink-0 bg-primary text-white my-2 rounded-full outline-none focus-visible:ring-[1.5px] focus-visible:ring-gray-400 focus-visible:ring-offset-2 active:translate-y-px',
+          buttonClassName
           )}
         >
-          {user? <Text >Profil</Text>:<Text >Auth.</Text>}
+          {user? <Text >Session</Text>:<Text >S'authentifier</Text>}
           
          
         </button>
