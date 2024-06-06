@@ -1,39 +1,102 @@
-"use client"
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
+import Read from './Read';
 
 interface ChoixItemsProps {
-    formule: string;
+    formule: { id: string, nom: string };
     onItemsChange: (newItems: string[]) => void;
 }
 
-const ChoixItems: React.FC<ChoixItemsProps> = ({formule, onItemsChange}) => {
-    const [items, setItems] = useState<string[]>([]);
-    const [selectedItem, setSelectedItem] = useState<string>('');
+const ChoixItems: React.FC<ChoixItemsProps> = ({ formule, onItemsChange }) => {
+    const [items1, setItems1] = useState<{ id: string, nom: string }[]>([]);
+    const [items2, setItems2] = useState<{ id: string, nom: string }[]>([]);
+    const [items3, setItems3] = useState<{ id: string, nom: string }[]>([]);
+    const [selectedItem, setSelectedItem] = useState<{ id: string, nom: string } | null>(null);
+
+    const getFilterForFormule = (formuleId: string) => {
+        switch (formuleId) {
+            case "-Ny0b_XDIqRGzKeA_3Xq":
+                return { types: ["boisson_chaude", "viennoiserie"] };
+            case "-Ny4dSqlcGVqVNEYMdkb":
+                return { types: ["boisson_chaude", "viennoiserie"] };
+            case "-NzSwi84Ff1Uc8CaE2xI":
+                return { types: ["plat", "snacking", "dessert", "entree", "boisson"] };
+            case "-NzSwpmIy_MkZXhdv2p1":
+                return { types: ["plat", "snacking", "dessert", "entree", "boisson"] };
+            default:
+                return { types: [] };
+        }
+    };
+
+    const filter = getFilterForFormule(formule.id);
 
     useEffect(() => {
-        if (formule) {
-            // Logique pour récupérer les items en fonction de la formule
-            setItems(['item1', 'item2', 'item3']); // Exemple d'items
-        } else {
-            setItems([]);
-        }
-    }, [formule]);
+        onItemsChange([...items1, ...items2, ...items3].map(item => item.nom));
+    }, [items1, items2, items3]);
 
-    const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const newItem = event.target.value;
-        setSelectedItem(newItem);
-        onItemsChange([newItem]);
+    const handleItemChange1 = (item: { id: string, nom: string }) => {
+        setItems1([item]);
+        setSelectedItem(item);
+    };
+
+    const handleItemChange2 = (item: { id: string, nom: string }) => {
+        setItems2([item]);
+        setSelectedItem(item);
+    };
+
+    const handleItemChange3 = (item: { id: string, nom: string }) => {
+        setItems3([item]);
+        setSelectedItem(item);
     };
 
     return (
         <div>
-            <label htmlFor="item">Choisissez un item:</label>
-            <select id="item" value={selectedItem} onChange={handleChange}>
-                <option value="">Sélectionner</option>
-                {items.map((item, index) => (
-                    <option key={index} value={item}>{item}</option>
-                ))}
-            </select>
+            {formule.nom === "Petit dej'" || formule.nom === "Maxi petit dej'" ? (
+                <>
+                    <Read
+                        databaseName="Produit"
+                        attributes={["nom", "imageUrl"]}
+                        filter={{ typeProduit: filter.types[0], menu: formule.id }}
+                        onItemChange={handleItemChange1}
+                        showItem={true}
+                        selectedItem={selectedItem} // Pass selectedItem attribute
+                    />
+                    <Read
+                        databaseName="Produit"
+                        attributes={["nom", "imageUrl"]}
+                        filter={{ typeProduit: filter.types[1], menu: formule.id }}
+                        onItemChange={handleItemChange2}
+                        showItem={true}
+                        selectedItem={selectedItem} // Pass selectedItem attribute
+                    />
+                </>
+            ) : formule.nom === "First" || formule.nom === "Maxi" ? (
+                <>
+                    <Read
+                        databaseName="Produit"
+                        attributes={["nom", "imageUrl"]}
+                        filter={{ typeProduit: `${filter.types[0]}, ${filter.types[1]}`, menu: formule.id }}
+                        onItemChange={handleItemChange1}
+                        showItem={true}
+                        selectedItem={selectedItem} // Pass selectedItem attribute
+                    />
+                    <Read
+                        databaseName="Produit"
+                        attributes={["nom", "imageUrl"]}
+                        filter={{ typeProduit: `${filter.types[2]}, ${filter.types[3]}, ${filter.types[4]}`, menu: formule.id }}
+                        onItemChange={handleItemChange2}
+                        showItem={true}
+                        selectedItem={selectedItem} // Pass selectedItem attribute
+                    />
+                    <Read
+                        databaseName="Produit"
+                        attributes={["nom", "imageUrl"]}
+                        filter={{ typeProduit: `${filter.types[2]}, ${filter.types[3]}, ${filter.types[4]}`, menu: formule.id }}
+                        onItemChange={handleItemChange3}
+                        showItem={true}
+                        selectedItem={selectedItem} // Pass selectedItem attribute
+                    />
+                </>
+            ) : null}
         </div>
     );
 };

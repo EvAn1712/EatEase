@@ -1,6 +1,6 @@
-import React, {memo, useEffect, useState} from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import app from "src/app/(main)/firebase-config";
-import {get, getDatabase, ref} from "firebase/database";
+import { get, getDatabase, ref } from "firebase/database";
 
 interface Item {
     id: string;
@@ -10,18 +10,19 @@ interface Item {
     allergenes?: string[];
     typeProduit?: string;
     imageUrl?: string;
+    idMenus?: string[];
 }
 
 interface Props {
     databaseName: string;
     attributes: string[];
-    filter: string | "none";
+    filter: { typeProduit: string | "none", menu: string | "none" };
     onItemChange: (item: { id: string, nom: string }) => void;
     showItem: boolean;
     selectedItem?: Item;
 }
 
-function Read({databaseName, attributes, filter, onItemChange, showItem, selectedItem}: Props) {
+const Read: React.FC<Props> = ({ databaseName, attributes, filter, onItemChange, showItem, selectedItem }) => {
     const [items, setItems] = useState<Item[]>([]);
     const [selectedProduct, setSelectedProduct] = useState<Item | null>(null);
 
@@ -36,8 +37,12 @@ function Read({databaseName, attributes, filter, onItemChange, showItem, selecte
                     const allItems: Item[] = [];
                     snapshot.forEach((childSnapshot) => {
                         const childData = childSnapshot.val();
-                        if (filter === "none" || filter.includes(childData.typeProduit)) {
-                            allItems.push({...childData, id: childSnapshot.key});
+                        // Add filtering logic for 'menu' attribute
+                        if (
+                            (filter.typeProduit === "none" || filter.typeProduit.includes(childData.typeProduit)) &&
+                            (filter.menu === "none" || (Array.isArray(childData.idMenus) && childData.idMenus.includes(filter.menu)))
+                        ) {
+                            allItems.push({ ...childData, id: childSnapshot.key });
                         }
                     });
                     setItems(allItems);
@@ -45,7 +50,7 @@ function Read({databaseName, attributes, filter, onItemChange, showItem, selecte
             } catch (error) {
                 console.error('Error fetching data: ', error);
             }
-        }
+        };
 
         fetchData();
     }, [databaseName, filter]);
@@ -58,7 +63,7 @@ function Read({databaseName, attributes, filter, onItemChange, showItem, selecte
 
     const handleItemClick = (item: Item) => {
         setSelectedProduct(item);
-        onItemChange({id: item.id, nom: item.nom});
+        onItemChange({ id: item.id, nom: item.nom });
     };
 
     return (
@@ -92,8 +97,6 @@ function Read({databaseName, attributes, filter, onItemChange, showItem, selecte
                 ))}
             </ul>
         </div>
-
-
     );
 }
 
