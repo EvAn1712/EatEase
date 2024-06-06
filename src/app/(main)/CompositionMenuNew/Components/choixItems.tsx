@@ -1,12 +1,12 @@
 "use client"
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 
 interface ChoixItemsProps {
     formule: string;
     onItemsChange: (newItems: string[]) => void;
 }
 
-const ChoixItems: React.FC<ChoixItemsProps> = ({ formule, onItemsChange }) => {
+const ChoixItems: React.FC<ChoixItemsProps> = ({formule, onItemsChange}) => {
     const [items, setItems] = useState<string[]>([]);
     const [selectedItem, setSelectedItem] = useState<string>('');
 
