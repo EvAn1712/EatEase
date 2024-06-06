@@ -1,31 +1,31 @@
-"use client"
+"use client";
 import React, { useState } from 'react';
 import Header from '@/app/(main)/CompositionMenu/Components/header';
 import ChoixFormule from '@/app/(main)/CompositionMenuNew/Components/choixFormule';
-// import ChoixItems from '@/app/(main)/CompositionMenuNew/Components/choixItems';
-import ChoixItemTest from "@/app/(main)/CompositionMenuNew/Components/choixItemTest";
+import ChoixItems from '@/app/(main)/CompositionMenuNew/Components/choixItems';
+// import ChoixItemTest from "@/app/(main)/CompositionMenuNew/Components/choixItemTest";
 
 const CompositionMenuNew = () => {
     const [formule, setFormule] = useState<{ id: string, nom: string }>({ id: '', nom: '' });
-    const [item, setItem] = useState<{ id: string, nom: string }>({ id: '', nom: '' });
+    const [items, setItems] = useState<{ id: string, nom: string }[]>([]);
 
     const handleFormuleChange = (newFormule: { id: string, nom: string }) => {
         setFormule(newFormule);
-        setItem({ id: '', nom: '' }); // Reset item when formule changes
+        setItems([]); // Reset items when formule changes
     };
 
-    const handleItemChange = (newItem: { id: string, nom: string }) => {
-        setItem(newItem);
+    const handleItemsChange = (newItems: { id: string, nom: string }[]) => {
+        setItems(newItems);
     };
 
     return (
         <div>
             <Header />
             <ChoixFormule onFormuleChange={handleFormuleChange} />
-            <ChoixItemTest formule={formule} selectedItem={item} onItemChange={handleItemChange} />
-            {/*<ChoixItems formule={formule} />*/}
+            {/* <ChoixItemTest formule={formule} selectedItems={items} onItemsChange={handleItemsChange} /> */}
+            <ChoixItems formule={formule} selectedItems={items} onItemsChange={handleItemsChange} />
         </div>
     );
-}
+};
 
 export default CompositionMenuNew;

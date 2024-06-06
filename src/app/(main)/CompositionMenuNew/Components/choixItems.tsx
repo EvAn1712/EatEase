@@ -1,102 +1,152 @@
 import React, { useEffect, useState } from 'react';
 import Read from './Read';
+import ChevronUp from '../../../../components/icons/chevron-up';
+import ChevronDown from '../../../../components/icons/chevron-down';
 
 interface ChoixItemsProps {
     formule: { id: string, nom: string };
-    onItemsChange: (newItems: string[]) => void;
+    selectedItems: { id: string, nom: string }[];
+    onItemsChange: (newItems: { id: string, nom: string }[]) => void;
 }
 
-const ChoixItems: React.FC<ChoixItemsProps> = ({ formule, onItemsChange }) => {
-    const [items1, setItems1] = useState<{ id: string, nom: string }[]>([]);
-    const [items2, setItems2] = useState<{ id: string, nom: string }[]>([]);
-    const [items3, setItems3] = useState<{ id: string, nom: string }[]>([]);
-    const [selectedItem, setSelectedItem] = useState<{ id: string, nom: string } | null>(null);
-
-    const getFilterForFormule = (formuleId: string) => {
-        switch (formuleId) {
-            case "-Ny0b_XDIqRGzKeA_3Xq":
-                return { types: ["boisson_chaude", "viennoiserie"] };
-            case "-Ny4dSqlcGVqVNEYMdkb":
-                return { types: ["boisson_chaude", "viennoiserie"] };
-            case "-NzSwi84Ff1Uc8CaE2xI":
-                return { types: ["plat", "snacking", "dessert", "entree", "boisson"] };
-            case "-NzSwpmIy_MkZXhdv2p1":
-                return { types: ["plat", "snacking", "dessert", "entree", "boisson"] };
-            default:
-                return { types: [] };
-        }
-    };
-
-    const filter = getFilterForFormule(formule.id);
+const ChoixItems: React.FC<ChoixItemsProps> = ({ formule, selectedItems, onItemsChange }) => {
+    const [items, setItems] = useState<{ id: string, nom: string }[]>([]);
+    const [isBoissonChaudeOpen, setIsBoissonChaudeOpen] = useState<boolean>(true);
+    const [isViennoiserieOpen, setIsViennoiserieOpen] = useState<boolean>(true);
+    const [isSandwichOpen, setIsSandwichOpen] = useState<boolean>(true);
+    const [isDessertOpen, setIsDessertOpen] = useState<boolean>(true);
 
     useEffect(() => {
-        onItemsChange([...items1, ...items2, ...items3].map(item => item.nom));
-    }, [items1, items2, items3]);
+        setItems(selectedItems);
+    }, [selectedItems]);
 
-    const handleItemChange1 = (item: { id: string, nom: string }) => {
-        setItems1([item]);
-        setSelectedItem(item);
+    const handleItemChange = (item: { id: string, nom: string }) => {
+        const newItems = [...items, item];
+        setItems(newItems);
+        onItemsChange(newItems);
     };
 
-    const handleItemChange2 = (item: { id: string, nom: string }) => {
-        setItems2([item]);
-        setSelectedItem(item);
+    const toggleBoissonChaude = () => {
+        setIsBoissonChaudeOpen(!isBoissonChaudeOpen);
     };
 
-    const handleItemChange3 = (item: { id: string, nom: string }) => {
-        setItems3([item]);
-        setSelectedItem(item);
+    const toggleViennoiserie = () => {
+        setIsViennoiserieOpen(!isViennoiserieOpen);
+    };
+
+    const toggleSandwich = () => {
+        setIsSandwichOpen(!isSandwichOpen);
+    };
+
+    const toggleDessert = () => {
+        setIsDessertOpen(!isDessertOpen);
     };
 
     return (
         <div>
-            {formule.nom === "Petit dej'" || formule.nom === "Maxi petit dej'" ? (
+            {(formule.nom === "Petit dej'" || formule.nom === "Maxi petit dej'") && (
                 <>
-                    <Read
-                        databaseName="Produit"
-                        attributes={["nom", "imageUrl"]}
-                        filter={{ typeProduit: filter.types[0], menu: formule.id }}
-                        onItemChange={handleItemChange1}
-                        showItem={true}
-                        selectedItem={selectedItem} // Pass selectedItem attribute
-                    />
-                    <Read
-                        databaseName="Produit"
-                        attributes={["nom", "imageUrl"]}
-                        filter={{ typeProduit: filter.types[1], menu: formule.id }}
-                        onItemChange={handleItemChange2}
-                        showItem={true}
-                        selectedItem={selectedItem} // Pass selectedItem attribute
-                    />
+                    <div className="bg-red-100 rounded-lg p-4 mb-4">
+                        <div className="flex items-center">
+                            <button onClick={toggleBoissonChaude} className="focus:outline-none">
+                                {isBoissonChaudeOpen ? <ChevronUp className="h-5 w-5 font-bold" /> : <ChevronDown className="h-5 w-5 font-bold" />}
+                            </button>
+                            <h2 className="ml-2">Choix boisson chaude:</h2>
+                        </div>
+                        {isBoissonChaudeOpen && (
+                            <div className="flex flex-wrap">
+                                <Read
+                                    databaseName="Produit"
+                                    attributes={["nom", "imageUrl"]}
+                                    filter={{ typeProduit: ["boisson_chaude"], menu: formule.id }}
+                                    onItemChange={handleItemChange}
+                                    showItem={true}
+                                />
+                            </div>
+                        )}
+                    </div>
+                    <div className="bg-red-100 rounded-lg p-4 mb-4">
+                        <div className="flex items-center">
+                            <button onClick={toggleViennoiserie} className="focus:outline-none">
+                                {isViennoiserieOpen ? <ChevronUp className="h-5 w-5 font-bold" /> : <ChevronDown className="h-5 w-5 font-bold" />}
+                            </button>
+                            <h2 className="ml-2">Choix viennoiserie:</h2>
+                        </div>
+                        {isViennoiserieOpen && (
+                            <div className="flex flex-wrap">
+                                <Read
+                                    databaseName="Produit"
+                                    attributes={["nom", "imageUrl"]}
+                                    filter={{ typeProduit: ["viennoiserie"], menu: formule.id }}
+                                    onItemChange={handleItemChange}
+                                    showItem={true}
+                                />
+                            </div>
+                        )}
+                    </div>
                 </>
-            ) : formule.nom === "First" || formule.nom === "Maxi" ? (
+            )}
+            {(formule.nom === "First" || formule.nom === "Maxi") && (
                 <>
-                    <Read
-                        databaseName="Produit"
-                        attributes={["nom", "imageUrl"]}
-                        filter={{ typeProduit: `${filter.types[0]}, ${filter.types[1]}`, menu: formule.id }}
-                        onItemChange={handleItemChange1}
-                        showItem={true}
-                        selectedItem={selectedItem} // Pass selectedItem attribute
-                    />
-                    <Read
-                        databaseName="Produit"
-                        attributes={["nom", "imageUrl"]}
-                        filter={{ typeProduit: `${filter.types[2]}, ${filter.types[3]}, ${filter.types[4]}`, menu: formule.id }}
-                        onItemChange={handleItemChange2}
-                        showItem={true}
-                        selectedItem={selectedItem} // Pass selectedItem attribute
-                    />
-                    <Read
-                        databaseName="Produit"
-                        attributes={["nom", "imageUrl"]}
-                        filter={{ typeProduit: `${filter.types[2]}, ${filter.types[3]}, ${filter.types[4]}`, menu: formule.id }}
-                        onItemChange={handleItemChange3}
-                        showItem={true}
-                        selectedItem={selectedItem} // Pass selectedItem attribute
-                    />
+                    <div className="bg-red-100 rounded-lg p-4 mb-4">
+                        <div className="flex items-center">
+                            <button onClick={toggleSandwich} className="focus:outline-none">
+                                {isSandwichOpen ? <ChevronUp className="h-5 w-5 font-bold" /> : <ChevronDown className="h-5 w-5 font-bold" />}
+                            </button>
+                            <h2 className="ml-2">Choix plat :</h2>
+                        </div>
+                        {isSandwichOpen && (
+                            <div className="flex flex-wrap">
+                                <Read
+                                    databaseName="Produit"
+                                    attributes={["nom", "imageUrl"]}
+                                    filter={{ typeProduit: ["sandwich", "salade", "snacking"], menu: formule.id }}
+                                    onItemChange={handleItemChange}
+                                    showItem={true}
+                                />
+                            </div>
+                        )}
+                    </div>
+                    <div className="bg-red-100 rounded-lg p-4 mb-4">
+                        <div className="flex items-center">
+                            <button onClick={toggleDessert} className="focus:outline-none">
+                                {isDessertOpen ? <ChevronUp className="h-5 w-5 font-bold" /> : <ChevronDown className="h-5 w-5 font-bold" />}
+                            </button>
+                            <h2 className="ml-2">Choix Accompagnement 1:</h2>
+                        </div>
+                        {isDessertOpen && (
+                            <div className="flex flex-wrap">
+                                <Read
+                                    databaseName="Produit"
+                                    attributes={["nom", "imageUrl"]}
+                                    filter={{ typeProduit: ["dessert", "entree", "boisson"], menu: formule.id }}
+                                    onItemChange={handleItemChange}
+                                    showItem={true}
+                                />
+                            </div>
+                        )}
+                    </div>
+                    <div className="bg-red-100 rounded-lg p-4 mb-4">
+                        <div className="flex items-center">
+                            <button onClick={toggleDessert} className="focus:outline-none">
+                                {isDessertOpen ? <ChevronUp className="h-5 w-5 font-bold" /> : <ChevronDown className="h-5 w-5 font-bold" />}
+                            </button>
+                            <h2 className="ml-2">Choix Accompagnement 2:</h2>
+                        </div>
+                        {isDessertOpen && (
+                            <div className="flex flex-wrap">
+                                <Read
+                                    databaseName="Produit"
+                                    attributes={["nom", "imageUrl"]}
+                                    filter={{ typeProduit: ["dessert", "entree", "boisson"], menu: formule.id }}
+                                    onItemChange={handleItemChange}
+                                    showItem={true}
+                                />
+                            </div>
+                        )}
+                    </div>
                 </>
-            ) : null}
+            )}
         </div>
     );
 };
