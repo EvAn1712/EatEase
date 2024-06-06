@@ -1,7 +1,10 @@
 'use client'
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
 import firebase_app from './firebase-config';
+import { useModal } from '@/app/shared/modal-views/use-modal';
+import Link from "next/link";
+
 
 export interface AuthContextType {
   user: User | null;
@@ -50,3 +53,20 @@ export function AuthContextProvider( { children }: AuthContextProviderProps ): J
     </AuthContext.Provider>
   );
 }
+
+export const useAdminCheck = function () {
+  const {user} = useAuthContext() as AuthContextType;
+
+  const email = user?.email || '';
+  const getDomainFromEmail = (email: string): string => {
+    return email.split('@')[1];
+  };
+
+  const userDomain = email ? getDomainFromEmail(email) : '';
+
+  if (!user || userDomain !== 'gmail.com') {
+    return false;
+  } else {
+    return true;
+  }
+};

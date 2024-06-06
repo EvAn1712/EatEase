@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import PageHeader from '@/app/shared/page-header';
 import app from "../firebase-config";
 import { getDatabase, ref, get, push, set, query, orderByKey, limitToLast } from "firebase/database";
+import {useAdminCheck} from "@/app/(main)/authContext";
 
 interface ICommande {
     produitId: string;
@@ -108,6 +109,23 @@ const PasserCommande: React.FC = () => {
         title: 'Passer une Commande',
         breadcrumb: [],
     };
+
+    if (!useAdminCheck()) {
+        return(
+            <div className="mt-4 pb-3 3xl:mt-6 text-center">
+                <p className="text-gray-700 font-bold">Veuillez vous connecter en tant qu'admin pour accéder au
+                    contenu.</p>
+                <div className="flex justify-center mt-4">
+                    <a href="/point-of-sale" onClick={() => {
+                        window.location.href = '/point-of-sale';
+                    }}
+                       className="bg-blue-500 text-white px-4 py-2 mr-4 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">
+                        Accueil
+                    </a>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="w-80 mx-auto py-8">

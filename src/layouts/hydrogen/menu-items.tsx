@@ -9,14 +9,14 @@ export const menuItems = [
         name: 'Accueil',
         href: '/point-of-sale',
         icon: <PiCreditCardDuotone />,
-        allowedDomains: ['epfadmin.fr', 'epfedu.fr'], // Domaines autorisés
+        allowedDomains: ['gmail.com', 'epfedu.fr'], // Domaines autorisés
 
     },
  {
     name: 'Ajout de Produit',
     href: '/ADMAjoutProduit',
     icon: <PiCreditCardDuotone />,
-    allowedDomains: ['epfadmin.fr'], // Domaines autorisés
+    allowedDomains: ['gmail.com'], // Domaines autorisés
   },
   {
     name: 'Mon profil',
@@ -34,19 +34,19 @@ export const menuItems = [
     name: 'Stock',
     href: '/ADMStock',
     icon: <PiCreditCardDuotone />,
-    allowedDomains: ['epfadmin.fr'], // Domaines autorisés
+    allowedDomains: ['gmail.com'], // Domaines autorisés
   },
  {
     name: 'Liste de Produits',
     href: '/ADMListProduit',
     icon: <PiCreditCardDuotone />,
-    allowedDomains: ['epfadmin.fr'], // Domaines autorisés
+    allowedDomains: ['gmail.com'], // Domaines autorisés
   },
     {
         name: 'Historique de Commande',
         href: '/ADMHistoriqueCommande',
         icon: <PiCreditCardDuotone />,
-        allowedDomains: ['epfadmin.fr'], // Domaines autorisés
+        allowedDomains: ['gmail.com'], // Domaines autorisés
     }
 ];
 
@@ -62,7 +62,7 @@ const Menu = () => {
     );
   }
 
-  const userDomain = user.email.split('@')[1];
+  const userDomain = user.split('@')[1];
 
   return (
     <div className="max-w-md mx-auto mt-8 p-6 bg-gray-100 rounded-lg shadow-md">

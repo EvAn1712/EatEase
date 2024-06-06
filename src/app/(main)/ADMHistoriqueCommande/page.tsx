@@ -1,5 +1,7 @@
+'use client';
 import React from 'react';
 import PageHeader from '@/app/shared/page-header';
+import {useAdminCheck} from "@/app/(main)/authContext";
 
 const CommandesEnCours: React.FC = () => {
     const commandesEnCours = [
@@ -8,6 +10,22 @@ const CommandesEnCours: React.FC = () => {
         { id: 3, nom: "Étudiant 3", contenu: "Stylos", prix: 100, heure: "16:45" },
     ];
 
+    if (!useAdminCheck()) {
+        return(
+            <div className="mt-4 pb-3 3xl:mt-6 text-center">
+                <p className="text-gray-700 font-bold">Veuillez vous connecter en tant qu'admin pour accéder au
+                    contenu.</p>
+                <div className="flex justify-center mt-4">
+                    <a href="/point-of-sale" onClick={() => {
+                        window.location.href = '/point-of-sale';
+                    }}
+                       className="bg-blue-500 text-white px-4 py-2 mr-4 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">
+                        Accueil
+                    </a>
+                </div>
+            </div>
+        );
+    }
     return (
         <div className="container mx-auto px-4 py-5">
             <PageHeader
