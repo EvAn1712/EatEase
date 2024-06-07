@@ -1,150 +1,132 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import Read from './Read';
 import ChevronUp from '../../../../components/icons/chevron-up';
 import ChevronDown from '../../../../components/icons/chevron-down';
 
 interface ChoixItemsProps {
     formule: { id: string, nom: string };
-    selectedItems: { id: string, nom: string }[];
-    onItemsChange: (newItems: { id: string, nom: string }[]) => void;
+    selectedItems: { id: string, nom: string, section: string }[];
+    onItemsChange: (newItems: { id: string, nom: string, section: string }[]) => void;
 }
 
 const ChoixItems: React.FC<ChoixItemsProps> = ({ formule, selectedItems, onItemsChange }) => {
-    const [items, setItems] = useState<{ id: string, nom: string }[]>([]);
     const [isBoissonChaudeOpen, setIsBoissonChaudeOpen] = useState<boolean>(true);
     const [isViennoiserieOpen, setIsViennoiserieOpen] = useState<boolean>(true);
-    const [isSandwichOpen, setIsSandwichOpen] = useState<boolean>(true);
+    const [isPlatOpen, setIsPlatOpen] = useState<boolean>(true);
     const [isDessertOpen, setIsDessertOpen] = useState<boolean>(true);
 
-    useEffect(() => {
-        setItems(selectedItems);
-    }, [selectedItems]);
-
-    const handleItemChange = (item: { id: string, nom: string }) => {
-        const newItems = [...items, item];
-        setItems(newItems);
+    const handleItemChange = useCallback((item: { id: string, nom: string }, section: string, setOpen: React.Dispatch<React.SetStateAction<boolean>>) => {
+        const newItems = selectedItems.filter(selectedItem => selectedItem.section !== section);
+        newItems.push({ ...item, section });
         onItemsChange(newItems);
-    };
+        setOpen(false);  // Close the section when an item is selected
+    }, [selectedItems, onItemsChange]);
 
-    const toggleBoissonChaude = () => {
-        setIsBoissonChaudeOpen(!isBoissonChaudeOpen);
-    };
+    const toggle = useCallback((setter: React.Dispatch<React.SetStateAction<boolean>>) => {
+        setter(state => !state);
+    }, []);
 
-    const toggleViennoiserie = () => {
-        setIsViennoiserieOpen(!isViennoiserieOpen);
-    };
+    const sectionsPetitDej = [
+        {
+            name: "Choix boisson chaude : ",
+            open: isBoissonChaudeOpen,
+            setOpen: setIsBoissonChaudeOpen,
+            typeProduit: ["boisson_chaude"],
+        },
+        {
+            name: "Choix viennoiserie : ",
+            open: isViennoiserieOpen,
+            setOpen: setIsViennoiserieOpen,
+            typeProduit: ["viennoiserie"],
+        },
+    ];
 
-    const toggleSandwich = () => {
-        setIsSandwichOpen(!isSandwichOpen);
-    };
-
-    const toggleDessert = () => {
-        setIsDessertOpen(!isDessertOpen);
-    };
+    const sectionsFirstMaxi = [
+        {
+            name: "Choix plat : ",
+            open: isPlatOpen,
+            setOpen: setIsPlatOpen,
+            typeProduit: ["sandwich", "salade", "snacking"],
+        },
+        {
+            name: "Choix Accompagnement 1 : ",
+            open: isDessertOpen,
+            setOpen: setIsDessertOpen,
+            typeProduit: ["dessert", "entree", "boisson"],
+        },
+        {
+            name: "Choix Accompagnement 2 : ",
+            open: isDessertOpen,
+            setOpen: setIsDessertOpen,
+            typeProduit: ["dessert", "entree", "boisson"],
+        },
+    ];
 
     return (
         <div>
             {(formule.nom === "Petit dej'" || formule.nom === "Maxi petit dej'") && (
                 <>
-                    <div className="bg-red-100 rounded-lg p-4 mb-4">
-                        <div className="flex items-center">
-                            <button onClick={toggleBoissonChaude} className="focus:outline-none">
-                                {isBoissonChaudeOpen ? <ChevronUp className="h-5 w-5 font-bold" /> : <ChevronDown className="h-5 w-5 font-bold" />}
-                            </button>
-                            <h2 className="ml-2">Choix boisson chaude:</h2>
-                        </div>
-                        {isBoissonChaudeOpen && (
-                            <div className="flex flex-wrap">
-                                <Read
-                                    databaseName="Produit"
-                                    attributes={["nom", "imageUrl"]}
-                                    filter={{ typeProduit: ["boisson_chaude"], menu: formule.id }}
-                                    onItemChange={handleItemChange}
-                                    showItem={true}
-                                />
+                    {sectionsPetitDej.map(({ name, open, setOpen, typeProduit }) => (
+                        <div key={name} className="bg-red-100 rounded-lg p-4 mb-4">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center w-full">
+                                    <button onClick={() => toggle(setOpen)} className="focus:outline-none">
+                                        {open ? <ChevronUp className="h-5 w-5 font-bold" /> : <ChevronDown className="h-5 w-5 font-bold" />}
+                                    </button>
+                                    <h2 className="ml-2">{name}</h2>
+                                    <h2 className="align-left">
+                                        {selectedItems.filter(item => item.section === name).map(item => (
+                                            <span key={item.id} className="ml-2">{item.nom}</span>
+                                        ))}
+                                    </h2>
+                                </div>
                             </div>
-                        )}
-                    </div>
-                    <div className="bg-red-100 rounded-lg p-4 mb-4">
-                        <div className="flex items-center">
-                            <button onClick={toggleViennoiserie} className="focus:outline-none">
-                                {isViennoiserieOpen ? <ChevronUp className="h-5 w-5 font-bold" /> : <ChevronDown className="h-5 w-5 font-bold" />}
-                            </button>
-                            <h2 className="ml-2">Choix viennoiserie:</h2>
+                            {open && (
+                                <div className="flex flex-wrap">
+                                    <Read
+                                        databaseName="Produit"
+                                        attributes={["nom", "imageUrl"]}
+                                        filter={{ typeProduit, menu: formule.id }}
+                                        onItemChange={(item) => handleItemChange(item, name, setOpen)}
+                                        showItem={true}
+                                    />
+                                </div>
+                            )}
                         </div>
-                        {isViennoiserieOpen && (
-                            <div className="flex flex-wrap">
-                                <Read
-                                    databaseName="Produit"
-                                    attributes={["nom", "imageUrl"]}
-                                    filter={{ typeProduit: ["viennoiserie"], menu: formule.id }}
-                                    onItemChange={handleItemChange}
-                                    showItem={true}
-                                />
-                            </div>
-                        )}
-                    </div>
+                    ))}
                 </>
             )}
             {(formule.nom === "First" || formule.nom === "Maxi") && (
                 <>
-                    <div className="bg-red-100 rounded-lg p-4 mb-4">
-                        <div className="flex items-center">
-                            <button onClick={toggleSandwich} className="focus:outline-none">
-                                {isSandwichOpen ? <ChevronUp className="h-5 w-5 font-bold" /> : <ChevronDown className="h-5 w-5 font-bold" />}
-                            </button>
-                            <h2 className="ml-2">Choix plat :</h2>
-                        </div>
-                        {isSandwichOpen && (
-                            <div className="flex flex-wrap">
-                                <Read
-                                    databaseName="Produit"
-                                    attributes={["nom", "imageUrl"]}
-                                    filter={{ typeProduit: ["sandwich", "salade", "snacking"], menu: formule.id }}
-                                    onItemChange={handleItemChange}
-                                    showItem={true}
-                                />
+                    {sectionsFirstMaxi.map(({ name, open, setOpen, typeProduit }) => (
+                        <div key={name} className="bg-red-100 rounded-lg p-4 mb-4">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center w-full">
+                                    <button onClick={() => toggle(setOpen)} className="focus:outline-none">
+                                        {open ? <ChevronUp className="h-5 w-5 font-bold"/> :
+                                            <ChevronDown className="h-5 w-5 font-bold"/>}
+                                    </button>
+                                    <h2 className="ml-2">{name}</h2>
+                                    <h2 className="align-left">
+                                        {selectedItems.filter(item => item.section === name).map(item => (
+                                            <span key={item.id} className="ml-2">{item.nom}</span>
+                                        ))}
+                                    </h2>
+                                </div>
                             </div>
-                        )}
-                    </div>
-                    <div className="bg-red-100 rounded-lg p-4 mb-4">
-                        <div className="flex items-center">
-                            <button onClick={toggleDessert} className="focus:outline-none">
-                                {isDessertOpen ? <ChevronUp className="h-5 w-5 font-bold" /> : <ChevronDown className="h-5 w-5 font-bold" />}
-                            </button>
-                            <h2 className="ml-2">Choix Accompagnement 1:</h2>
+                            {open && (
+                                <div className="flex flex-wrap">
+                                    <Read
+                                        databaseName="Produit"
+                                        attributes={["nom", "imageUrl"]}
+                                        filter={{ typeProduit, menu: formule.id }}
+                                        onItemChange={(item) => handleItemChange(item, name, setOpen)}
+                                        showItem={true}
+                                    />
+                                </div>
+                            )}
                         </div>
-                        {isDessertOpen && (
-                            <div className="flex flex-wrap">
-                                <Read
-                                    databaseName="Produit"
-                                    attributes={["nom", "imageUrl"]}
-                                    filter={{ typeProduit: ["dessert", "entree", "boisson"], menu: formule.id }}
-                                    onItemChange={handleItemChange}
-                                    showItem={true}
-                                />
-                            </div>
-                        )}
-                    </div>
-                    <div className="bg-red-100 rounded-lg p-4 mb-4">
-                        <div className="flex items-center">
-                            <button onClick={toggleDessert} className="focus:outline-none">
-                                {isDessertOpen ? <ChevronUp className="h-5 w-5 font-bold" /> : <ChevronDown className="h-5 w-5 font-bold" />}
-                            </button>
-                            <h2 className="ml-2">Choix Accompagnement 2:</h2>
-                        </div>
-                        {isDessertOpen && (
-                            <div className="flex flex-wrap">
-                                <Read
-                                    databaseName="Produit"
-                                    attributes={["nom", "imageUrl"]}
-                                    filter={{ typeProduit: ["dessert", "entree", "boisson"], menu: formule.id }}
-                                    onItemChange={handleItemChange}
-                                    showItem={true}
-                                />
-                            </div>
-                        )}
-                    </div>
+                    ))}
                 </>
             )}
         </div>

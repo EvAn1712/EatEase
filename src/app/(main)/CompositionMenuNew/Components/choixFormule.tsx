@@ -9,12 +9,12 @@ interface ChoixFormuleProps {
 
 const ChoixFormule: React.FC<ChoixFormuleProps> = ({ onFormuleChange }) => {
     const [formule, setFormule] = useState<{ id: string, nom: string }>({ id: '', nom: '' });
-    const [menuItems, setMenuItems] = useState<{ id: string, nom: string, prix: number }[]>([]);
     const [isOpen, setIsOpen] = useState<boolean>(true);
 
     const handleMenuDataChange = (item: { id: string, nom: string }) => {
         setFormule(item);
         onFormuleChange(item);
+        setIsOpen(false); // Close the section when a formule is selected
     };
 
     const toggleBanner = () => {

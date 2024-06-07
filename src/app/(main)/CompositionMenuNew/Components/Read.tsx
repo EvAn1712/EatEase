@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState, useRef } from 'react';
+import React, { memo, useEffect, useState, useRef, useCallback } from 'react';
 import app from "src/app/(main)/firebase-config";
 import { get, getDatabase, ref } from "firebase/database";
 
@@ -27,33 +27,33 @@ const Read: React.FC<Props> = ({ databaseName, attributes, filter, onItemChange,
     const [selectedProduct, setSelectedProduct] = useState<Item | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const db = getDatabase(app);
-                const dbRef = ref(db, databaseName);
-                const snapshot = await get(dbRef);
+    const fetchData = useCallback(async () => {
+        try {
+            const db = getDatabase(app);
+            const dbRef = ref(db, databaseName);
+            const snapshot = await get(dbRef);
 
-                if (snapshot.exists()) {
-                    const allItems: Item[] = [];
-                    snapshot.forEach((childSnapshot) => {
-                        const childData = childSnapshot.val();
-                        if (
-                            (filter.typeProduit === "none" || filter.typeProduit.includes(childData.typeProduit)) &&
-                            (filter.menu === "none" || (Array.isArray(childData.idMenus) && childData.idMenus.includes(filter.menu)))
-                        ) {
-                            allItems.push({ ...childData, id: childSnapshot.key });
-                        }
-                    });
-                    setItems(allItems);
-                }
-            } catch (error) {
-                console.error('Error fetching data: ', error);
+            if (snapshot.exists()) {
+                const allItems: Item[] = [];
+                snapshot.forEach((childSnapshot) => {
+                    const childData = childSnapshot.val();
+                    if (
+                        (filter.typeProduit === "none" || filter.typeProduit.includes(childData.typeProduit)) &&
+                        (filter.menu === "none" || (Array.isArray(childData.idMenus) && childData.idMenus.includes(filter.menu)))
+                    ) {
+                        allItems.push({ ...childData, id: childSnapshot.key });
+                    }
+                });
+                setItems(allItems);
             }
-        };
-
-        fetchData();
+        } catch (error) {
+            console.error('Error fetching data: ', error);
+        }
     }, [databaseName, filter]);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
 
     useEffect(() => {
         if (showItem && selectedItem) {
@@ -61,26 +61,28 @@ const Read: React.FC<Props> = ({ databaseName, attributes, filter, onItemChange,
         }
     }, [showItem, selectedItem]);
 
-    useEffect(() => {
-        const resizeHandler = () => {
-            const containerWidth = containerRef.current?.offsetWidth ?? 0;
-            const numItems = items.length;
-            const fontSize = Math.min(containerWidth / (numItems * 10), 25); // Adjust 10 as needed, it's an arbitrary value
-            containerRef.current?.style.setProperty('font-size', `${fontSize}px`);
-        };
+    const resizeHandler = useCallback(() => {
+        const containerWidth = containerRef.current?.offsetWidth ?? 0;
+        const numItems = items.length;
+        const fontSize = Math.min(containerWidth / (numItems * 5), 25);
+        if (containerRef.current) {
+            containerRef.current.style.fontSize = `${fontSize}px`;
+        }
+    }, [items]);
 
+    useEffect(() => {
         window.addEventListener('resize', resizeHandler);
         resizeHandler();
 
         return () => {
             window.removeEventListener('resize', resizeHandler);
         };
-    }, [items]);
+    }, [resizeHandler]);
 
-    const handleItemClick = (item: Item) => {
+    const handleItemClick = useCallback((item: Item) => {
         setSelectedProduct(item);
         onItemChange({ id: item.id, nom: item.nom });
-    };
+    }, [onItemChange]);
 
     return (
         <div ref={containerRef} className="flex justify-center items-center w-full h-full">
@@ -88,13 +90,15 @@ const Read: React.FC<Props> = ({ databaseName, attributes, filter, onItemChange,
                 {items.map((item) => (
                     <li
                         key={item.id}
-                        className={`flex flex-col justify-between max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition duration-200 ease-in-out transform hover:-translate-y-1 hover:scale-105 cursor-pointer
-        ${selectedProduct?.id === item.id ? 'border-2 border-red-500' : ''}`}
+                        className={`flex flex-col justify-between bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition duration-200 ease-in-out transform hover:-translate-y-1 hover:scale-105 cursor-pointer ${
+                            selectedProduct?.id === item.id ? 'border-2 border-red-500' : ''
+                        }`}
+                        style={{ width: '200px' }} // Fixed width for all cards
                         onClick={() => handleItemClick(item)}
                     >
                         <div className="flex flex-col items-center p-4 text-center">
                             {attributes.includes("nom") && (
-                                <p className="font-semibold mb-4">{item.nom}</p>
+                                <p className="font-semibold mb-4" style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>{item.nom}</p>
                             )}
                             {attributes.includes("prix") && (
                                 <div className="mb-1">
