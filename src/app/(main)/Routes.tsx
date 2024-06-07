@@ -8,7 +8,6 @@ import HistoriqueCommande from '@/app/(main)/HistoriqueCommande/page';
 import Stock from './ADMStock/page';
 import ListProduit from './ADMListProduit/page';
 import ADMHistoriqueCommande from './ADMHistoriqueCommande/page';
-import CompositionMenu  from "./CompositionMenu/page";
 import CompositionMenuNew from "./CompositionMenuNew/page";
 
 const RoutesComponent: React.FC = () => {
@@ -23,8 +22,7 @@ const RoutesComponent: React.FC = () => {
                 <Route path="/stock" element={<Stock/>} />
                 <Route path="/liste-produit" element={<ListProduit/>} />
                 <Route path="/historique-commande2" element={<ADMHistoriqueCommande/>} />
-                <Route path="/composition-menu" element={<CompositionMenu/>} />
-                <Route path="/composition-menew" element={<CompositionMenuNew/>} />
+                <Route path="/composition-menu" element={<CompositionMenuNew/>} />
 
                 {/* Ajoutez d'autres routes au besoin */}
             </Routes>

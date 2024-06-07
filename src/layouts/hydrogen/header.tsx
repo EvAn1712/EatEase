@@ -24,9 +24,9 @@ export default function Header() {
             Nos articles
           </Link>
           <Link
-            href="/CompositionMenu"
+            href="/CompositionMenuNew"
             className={`font-lexend font-bold text-4xl hover:text-gray-900 ${
-              pathname === '/CompositionMenu' ? 'text-red-600' : 'text-gray-800'
+              pathname === '/CompositionMenuNew' ? 'text-red-600' : 'text-gray-800'
             }`}
           >
             Nos menus
