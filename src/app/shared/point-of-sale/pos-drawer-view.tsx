@@ -114,16 +114,16 @@ export function PriceCalculation() {
     <div className="mb-7 space-y-3.5">
       <p className="flex items-center justify-between">
         <span className="text-gray-500">Total</span>
-        <span className="font-medium text-gray-900">${total.toFixed(2)}</span>
+        <span className="font-medium text-gray-900">€{total.toFixed(2)}</span>
       </p>
   
       <p className="flex items-center justify-between">
         <span className="text-gray-500">TVA</span>
-        <span className="font-medium text-gray-900">${tax.toFixed(2)}</span>
+        <span className="font-medium text-gray-900">€{tax.toFixed(2)}</span>
       </p>
       <p className="flex items-center justify-between border-t border-gray-300 pt-3.5 text-base font-semibold">
         <span className="text-gray-900">Total:</span>
-        <span className="text-gray-900">${subTotal.toFixed(2)}</span>
+        <span className="text-gray-900">€{subTotal.toFixed(2)}</span>
       </p>
     </div>
   );

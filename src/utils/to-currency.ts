@@ -3,9 +3,9 @@ export function toCurrency(
   disableDecimal = false,
   decimalPlaces = 2
 ) {
-  const formatter = new Intl.NumberFormat('en-US', {
+  const formatter = new Intl.NumberFormat('fr-FR', {
     style: 'currency',
-    currency: 'USD',
+    currency: 'EUR',
     minimumFractionDigits: disableDecimal ? 0 : decimalPlaces,
     maximumFractionDigits: disableDecimal ? 0 : decimalPlaces,
   });

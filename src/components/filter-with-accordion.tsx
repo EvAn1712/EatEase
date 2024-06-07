@@ -185,7 +185,7 @@ function FilterOption({
 
       {count ? (
         <span className="text-xs opacity-80">
-          {isPrice ? `$${count}` : `(${count})`}
+          {isPrice ? `€${count}` : `(${count})`}
         </span>
       ) : null}
     </div>

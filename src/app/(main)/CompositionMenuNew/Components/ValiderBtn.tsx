@@ -1,29 +1,26 @@
-/*
-"use client"
 import React from 'react';
-import { useRouter } from 'next/router';
+import { useCart } from '@/store/quick-cart/cart.context'; // Adjust the import path as necessary
+import { CartItem as Item } from '@/types'; // Adjust the import path as necessary
 
-interface ValiderBtnProps {
-    formule: string;
-    items: string[];
-}
+const ValiderBtn: React.FC = () => {
+    const { addItemToCart } = useCart();
 
-const ValiderBtn: React.FC<ValiderBtnProps> = ({ formule, items }) => {
-    const router = useRouter();
+    // Example item to add to the cart
+    const item: Item = {
+        id: '1',
+        name: 'Sample Item',
+        price: 10,
+        quantity: 1,
+        stock: 100,
+    };
 
-    const handleClick = () => {
-        router.push({
-            pathname: '/result',
-            query: { formule, items: JSON.stringify(items) }
-        });
+    const handleAddToCart = () => {
+        addItemToCart(item, item.quantity);
     };
 
     return (
-        <button onClick={handleClick}>
-            Valider
-        </button>
+        <button onClick={handleAddToCart}>Add to Cart</button>
     );
 };
 
 export default ValiderBtn;
-*/
