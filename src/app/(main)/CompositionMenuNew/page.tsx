@@ -1,20 +1,19 @@
-"use client";
+"use client"
 import React, { useState } from 'react';
 import Header from '@/app/(main)/CompositionMenu/Components/header';
 import ChoixFormule from '@/app/(main)/CompositionMenuNew/Components/choixFormule';
 import ChoixItems from '@/app/(main)/CompositionMenuNew/Components/choixItems';
-// import ChoixItemTest from "@/app/(main)/CompositionMenuNew/Components/choixItemTest";
 
 const CompositionMenuNew = () => {
     const [formule, setFormule] = useState<{ id: string, nom: string }>({ id: '', nom: '' });
-    const [items, setItems] = useState<{ id: string, nom: string }[]>([]);
+    const [items, setItems] = useState<{ id: string, nom: string, section: string }[]>([]);
 
     const handleFormuleChange = (newFormule: { id: string, nom: string }) => {
         setFormule(newFormule);
-        setItems([]); // Reset items when formule changes
+        setItems([]);
     };
 
-    const handleItemsChange = (newItems: { id: string, nom: string }[]) => {
+    const handleItemsChange = (newItems: { id: string, nom: string, section: string }[]) => {
         setItems(newItems);
     };
 
@@ -22,8 +21,20 @@ const CompositionMenuNew = () => {
         <div>
             <Header />
             <ChoixFormule onFormuleChange={handleFormuleChange} />
-            {/* <ChoixItemTest formule={formule} selectedItems={items} onItemsChange={handleItemsChange} /> */}
             <ChoixItems formule={formule} selectedItems={items} onItemsChange={handleItemsChange} />
+
+            {/* Division to show raw data */}
+            <div>
+                <h2>Raw Data: affichage temporaire</h2>
+                <ul>
+                    {/* Render formule */}
+                    <li>Formule id : {formule.id} Formule nom: {formule.nom}</li>
+                    {/* Render items */}
+                    {items.map(item => (
+                        <li key={item.id}>Item id: {item.id} Item nom: {item.nom}, Section: {item.section}</li>
+                    ))}
+                </ul>
+            </div>
         </div>
     );
 };

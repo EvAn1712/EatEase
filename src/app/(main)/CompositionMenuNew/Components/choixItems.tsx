@@ -13,11 +13,14 @@ const ChoixItems: React.FC<ChoixItemsProps> = ({ formule, selectedItems, onItems
     const [isBoissonChaudeOpen, setIsBoissonChaudeOpen] = useState<boolean>(true);
     const [isViennoiserieOpen, setIsViennoiserieOpen] = useState<boolean>(true);
     const [isPlatOpen, setIsPlatOpen] = useState<boolean>(true);
-    const [isDessertOpen, setIsDessertOpen] = useState<boolean>(true);
+    const [isAccompagnement1Open, setIsAccompagnement1Open] = useState<boolean>(true);
+    const [isAccompagnement2Open, setIsAccompagnement2Open] = useState<boolean>(true);
 
     const handleItemChange = useCallback((item: { id: string, nom: string }, section: string, setOpen: React.Dispatch<React.SetStateAction<boolean>>) => {
-        const newItems = selectedItems.filter(selectedItem => selectedItem.section !== section);
+        let newItems = [...selectedItems.filter(selectedItem => selectedItem.section !== section)];
+
         newItems.push({ ...item, section });
+
         onItemsChange(newItems);
         setOpen(false);  // Close the section when an item is selected
     }, [selectedItems, onItemsChange]);
@@ -28,13 +31,13 @@ const ChoixItems: React.FC<ChoixItemsProps> = ({ formule, selectedItems, onItems
 
     const sectionsPetitDej = [
         {
-            name: "Choix boisson chaude : ",
+            name: "Choix boisson chaude",
             open: isBoissonChaudeOpen,
             setOpen: setIsBoissonChaudeOpen,
             typeProduit: ["boisson_chaude"],
         },
         {
-            name: "Choix viennoiserie : ",
+            name: "Choix viennoiserie",
             open: isViennoiserieOpen,
             setOpen: setIsViennoiserieOpen,
             typeProduit: ["viennoiserie"],
@@ -50,14 +53,14 @@ const ChoixItems: React.FC<ChoixItemsProps> = ({ formule, selectedItems, onItems
         },
         {
             name: "Choix Accompagnement 1 : ",
-            open: isDessertOpen,
-            setOpen: setIsDessertOpen,
+            open: isAccompagnement1Open,
+            setOpen: setIsAccompagnement1Open,
             typeProduit: ["dessert", "entree", "boisson"],
         },
         {
             name: "Choix Accompagnement 2 : ",
-            open: isDessertOpen,
-            setOpen: setIsDessertOpen,
+            open: isAccompagnement2Open,
+            setOpen: setIsAccompagnement2Open,
             typeProduit: ["dessert", "entree", "boisson"],
         },
     ];
@@ -103,8 +106,7 @@ const ChoixItems: React.FC<ChoixItemsProps> = ({ formule, selectedItems, onItems
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center w-full">
                                     <button onClick={() => toggle(setOpen)} className="focus:outline-none">
-                                        {open ? <ChevronUp className="h-5 w-5 font-bold"/> :
-                                            <ChevronDown className="h-5 w-5 font-bold"/>}
+                                        {open ? <ChevronUp className="h-5 w-5 font-bold"/> : <ChevronDown className="h-5 w-5 font-bold"/>}
                                     </button>
                                     <h2 className="ml-2">{name}</h2>
                                     <h2 className="align-left">
