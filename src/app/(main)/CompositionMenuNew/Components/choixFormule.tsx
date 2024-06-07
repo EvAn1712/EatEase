@@ -8,7 +8,7 @@ interface ChoixFormuleProps {
 }
 
 const ChoixFormule: React.FC<ChoixFormuleProps> = ({ onFormuleChange }) => {
-    const [formule, setFormule] = useState<{ id: string, nom: string }>({ id: '', nom: '' });
+    const [formule, setFormule] = useState<{ id: string, nom: string}>({ id: '', nom: '' });
     const [isOpen, setIsOpen] = useState<boolean>(true);
 
     const handleMenuDataChange = (item: { id: string, nom: string }) => {

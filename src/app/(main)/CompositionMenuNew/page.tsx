@@ -6,6 +6,7 @@ import ChoixItems from '@/app/(main)/CompositionMenuNew/Components/choixItems';
 import {POS_CART_KEY} from "@/config/constants";
 import {CartProvider} from "@/store/quick-cart/cart.context";
 import POSDrawer from "@/app/shared/point-of-sale/pos-drawer";
+import ValiderBtn from '@/app/(main)/CompositionMenuNew/Components/ValiderBtn';
 
 const CompositionMenuNew = () => {
     const [formule, setFormule] = useState<{ id: string, nom: string }>({ id: '', nom: '' });
@@ -26,6 +27,7 @@ const CompositionMenuNew = () => {
                 <Header />
                 <ChoixFormule onFormuleChange={handleFormuleChange} />
                 <ChoixItems formule={formule} selectedItems={items} onItemsChange={handleItemsChange} />
+                <ValiderBtn formule={formule} items={items}/>
 
                 {/* Division to show raw data */}
                 <div>
