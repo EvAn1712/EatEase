@@ -7,11 +7,14 @@ const ValiderBtn: React.FC = () => {
 
     // Example item to add to the cart
     const item: Item = {
-        id: '1',
+        size: 0,
+        id: 1,
         name: 'Sample Item',
         price: 10,
         quantity: 1,
         stock: 100,
+        image: '',
+        description: ''
     };
 
     const handleAddToCart = () => {

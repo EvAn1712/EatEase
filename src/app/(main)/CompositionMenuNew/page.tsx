@@ -3,6 +3,9 @@ import React, { useState } from 'react';
 import Header from '@/app/(main)/CompositionMenuNew/Components/header';
 import ChoixFormule from '@/app/(main)/CompositionMenuNew/Components/choixFormule';
 import ChoixItems from '@/app/(main)/CompositionMenuNew/Components/choixItems';
+import {POS_CART_KEY} from "@/config/constants";
+import {CartProvider} from "@/store/quick-cart/cart.context";
+import POSDrawer from "@/app/shared/point-of-sale/pos-drawer";
 
 const CompositionMenuNew = () => {
     const [formule, setFormule] = useState<{ id: string, nom: string }>({ id: '', nom: '' });
@@ -18,24 +21,27 @@ const CompositionMenuNew = () => {
     };
 
     return (
-        <div>
-            <Header />
-            <ChoixFormule onFormuleChange={handleFormuleChange} />
-            <ChoixItems formule={formule} selectedItems={items} onItemsChange={handleItemsChange} />
-
-            {/* Division to show raw data */}
+        <CartProvider cartKey={POS_CART_KEY}>
             <div>
-                <h2>Raw Data: affichage temporaire</h2>
-                <ul>
-                    {/* Render formule */}
-                    <li>Formule id : {formule.id} Formule nom: {formule.nom}</li>
-                    {/* Render items */}
-                    {items.map(item => (
-                        <li key={item.id}>Item id: {item.id} Item nom: {item.nom}, Section: {item.section}</li>
-                    ))}
-                </ul>
+                <Header />
+                <ChoixFormule onFormuleChange={handleFormuleChange} />
+                <ChoixItems formule={formule} selectedItems={items} onItemsChange={handleItemsChange} />
+
+                {/* Division to show raw data */}
+                <div>
+                    <h2>Raw Data: affichage temporaire</h2>
+                    <ul>
+                        {/* Render formule */}
+                        <li>Formule id : {formule.id} Formule nom: {formule.nom}</li>
+                        {/* Render items */}
+                        {items.map(item => (
+                            <li key={item.id}>Item id: {item.id} Item nom: {item.nom}, Section: {item.section}</li>
+                        ))}
+                    </ul>
+                </div>
+                <POSDrawer />
             </div>
-        </div>
+        </CartProvider>
     );
 };
 
