@@ -7,7 +7,9 @@ import toast from 'react-hot-toast';
 import { PriceCalculation } from '@/app/shared/point-of-sale/pos-drawer-view';
 import POSOrderProductsTwo from '@/app/shared/point-of-sale/pos-order-products-two';
 import { useCart } from '@/store/quick-cart/cart.context';
-import { AuthContextType, auth, useAuthContext } from '@/app/(main)/authContext';
+import { AuthContextType, useAuthContext } from '@/app/(main)/authContext';
+import app from "@/app/(main)/firebase-config";
+import { getDatabase, ref, set, push } from 'firebase/database';
 
 type PosSidebarProps = {
   simpleBarClassName?: string;
@@ -25,15 +27,45 @@ function PostSidebar({
   const [loading, setLoading] = useState(false);
   const { resetCart } = useCart();
   const { user } = useAuthContext() as AuthContextType;
-  function handleOrder() {
+
+  async function handleOrder() {
+    if (!user) {
+      toast.error(<Text as="b">Vous devez être connecté pour passer une commande</Text>);
+      return;
+    }
+
     setLoading(true);
-    setTimeout(() => {
+
+    try {
+      const db = getDatabase(app);
+      const orderRef = ref(db, 'CLICommande');
+      const newOrderRef = push(orderRef);
+  
+      const productDetails = 
+        orderedItems.map(item => ({
+        id: item.originalId,
+        quantity: item.quantity
+      }));
+      const orderTime = new Date().toISOString();
+      const userEmail = user.email;
+
+      
+
+      await set(newOrderRef, {
+        productDetails,
+        orderTime,
+        userEmail,
+      });
+
       setLoading(false);
       console.log('createOrder data ->', orderedItems);
-      toast.success(<Text as="b">Commande créée </Text>);
-      // Redirection vers la page de paiement Stripe
-      window.location.href = 'https://buy.stripe.com/28o8x68Yn21p2Gc144';
-    }, 600);
+      toast.success(<Text as="b">Commande confirmée</Text>);
+      resetCart(); // Réinitialiser le panier après la commande
+    } catch (error) {
+      console.error('Error creating order:', error);
+      toast.error(<Text as="b">Erreur lors de la confirmation de la commande</Text>);
+      setLoading(false);
+    }
   }
 
   return (
@@ -44,7 +76,7 @@ function PostSidebar({
         </Title>
         {orderedItems?.length > 0 && (
           <Button variant="text" onClick={resetCart} className="pe-0">
-           Tout supprimer
+            Tout supprimer
           </Button>
         )}
       </div>

@@ -1,5 +1,4 @@
 'use client';
-//panier classique
 import { useState } from 'react';
 import type { CartItem } from '@/types';
 import toast from 'react-hot-toast';
@@ -8,6 +7,9 @@ import cn from '@/utils/class-names';
 import { useCart } from '@/store/quick-cart/cart.context';
 import POSOrderProducts from '@/app/shared/point-of-sale/pos-order-products';
 import DrawerHeader from '@/app/shared/drawer-header';
+import app from '@/app/(main)/firebase-config'; // Assurez-vous que ce chemin est correct
+import { getDatabase, ref, set, push } from 'firebase/database';
+import { AuthContextType, auth, useAuthContext } from '@/app/(main)/authContext'; // Importation du contexte d'authentification
 
 type POSOrderTypes = {
   className?: string;
@@ -27,15 +29,46 @@ export default function POSDrawerView({
   clearItemFromCart,
 }: POSOrderTypes) {
   const [loading, setLoading] = useState(false);
+  const { user } = useAuthContext() as AuthContextType;// Utilisation du contexte d'authentification
 
-  function handleOrder() {
+  async function handleOrder() {
+    if (!user) {
+      toast.error(<Text as="b">Vous devez être connecté pour passer une commande</Text>);
+      return;
+    }
+
     setLoading(true);
-    setTimeout(() => {
+
+    try {
+      const db = getDatabase(app);
+      const orderRef = ref(db, 'CLICommande');
+      const newOrderRef = push(orderRef);
+      const orderId = newOrderRef.key;
+      const productIds = orderedItems.map(item => item.id);
+      const orderTime = new Date().toISOString();
+      const userEmail = user.email;
+    // Afficher les données de la commande dans la console
+    console.log('Données de la commande :');
+    console.log('ID de la commande :', orderId);
+    console.log('IDs des produits :', productIds);
+    console.log('Heure de la commande :', orderTime);
+    console.log('Adresse e-mail de l\'utilisateur :', userEmail);
+      await set(newOrderRef, {
+        orderId,
+        productIds,
+        orderTime,
+        userEmail,
+      });
+
       setLoading(false);
       console.log('createOrder data ->', orderedItems);
-      toast.success(<Text as="b">Commande confirmée </Text>);
+      toast.success(<Text as="b">Commande confirmée</Text>);
       onOrderSuccess && onOrderSuccess();
-    }, 600);
+    } catch (error) {
+      console.error('Error creating order:', error);
+      toast.error(<Text as="b">Erreur lors de la confirmation de la commande</Text>);
+      setLoading(false);
+    }
   }
 
   return (

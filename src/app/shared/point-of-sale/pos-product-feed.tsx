@@ -27,6 +27,7 @@ interface IProduct {
 
 export interface IPosProduct {
   id: number;
+  originalId: string;
   name: string;
   description: string;
   image: string;
@@ -53,7 +54,8 @@ async function fetchProductsFromFirebase(): Promise<IPosProduct[]> {
 
       // Convert IProduct to IPosProduct
       return {
-        id: Math.floor(Math.random() * 1000000), 
+        id: Math.floor(Math.random() * 1000000),
+        originalId: product.id,
         name: product.nom,
         description: product.description,
         image: product.imageUrl,
@@ -65,9 +67,9 @@ async function fetchProductsFromFirebase(): Promise<IPosProduct[]> {
         allergenes: product.allergenes,
       };
     });
+    
   } else {
     console.log('No data available');
-    
     return [];
   }
 }
@@ -86,8 +88,8 @@ export default function POSProductsFeed() {
 
     fetchData();
   }, []);
-  console.log(products)
-  
+
+  console.log(products);
 
   let productItemsFiltered = [...products].sort((a, b) =>
     a.name.localeCompare(b.name)
@@ -96,9 +98,7 @@ export default function POSProductsFeed() {
   if (searchText.length > 0) {
     productItemsFiltered = products.filter((item) => {
       const label = item.name;
-      return (
-        label.toLowerCase().includes(searchText.toLowerCase())
-      );
+      return label.toLowerCase().includes(searchText.toLowerCase());
     });
   }
 
@@ -117,7 +117,7 @@ export default function POSProductsFeed() {
   return (
     <>
       {productItemsFiltered?.length ? (
-        <div className="grid  grid-cols-2 gap-x-4 gap-y-6 @md:grid-cols-[repeat(auto-fill,minmax(210px,1fr))] @xl:gap-x-6 @xl:gap-y-12 @4xl:grid-cols-[repeat(auto-fill,minmax(270px,1fr))] ">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-6 @md:grid-cols-[repeat(auto-fill,minmax(210px,1fr))] @xl:gap-x-6 @xl:gap-y-12 @4xl:grid-cols-[repeat(auto-fill,minmax(270px,1fr))]">
           {productItemsFiltered
             ?.slice(0, nextPage)
             ?.map((product) => (

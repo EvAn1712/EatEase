@@ -39,6 +39,7 @@ export type ProductColor = {
 
 export interface CartItem {
   id: number;
+  originalId: string;
   name: string;
   slug?: string;
   description?: string;
@@ -50,10 +51,12 @@ export interface CartItem {
   size: number;
   stock?: number;
   discount?: number;
+  allergenes: string[];
 }
 
 export type Product = {
   id: number;
+  originalId: string;
   slug?: string;
   title: string;
   description?: string;
@@ -66,6 +69,7 @@ export type Product = {
 
 export type PosProduct = {
   id: number;
+  originalId: string;
   name: string;
   description: string;
   image: string;
@@ -76,6 +80,7 @@ export type PosProduct = {
   discount?: number;
   allergenes: string[];
 };
+
 export interface CalendarEvent {
   id?: string;
   start: Date;

@@ -18,7 +18,7 @@ export default function Header() {
           <Link
             href="/point-of-sale"
             className={`font-lexend font-bold text-4xl me-4 hover:text-gray-900 ${
-              pathname === '/point-of-sale' ? 'text-red-600' : 'text-gray-800'
+              pathname === '/point-of-sale' ? 'text-primary' : 'text-gray-800'
             }`}
           >
             Nos articles
@@ -26,7 +26,7 @@ export default function Header() {
           <Link
             href="/CompositionMenuNew"
             className={`font-lexend font-bold text-4xl hover:text-gray-900 ${
-              pathname === '/CompositionMenuNew' ? 'text-red-600' : 'text-gray-800'
+              pathname === '/CompositionMenuNew' ? 'text-primary' : 'text-gray-800'
             }`}
           >
             Nos menus
@@ -45,5 +45,6 @@ export default function Header() {
         <HeaderMenuRight />
       </div>
     </StickyHeader>
+    
   );
 }
