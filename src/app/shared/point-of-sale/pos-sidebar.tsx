@@ -1,5 +1,5 @@
 'use client';
-
+// panier partie en haut
 import React, { useState } from 'react';
 import { CartItem } from '@/types';
 import { EmptyProductBoxIcon, Button, Title, Text } from 'rizzui';

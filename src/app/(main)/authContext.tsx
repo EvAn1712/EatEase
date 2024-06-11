@@ -8,6 +8,7 @@ import Link from "next/link";
 
 export interface AuthContextType {
   user: User | null;
+  updatePassword: (currentPassword: string, newPassword: string) => Promise<void>;
 }
 
 // Initialize Firebase auth instance

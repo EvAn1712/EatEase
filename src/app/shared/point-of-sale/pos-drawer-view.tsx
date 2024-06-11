@@ -1,4 +1,5 @@
 'use client';
+//panier classique
 import { useState } from 'react';
 import type { CartItem } from '@/types';
 import toast from 'react-hot-toast';

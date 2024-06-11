@@ -1,3 +1,4 @@
+
 import GlobalDrawer from '@/app/shared/drawer-views/container';
 import GlobalModal from '@/app/shared/modal-views/container';
 import { ThemeProvider } from '@/app/shared/theme-provider';
@@ -6,7 +7,7 @@ import { inter, lexendDeca } from '@/app/fonts';
 import cn from '@/utils/class-names';
 import NextProgress from '@/components/next-progress';
 import BackToTopButton from '@/components/BackToTopButton'; // Assurez-vous du bon chemin d'importation
-
+import Footer from '@/components/Footer';
 // styles
 import '@/app/globals.css';
 import { AuthContextProvider } from './(main)/authContext';
@@ -33,13 +34,17 @@ export default function RootLayout({
         suppressHydrationWarning
         className={cn(inter.variable, lexendDeca.variable, 'font-inter')}
       >
-        <AuthContextProvider>
+         <AuthContextProvider>
           <ThemeProvider>
             <NextProgress />
-            {children}
+            <div className="flex flex-col min-h-screen">
+              <main className="flex-grow">{children}</main>
+              <Footer />
+              
+            </div>
             <GlobalDrawer />
             <GlobalModal />
-            <BackToTopButton /> {/* Ajout du bouton "Retour en haut" ici */}
+            <BackToTopButton />
           </ThemeProvider>
         </AuthContextProvider>
       </body>
