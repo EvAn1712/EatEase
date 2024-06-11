@@ -1,10 +1,10 @@
-"use client"
+'use client';
 import React, { useState } from 'react';
 import Header from '@/app/(main)/CompositionMenuNew/Components/header';
 import ChoixFormule from '@/app/(main)/CompositionMenuNew/Components/choixFormule';
 import ChoixItems from '@/app/(main)/CompositionMenuNew/Components/choixItems';
-import {POS_CART_KEY} from "@/config/constants";
-import {CartProvider} from "@/store/quick-cart/cart.context";
+import { POS_CART_KEY } from "@/config/constants";
+import { CartProvider } from "@/store/quick-cart/cart.context";
 import POSDrawer from "@/app/shared/point-of-sale/pos-drawer";
 import ValiderBtn from '@/app/(main)/CompositionMenuNew/Components/ValiderBtn';
 
@@ -27,20 +27,20 @@ const CompositionMenuNew = () => {
                 <Header />
                 <ChoixFormule onFormuleChange={handleFormuleChange} />
                 <ChoixItems formule={formule} selectedItems={items} onItemsChange={handleItemsChange} />
-                <ValiderBtn formule={formule} items={items}/>
+                <ValiderBtn formule={formule} items={items} />
 
                 {/* Division to show raw data */}
-                <div>
+                {/* <div>
                     <h2>Raw Data: affichage temporaire</h2>
                     <ul>
                         {/* Render formule */}
-                        <li>Formule id : {formule.id} Formule nom: {formule.nom}</li>
+                        {/*<li>Formule id : {formule.id} Formule nom: {formule.nom}</li>
                         {/* Render items */}
-                        {items.map(item => (
+                        {/*{items.map(item => (
                             <li key={item.id}>Item id: {item.id} Item nom: {item.nom}, Section: {item.section}</li>
                         ))}
                     </ul>
-                </div>
+                </div>*/}
                 <POSDrawer />
             </div>
         </CartProvider>

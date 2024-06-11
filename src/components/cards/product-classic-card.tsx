@@ -7,7 +7,6 @@ import cn from '@/utils/class-names';
 import { CartItem, PosProduct } from '@/types';
 import { toCurrency } from '@/utils/to-currency';
 import { PiMinus, PiPlus } from 'react-icons/pi';
-import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai'; // Import des icônes de cœur
 import { useCart } from '@/store/quick-cart/cart.context';
 import Modal from '@/app/(main)/modal/page'; // Assurez-vous d'importer le bon chemin pour votre composant Modal
 
@@ -53,7 +52,7 @@ export default function ProductClassicCard({
           <button
             className="font-mono font-bold absolute top-2 right-2 text-red-500 rounded-full w-10 h-10 flex items-center justify-center focus:outline-none"
           >
-            <AiOutlineHeart className="w-30 h-30" />
+      
           </button>
         </div>
         {discount ? (

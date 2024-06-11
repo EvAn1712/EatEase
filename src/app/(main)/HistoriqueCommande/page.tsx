@@ -20,6 +20,7 @@ const Historique: React.FC = () => {
                     id: key,
                     ...data[key],
                 }));
+                commandesArray.sort((a, b) => new Date(b.orderTime).getTime() - new Date(a.orderTime).getTime());
                 setCommandes(commandesArray);
             } else {
                 console.log("No data available");
@@ -54,6 +55,7 @@ const Historique: React.FC = () => {
                                     <small className={`text-xl block ${!commande.statut ? 'text-red-600' : 'text-green-600'}`}>
                                       {commande.statut ? 'Reçue' : 'En cours'}
                                     </small>
+                                    {commande.type === 'MENU' ? 'MENU' : 'SIMPLE'}
                                     <span className="text-2xl font-bold  block mt-2">€{commande.total}</span>
                                 </div>
                             </div>
