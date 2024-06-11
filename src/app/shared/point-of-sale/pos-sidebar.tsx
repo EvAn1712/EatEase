@@ -25,7 +25,7 @@ function PostSidebar({
   clearItemFromCart,
 }: PosSidebarProps) {
   const [loading, setLoading] = useState(false);
-  const { resetCart } = useCart();
+  const { resetCart , items} = useCart();
   const { user } = useAuthContext() as AuthContextType;
 
   async function handleOrder() {
@@ -40,21 +40,29 @@ function PostSidebar({
       const db = getDatabase(app);
       const orderRef = ref(db, 'CLICommande');
       const newOrderRef = push(orderRef);
-  
       const productDetails = 
         orderedItems.map(item => ({
         id: item.originalId,
-        quantity: item.quantity
+        quantity: item.quantity,
+        name: item.name
       }));
       const orderTime = new Date().toISOString();
       const userEmail = user.email;
-
-      
+      const statut = false;
+      // Fonction pour calculer le prix total du panier
+  const total = items.reduce(
+    (acc, item) => acc + (item?.salePrice ?? item.price) * item.quantity,
+    0
+  );
+  const tax = total * 0.05;
+  const subTotal = parseFloat((total + tax).toFixed(2));
 
       await set(newOrderRef, {
         productDetails,
         orderTime,
         userEmail,
+        total: subTotal,
+        statut, 
       });
 
       setLoading(false);
