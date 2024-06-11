@@ -1,8 +1,11 @@
+"use client";
 import React, { useState, useEffect, useCallback } from 'react';
 import { useCart } from '@/store/quick-cart/cart.context';
 import { CartItem as Item } from '@/types';
 import { get, getDatabase, ref } from "firebase/database";
 import app from "src/app/(main)/firebase-config";
+
+import { AuthContextType, useAuthContext } from '@/app/(main)/authContext';
 
 interface ValiderBtnProps {
     items: { id: string; nom: string; section: string }[];
@@ -14,6 +17,8 @@ const ValiderBtn: React.FC<ValiderBtnProps> = ({ items, formule }) => {
     const [formuleData, setFormuleData] = useState<any>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [showContent, setShowContent] = useState<boolean>(false);
+    const { user } = useAuthContext() as AuthContextType;
+    
 
     const fetchFormuleData = useCallback(async () => {
         try {
@@ -55,11 +60,18 @@ const ValiderBtn: React.FC<ValiderBtnProps> = ({ items, formule }) => {
 
         addItemToCart(item, item.quantity);
         setShowContent(true); // Show content when the button is clicked
+        
     };
 
     return (
-        <div>
-            <button onClick={handleAddToCart} disabled={loading}>Add to Cart</button>
+        <div className="mt-3 flex justify-end">
+            <button 
+                onClick={handleAddToCart} 
+                disabled={!user} 
+                className={`py-3 px-6 rounded-lg text-lg focus:outline-none ${!user ? 'bg-gray-400 cursor-not-allowed' : 'bg-primary text-white hover:bg-primary-dark'}`}
+            >
+                Ajouter au panier
+            </button>
             {showContent && (
                 <div>
                     {/* Render content here */}

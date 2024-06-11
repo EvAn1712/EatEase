@@ -64,7 +64,7 @@ const ChoixItems: React.FC<ChoixItemsProps> = ({ formule, selectedItems, onItems
             typeProduit: ["dessert", "entree", "boisson"],
         },
     ];
-
+    
     return (
         <div>
             {(formule.nom === "Petit dej'" || formule.nom === "Maxi petit dej'") && (

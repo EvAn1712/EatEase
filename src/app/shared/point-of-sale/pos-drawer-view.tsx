@@ -46,7 +46,7 @@ export default function POSDrawerView({
       )}
     >
       <DrawerHeader
-        heading="Order"
+        heading="Panier"
         onClose={() => (onOrderSuccess ? onOrderSuccess() : () => null)}
       />
       <div className="px-5 pb-0 pe-3 lg:px-7 lg:pb-0">
