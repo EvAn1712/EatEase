@@ -1,20 +1,57 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PageHeader from '@/app/shared/page-header';
-import {useAdminCheck} from "@/app/(main)/authContext";
+import { useAdminCheck } from "@/app/(main)/authContext";
+import { getDatabase, ref, get, update } from "firebase/database";
 
 const CommandesEnCours: React.FC = () => {
-    const commandesEnCours = [
-        { id: 1, nom: "Étudiant 1", contenu: "Livre de mathématiques", prix: 50, heure: "14:00" },
-        { id: 2, nom: "Étudiant 2", contenu: "Cahier de sciences", prix: 70, heure: "15:30" },
-        { id: 3, nom: "Étudiant 3", contenu: "Stylos", prix: 100, heure: "16:45" },
-    ];
+    const [commandesEnCours, setCommandesEnCours] = useState<any[]>([]);
+
+    useEffect(() => {
+        const fetchCommandes = async () => {
+            const db = getDatabase();
+            const commandesRef = ref(db, 'CLICommande');
+            const snapshot = await get(commandesRef);
+
+            if (snapshot.exists()) {
+                const commandesData = snapshot.val();
+                const commandesList = Object.keys(commandesData)
+                    .map(key => ({
+                        id: key,
+                        ...commandesData[key]
+                    }))
+                    .filter(commande => {
+                        const commandeDate = new Date(commande.orderTime);
+                        const today = new Date();
+                        return commandeDate.getDate() === today.getDate() &&
+                            commandeDate.getMonth() === today.getMonth() &&
+                            commandeDate.getFullYear() === today.getFullYear() &&
+                            commande.statut === false; // false signifies "in progress"
+                    });
+                setCommandesEnCours(commandesList);
+            } else {
+                console.log('No data available');
+            }
+        };
+
+        fetchCommandes();
+    }, []);
+
+    const handleEffectuerClick = async (id: string) => {
+        const db = getDatabase();
+        const commandesRef = ref(db, `CLICommande/${id}`);
+
+        await update(commandesRef, { statut: true }); // Update the status in the database
+
+        setCommandesEnCours(prevCommandes =>
+            prevCommandes.filter(commande => commande.id !== id) // Remove the command from state
+        );
+    };
 
     if (!useAdminCheck()) {
-        return(
+        return (
             <div className="mt-4 pb-3 3xl:mt-6 text-center">
-                <p className="text-gray-700 font-bold">Veuillez vous connecter en tant qu'admin pour accéder au
-                    contenu.</p>
+                <p className="text-gray-700 font-bold">Veuillez vous connecter en tant qu'admin pour accéder au contenu.</p>
                 <div className="flex justify-center mt-4">
                     <a href="/point-of-sale" onClick={() => {
                         window.location.href = '/point-of-sale';
@@ -26,6 +63,7 @@ const CommandesEnCours: React.FC = () => {
             </div>
         );
     }
+
     return (
         <div className="container mx-auto px-4 py-5">
             <PageHeader
@@ -37,10 +75,20 @@ const CommandesEnCours: React.FC = () => {
                 {commandesEnCours.map(commande => (
                     <div key={commande.id} className="flex flex-col items-center justify-center bg-gray-200 p-4 shadow-lg rounded-lg w-64">
                         <h2 className="font-bold text-lg">Commande {commande.id}</h2>
-                        <p className="text-gray-700">Nom: {commande.nom}</p>
-                        <p className="text-gray-700">Contenu: {commande.contenu}</p>
-                        <p className="text-gray-700">Prix: {commande.prix} €</p>
-                        <p className="text-gray-700">Heure: {commande.heure}</p>
+                        <p className="text-gray-700">{new Date(commande.orderTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }).replace(':', 'h')}</p>
+                        <p className="text-gray-700">Détails du produit:</p>
+                        <ul className="mb-4">
+                            {commande.productDetails.map((product: any, index: number) => (
+                                <li key={index}>{product.quantity} {product.name}</li>
+                            ))}
+                        </ul>
+                        <button
+                            onClick={() => handleEffectuerClick(commande.id)}
+                            className="mb-4 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none focus:bg-green-600"
+                        >
+                            Valider
+                        </button>
+                        <p className="text-gray-700 font-bold">Total: {commande.total} €</p>
                     </div>
                 ))}
             </div>
