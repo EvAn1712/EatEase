@@ -4,26 +4,40 @@ import React, { useEffect, useState } from 'react';
 import PageHeader from '@/app/shared/page-header';
 import app from "@/app/(main)/firebase-config";
 import { getDatabase, ref, get } from 'firebase/database';
+import { getAuth } from 'firebase/auth';
 
 const Historique: React.FC = () => {
     const [commandes, setCommandes] = useState<any[]>([]);
+    const [userEmail, setUserEmail] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchCommandes = async () => {
-            const db = getDatabase(app);
-            const commandesRef = ref(db, 'CLICommande');
-            const snapshot = await get(commandesRef);
+            const auth = getAuth(app);
+            const user = auth.currentUser;
 
-            if (snapshot.exists()) {
-                const data = snapshot.val();
-                const commandesArray = Object.keys(data).map(key => ({
-                    id: key,
-                    ...data[key],
-                }));
-                commandesArray.sort((a, b) => new Date(b.orderTime).getTime() - new Date(a.orderTime).getTime());
-                setCommandes(commandesArray);
+            if (user) {
+                setUserEmail(user.email);
+
+                const db = getDatabase(app);
+                const commandesRef = ref(db, 'CLICommande');
+                const snapshot = await get(commandesRef);
+
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    const commandesArray = Object.keys(data)
+                        .map(key => ({
+                            id: key,
+                            ...data[key],
+                        }))
+                        .filter(commande => commande.userEmail === user.email);
+
+                    commandesArray.sort((a, b) => new Date(b.orderTime).getTime() - new Date(a.orderTime).getTime());
+                    setCommandes(commandesArray);
+                } else {
+                    console.log("No data available");
+                }
             } else {
-                console.log("No data available");
+                console.log("User not logged in");
             }
         };
 
@@ -49,11 +63,11 @@ const Historique: React.FC = () => {
                         <div key={commande.id} className="block border-b border-gray-300 py-6 px-8 text-lg">
                             <div className="flex justify-between">
                                 <h5 className="font-bold text-xl">
-                                  Commande passée le {new Date(commande.orderTime).toLocaleDateString()} à {new Date(commande.orderTime).toLocaleTimeString()}
+                                    Commande passée le {new Date(commande.orderTime).toLocaleDateString()} à {new Date(commande.orderTime).toLocaleTimeString()}
                                 </h5>
                                 <div className="text-right">
                                     <small className={`text-xl block ${!commande.statut ? 'text-red-600' : 'text-green-600'}`}>
-                                      {commande.statut ? 'Reçue' : 'En cours'}
+                                        {commande.statut ? 'Reçue' : 'En cours'}
                                     </small>
                                     {commande.type === 'MENU' ? 'MENU' : 'SIMPLE'}
                                     <span className="text-2xl font-bold  block mt-2">€{commande.total}</span>
@@ -61,7 +75,7 @@ const Historique: React.FC = () => {
                             </div>
                             <div className="mt-4">
                                 <p className="text-xl">
-                                  Produits: {commande.productDetails.map((product: any) => `${product.name} (x${product.quantity})`).join(', ')}
+                                    Produits: {commande.productDetails.map((product: any) => `${product.name} (x${product.quantity})`).join(', ')}
                                 </p>
                             </div>
                         </div>
@@ -73,6 +87,5 @@ const Historique: React.FC = () => {
         </div>
     );
 }
-
 
 export default Historique;
