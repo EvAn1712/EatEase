@@ -1,76 +1,76 @@
 'use client';
-import React, { useState, ChangeEvent, FormEvent, useContext, useEffect } from 'react';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
+import {
+    onAuthStateChanged,
+    sendPasswordResetEmail,
+    updateProfile
+} from 'firebase/auth';
+import { auth } from '../authContext';
 import PageHeader from '@/app/shared/page-header';
-import { AuthContext, AuthContextType } from '@/app/(main)/authContext';
 
 const InfoPerso: React.FC = () => {
-    const { user, updatePassword } = useContext(AuthContext) as AuthContextType;
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
         email: '',
-        currentPassword: '',
-        newPassword: '',
     });
     const [error, setError] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
     const [loading, setLoading] = useState(true);
-    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [resetMessage, setResetMessage] = useState('');
+    const [showResetPassword, setShowResetPassword] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
-        if (user) {
-            const [firstName, lastName] = user.displayName?.split(' ') || ['', ''];
-            setFormData({
-                firstName: firstName,
-                lastName: lastName,
-                email: user.email || '',
-                currentPassword: '',
-                newPassword: '',
-            });
-            setLoading(false);
-        } else {
-            setLoading(false);
-        }
-    }, [user]);
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                const [firstName, lastName] = user.displayName?.split(' ') || ['', ''];
+                setFormData({
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: user.email || '',
+                });
+                setLoading(false);
+            } else {
+                setLoading(false);
+            }
+        });
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        return () => unsubscribe();
+    }, []);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
-    const validatePassword = (password: string): string | null => {
-        if (password.length < 8) {
-            return "Le mot de passe doit contenir au moins 8 caractères.";
-        }
-        if (!/[A-Z]/.test(password)) {
-            return "Le mot de passe doit contenir au moins une lettre majuscule.";
-        }
-        if (!/[a-z]/.test(password)) {
-            return "Le mot de passe doit contenir au moins une lettre minuscule.";
-        }
-        if (!/[0-9]/.test(password)) {
-            return "Le mot de passe doit contenir au moins un chiffre.";
-        }
-        if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-            return "Le mot de passe doit contenir au moins un symbole spécial.";
-        }
-        return null;
-    };
-
-    const handleSubmit = async (e: FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const passwordError = validatePassword(formData.newPassword);
-        if (passwordError) {
-            setError(passwordError);
-            return;
-        }
+        setError('');
+        setSuccessMessage('');
 
         try {
-            await updatePassword(formData.currentPassword, formData.newPassword);
-            alert('Informations mises à jour avec succès!');
+            const displayName = `${formData.firstName} ${formData.lastName}`;
+            if (auth.currentUser) {
+                await updateProfile(auth.currentUser, { displayName: displayName });
+                setSuccessMessage('Nom d\'affichage mis à jour avec succès!');
+            }
         } catch (error) {
-            setError('Le mot de passe actuel est incorrect.');
+            console.error('Erreur lors de la mise à jour du nom d\'affichage :', error);
+            setError('Une erreur est survenue lors de la mise à jour du nom d\'affichage.');
+        }
+    };
+
+    const handlePasswordReset = async () => {
+        setResetMessage('');
+        setErrorMessage('');
+
+        try {
+            await sendPasswordResetEmail(auth, formData.email);
+            setResetMessage("Un e-mail de réinitialisation du mot de passe a été envoyé.");
+        } catch (error) {
+            console.error('Erreur lors de l\'envoi de l\'e-mail de réinitialisation du mot de passe', error);
+            setErrorMessage("Une erreur s'est produite lors de l'envoi de l'e-mail de réinitialisation. Veuillez réessayer.");
         }
     };
 
@@ -84,16 +84,6 @@ const InfoPerso: React.FC = () => {
         return <div>Chargement...</div>;
     }
 
-    if (!user) {
-        return (
-            <div className="flex items-center justify-center min-h-screen">
-                <div className="text-center text-lg text-gray-800">
-                    Utilisateur non authentifié, veuillez vous connecter ou vous inscrire.
-                </div>
-            </div>
-        );
-    }
-
     return (
         <div className="w-4/5 mx-auto py-8">
             <PageHeader
@@ -103,6 +93,7 @@ const InfoPerso: React.FC = () => {
             />
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                 {error && <div className="text-red-500">{error}</div>}
+                {successMessage && <div className="text-green-500">{successMessage}</div>}
                 <div className="flex flex-col">
                     <label htmlFor="firstName" className="text-lg font-bold">Prénom:</label>
                     <input
@@ -136,48 +127,22 @@ const InfoPerso: React.FC = () => {
                         className="px-4 py-2 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed"
                     />
                 </div>
-                <div className="flex flex-col relative">
-                    <label htmlFor="currentPassword" className="text-lg font-bold">Mot de passe actuel:</label>
-                    <input
-                        type={showCurrentPassword ? 'text' : 'password'}
-                        id="currentPassword"
-                        name="currentPassword"
-                        value={formData.currentPassword}
-                        onChange={handleChange}
-                        className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                    />
-                    <button
-                        type="button"
-                        onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                        className="absolute right-3 top-10"
-                    >
-                        {showCurrentPassword ? <FaEyeSlash /> : <FaEye />}
-                    </button>
-                </div>
-                <div className="flex flex-col relative">
-                    <label htmlFor="newPassword" className="text-lg font-bold">Nouveau mot de passe:</label>
-                    <input
-                        type={showNewPassword ? 'text' : 'password'}
-                        id="newPassword"
-                        name="newPassword"
-                        value={formData.newPassword}
-                        onChange={handleChange}
-                        className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                    />
-                    <button
-                        type="button"
-                        onClick={() => setShowNewPassword(!showNewPassword)}
-                        className="absolute right-3 top-10"
-                    >
-                        {showNewPassword ? <FaEyeSlash /> : <FaEye />}
-                    </button>
-                </div>
                 <div>
-                    <button type="submit" className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Mettre à jour</button>
+                    <button type="submit" className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Mettre à jour </button>
                 </div>
             </form>
+            <div className="mt-4 text-center">
+                <button
+                    onClick={handlePasswordReset}
+                    className="w-full bg-primary text-white font-semibold py-2 rounded-lg hover:bg-blue-600 transition duration-300"
+                >
+                    Changer le mot de passe
+                </button>
+                {resetMessage && <p className="mt-4 text-center text-green-600">{resetMessage}</p>}
+                {errorMessage && <p className="mt-4 text-center text-red-600">{errorMessage}</p>}
+            </div>
         </div>
     );
-}
+};
 
 export default InfoPerso;
