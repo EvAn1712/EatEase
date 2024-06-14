@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from 'firebase/auth';
+import {onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, User} from 'firebase/auth';
 import { auth, useAuthContext } from '../authContext';
 import { useRouter } from 'next/navigation';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
@@ -15,7 +15,8 @@ const LoginForm = () => {
   const [resetMessage, setResetMessage] = useState(""); // State for reset message
   const [showResetPassword, setShowResetPassword] = useState(false); // State to toggle reset password section
   const router = useRouter();
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  //const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {

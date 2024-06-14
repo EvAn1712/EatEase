@@ -76,14 +76,14 @@ export default function POSOrderProducts({
                     </Link>
                   </Title>
                   <div className="mb-2 text-xs font-medium text-gray-900">
-                    {toCurrency(item?.salePrice ?? item.price)} x{' '}
+                    {toCurrency(item.price)} x{' '}
                     {item.quantity}
                   </div>
                   <QuantityControl item={item} />
                 </div>
               </div>
               <div className="flex items-center gap-3 whitespace-nowrap font-medium text-gray-700">
-                {toCurrency((item?.salePrice ?? item.price) * item.quantity)}
+                {toCurrency((item.price) * item.quantity)}
               </div>
             </div>
           ))}
