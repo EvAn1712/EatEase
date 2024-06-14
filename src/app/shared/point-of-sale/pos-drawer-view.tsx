@@ -1,5 +1,7 @@
-'use client';
-import { useState } from 'react';
+"use client";
+import React, { useState, useRef } from 'react';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
 import type { CartItem } from '@/types';
 import toast from 'react-hot-toast';
 import { Button, EmptyProductBoxIcon, Title, Text } from 'rizzui';
@@ -10,6 +12,7 @@ import DrawerHeader from '@/app/shared/drawer-header';
 import app from '@/app/(main)/firebase-config';
 import { getDatabase, ref, set, push } from 'firebase/database';
 import { AuthContextType, useAuthContext } from '@/app/(main)/authContext';
+import PaymentForm from '@/app/(main)/Payment/Payment'; // RAJOUTER PAYMENT ICI !!! 
 
 type POSOrderTypes = {
   className?: string;
@@ -20,6 +23,8 @@ type POSOrderTypes = {
   clearItemFromCart: (id: number) => void;
 };
 
+const stripePromise = loadStripe('pk_test_51PEqU6DdEvvvbJGgjfC6PGArNnePqm6IDWQaIHVbXgUcKNKBqlagx5PzFk6fVqjRyROxkfrsPUZefOt11946sO3d00BbEsguSm'); // Replace with your actual publishable key
+
 export default function POSDrawerView({
   className,
   simpleBarClassName,
@@ -29,8 +34,10 @@ export default function POSDrawerView({
   clearItemFromCart,
 }: POSOrderTypes) {
   const [loading, setLoading] = useState(false);
+  const [showPaymentForm, setShowPaymentForm] = useState(false); // State to show the payment form
   const { user } = useAuthContext() as AuthContextType;
   const { resetCart } = useCart();
+  const paymentRef = useRef<HTMLDivElement>(null); // Create a ref for the payment section
 
   async function handleOrder() {
     if (!user) {
@@ -38,6 +45,13 @@ export default function POSDrawerView({
       return;
     }
 
+    setShowPaymentForm(true); // Show the payment form instead of directly placing the order
+
+    // Scroll to the payment section
+    paymentRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  const handlePaymentSuccess = async (amount: number, description: string, paymentMethodId: string) => {
     setLoading(true);
 
     try {
@@ -45,10 +59,10 @@ export default function POSDrawerView({
       const orderRef = ref(db, 'CLICommande');
       const newOrderRef = push(orderRef);
       const orderTime = new Date().toISOString();
-      const userEmail = user.email;
+      const userEmail = user?.email;
       const statut = false;
       const total = orderedItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-
+      
       const productDetails = orderedItems.map(i => ({
         id: i.id,
         name: i.name,
@@ -68,12 +82,14 @@ export default function POSDrawerView({
       resetCart();
       setLoading(false);
       if (onOrderSuccess) onOrderSuccess();
+      setShowPaymentForm(false); // Hide the payment form after success
     } catch (error) {
       console.error('Error creating order:', error);
       toast.error(<Text as="b">Erreur lors de la création de la commande</Text>);
       setLoading(false);
     }
   };
+
   return (
     <div
       className={cn(
@@ -85,16 +101,39 @@ export default function POSDrawerView({
         heading="Panier"
         onClose={() => (onOrderSuccess ? onOrderSuccess() : () => null)}
       />
-      <div className="px-5 pb-0 pe-3 lg:px-7 lg:pb-0">
+      <div className="px-5 pb-0 pe-3 lg:px-7 lg:pb-0 flex-1 overflow-y-auto">
         {!!orderedItems?.length && (
-          <POSOrderProducts
-            orderedItems={orderedItems}
-            removeItemFromCart={removeItemFromCart}
-            clearItemFromCart={clearItemFromCart}
-            itemClassName="pe-4"
-            simpleBarClassName={simpleBarClassName}
-            showControls
-          />
+          <>
+            <POSOrderProducts
+              orderedItems={orderedItems}
+              removeItemFromCart={removeItemFromCart}
+              clearItemFromCart={clearItemFromCart}
+              itemClassName="pe-4"
+              simpleBarClassName={simpleBarClassName}
+              showControls
+            />
+            <div className="border-t border-gray-300 p-5 pb-0 lg:p-7">
+              <PriceCalculation />
+              <div className="flex flex-col gap-4">
+                <Button
+                  className="h-11 w-full"
+                  isLoading={loading}
+                  onClick={handleOrder}
+                >
+                  Commander
+                </Button>
+              </div>
+            </div>
+            {showPaymentForm && (
+              <div className="p-5 lg:p-7" ref={paymentRef}>
+                <Elements stripe={stripePromise}>
+                  <PaymentForm 
+                    onPaymentSuccess={handlePaymentSuccess} // Pass the payment success callback
+                  />
+                </Elements>
+              </div>
+            )}
+          </>
         )}
       </div>
       {!orderedItems?.length && (
@@ -118,25 +157,11 @@ export default function POSDrawerView({
           </div>
         </div>
       )}
-      {!!orderedItems?.length && (
-        <div className="border-t border-gray-300 p-5 pb-0 lg:p-7">
-          <PriceCalculation />
-          <div className="flex flex-col gap-4">
-            <Button
-              className="h-11 w-full"
-              isLoading={loading}
-              onClick={handleOrder}
-            >
-              Commander
-            </Button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
 
-const TAX_PERCENTAGE = 0;
+const TAX_PERCENTAGE = 5;
 
 export function PriceCalculation() {
   const { items } = useCart();
@@ -144,8 +169,8 @@ export function PriceCalculation() {
     (acc, item) => acc + (item?.salePrice ?? item.price) * item.quantity,
     0
   );
-  const tax = total;
-  const subTotal = total;
+  const tax = total * (TAX_PERCENTAGE / 100);
+  const subTotal = total + tax;
 
   return (
     <div className="mb-7 space-y-3.5">
