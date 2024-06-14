@@ -6,48 +6,48 @@ export const menuItems = [
     name: 'Eat ease EPF',
   },
     {
+        name: 'Commandes en cours',
+        href: '/ADMHistoriqueCommande',
+        icon: <PiCreditCardDuotone />,
+        allowedDomains: ['gmail.com'], // Domaines autorisés
+    },
+    {
         name: 'Accueil',
         href: '/point-of-sale',
         icon: <PiCreditCardDuotone />,
-       // allowedDomains: ['gmail.com', 'epfedu.fr'], // Domaines autorisés
+       allowedDomains: ['gmail.com', 'epfedu.fr'], // Domaines autorisés
 
     },
  {
     name: 'Ajout de Produit',
     href: '/ADMAjoutProduit',
     icon: <PiCreditCardDuotone />,
-   // allowedDomains: ['gmail.com'], // Domaines autorisés
+   allowedDomains: ['gmail.com'], // Domaines autorisés
   },
   {
     name: 'Mon profil',
     href: '/MonProfile',
     icon: <PiCreditCardDuotone />,
-    //allowedDomains: ['epfedu.fr'], // Domaines autorisés
+    allowedDomains: ['epfedu.fr'], // Domaines autorisés
   },
   {
     name: 'Mes commandes',
     href: '/HistoriqueCommande',
     icon: <PiCreditCardDuotone />,
-    //allowedDomains: ['epfedu.fr'], // Domaines autorisés
+    allowedDomains: ['epfedu.fr'], // Domaines autorisés
   },
   {
     name: 'Stock',
     href: '/ADMStock',
     icon: <PiCreditCardDuotone />,
-   // allowedDomains: ['gmail.com'], // Domaines autorisés
+   allowedDomains: ['gmail.com'], // Domaines autorisés
   },
  {
     name: 'Liste de Produits',
     href: '/ADMListProduit',
     icon: <PiCreditCardDuotone />,
-   // allowedDomains: ['gmail.com'], // Domaines autorisés
+   allowedDomains: ['gmail.com'], // Domaines autorisés
   },
-    {
-        name: 'Commandes en cours',
-        href: '/ADMHistoriqueCommande',
-        icon: <PiCreditCardDuotone />,
-       // allowedDomains: ['gmail.com'], // Domaines autorisés
-    }
 ];
 
 const Menu = () => {
@@ -62,7 +62,7 @@ const Menu = () => {
     );
   }
 
-  const userDomain = user.split('@')[1];
+  const userDomain = user.split('@')[0];
 
   return (
     <div className="max-w-md mx-auto mt-8 p-6 bg-gray-100 rounded-lg shadow-md">

@@ -77,7 +77,6 @@ export type PosProduct = {
   salePrice: number;
   quantity: number;
   size: number;
-  discount?: number;
   allergenes: string[];
 };
 

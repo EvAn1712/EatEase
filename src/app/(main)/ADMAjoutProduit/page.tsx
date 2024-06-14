@@ -80,7 +80,7 @@ export default function ADMAjoutProduit() {
                     stock: 0,  // Ajout du champ stock avec une valeur de 0
                 });
                 console.log("Data saved");
-                setSaveStatus("Data saved successfully!");
+                setSaveStatus("Nouveau produit enregistré!");
 
                 // Reset the fields
                 setInputnom("");
@@ -151,130 +151,131 @@ export default function ADMAjoutProduit() {
         );
     }
 
-        return (
-            <div className="w-4/5 mx-auto py-8">
-                <PageHeader
-                    title={pageHeader.title}
-                    breadcrumb={pageHeader.breadcrumb}
-                    className={pageHeader.className}
-                />
-                <form onSubmit={Savedata} className="flex flex-col gap-4">
-                    <div className="flex flex-col">
-                        <label htmlFor="inputnom" className="text-lg font-bold">Nom du produit:</label>
-                        <input
-                            type="text"
-                            id="inputnom"
-                            name="inputnom"
-                            value={inputnom}
-                            onChange={handleChange}
-                            placeholder="Entrez le nom du produit"
-                            className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                        />
-                    </div>
-                    <div className="flex flex-col">
-                        <label htmlFor="inputprix" className="text-lg font-bold">Prix:</label>
-                        <input
-                            type="number"
-                            id="inputprix"
-                            name="inputprix"
-                            value={inputprix || ''}
-                            onChange={handleChange}
-                            placeholder="Entrez le prix du produit"
-                            className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                        />
-                    </div>
-                    <div className="flex flex-col">
-                        <label htmlFor="inputDescription" className="text-lg font-bold">Description:</label>
-                        <textarea
-                            id="inputDescription"
-                            name="inputDescription"
-                            value={inputDescription}
-                            onChange={handleChange}
-                            placeholder="Entrez la description du produit"
-                            className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                        />
-                    </div>
-                    <div className="flex flex-col">
-                        <label htmlFor="inputTypeProduit" className="text-lg font-bold">Type de produit:</label>
-                        <select
-                            id="inputTypeProduit"
-                            name="inputTypeProduit"
-                            value={inputTypeProduit}
+    return (
+        <div className="w-4/5 max-w-lg mx-auto py-8">
+            <PageHeader
+                title={pageHeader.title}
+                breadcrumb={pageHeader.breadcrumb}
+                className={pageHeader.className}
+            />
+            <form onSubmit={Savedata} className="space-y-6">
+                <div className="flex flex-col">
+                    <label htmlFor="inputnom" className="text-lg font-bold">Nom du produit:</label>
+                    <input
+                        type="text"
+                        id="inputnom"
+                        name="inputnom"
+                        value={inputnom}
+                        onChange={handleChange}
+                        placeholder="Entrez le nom du produit"
+                        className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                    />
+                </div>
+                <div className="flex flex-col">
+                    <label htmlFor="inputprix" className="text-lg font-bold">Prix:</label>
+                    <input
+                        type="number"
+                        id="inputprix"
+                        name="inputprix"
+                        value={inputprix || ''}
+                        onChange={handleChange}
+                        placeholder="Entrez le prix du produit"
+                        className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                    />
+                </div>
+                <div className="flex flex-col">
+                    <label htmlFor="inputDescription" className="text-lg font-bold">Description:</label>
+                    <textarea
+                        id="inputDescription"
+                        name="inputDescription"
+                        value={inputDescription}
+                        onChange={handleChange}
+                        placeholder="Entrez la description du produit"
+                        className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                    />
+                </div>
+                <div className="flex flex-col">
+                    <label htmlFor="inputTypeProduit" className="text-lg font-bold">Type de produit:</label>
+                    <select
+                        id="inputTypeProduit"
+                        name="inputTypeProduit"
+                        value={inputTypeProduit}
+                        onChange={handleChange}
+                        className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                    >
+                        <option value="">Sélectionnez le type de produit</option>
+                        <option value="patisseries">Patisserie</option>
+                        <option value="viennoiserie">Viennoiserie</option>
+                        <option value="snacking">Snacking</option>
+                        <option value="salade">Salade</option>
+                        <option value="sandwich">Sandwich</option>
+                        <option value="dessert">Dessert</option>
+                        <option value="glace">Glaces</option>
+                        <option value="boisson_froide">Boisson froide</option>
+                        <option value="boisson_chaude">Boisson chaude</option>
+                        <option value="confisseries">Confisserie</option>
+                        <option value="service">Service</option>
+                    </select>
+                </div>
+                <div className="flex flex-col">
+                    <label htmlFor="selectedMenus" className="text-lg font-bold">Menus:</label>
+                    <FormControl>
+                        <InputLabel id="menus-label"></InputLabel>
+                        <Select
+                            labelId="menus-label"
+                            id="selectedMenus"
+                            name="selectedMenus"
+                            multiple
+                            value={selectedMenus}
                             onChange={handleChange}
                             className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
                         >
-                            <option value="">Sélectionnez le type de produit</option>
-                            <option value="patisseries">Patisserie</option>
-                            <option value="viennoiserie">Viennoiserie</option>
-                            <option value="snacking">Snacking</option>
-                            <option value="salade">Salade</option>
-                            <option value="sandwich">Sandwich</option>
-                            <option value="dessert">Dessert</option>
-                            <option value="glace">Glaces</option>
-                            <option value="boisson_froide">Boisson froide</option>
-                            <option value="boisson_chaude">Boisson chaude</option>
-                            <option value="confisseries">Confisserie</option>
-                            <option value="service">Service</option>
-                        </select>
-                    </div>
-                    <div className="flex flex-col">
-                        <label htmlFor="selectedMenus" className="text-lg font-bold">Menus:</label>
-                        <FormControl>
-                            <InputLabel id="menus-label" className="text-lg font-bold"></InputLabel>
-                            <Select
-                                labelId="menus-label"
-                                id="selectedMenus"
-                                name="selectedMenus"
-                                multiple
-                                value={selectedMenus}
-                                onChange={handleChange}
-                                className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                            >
-                                {menuOptions.map((menu) => (
-                                    <MenuItem key={menu} value={menu}>{menu}</MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </div>
-                    <div className="flex flex-col">
-                        <label htmlFor="selectedallergenes" className="text-lg font-bold">Allergènes:</label>
-                        <FormControl>
-                            <InputLabel id="allergenes-label" className="text-lg font-bold"></InputLabel>
-                            <Select
-                                labelId="allergenes-label"
-                                id="selectedAllergenes"
-                                name="selectedAllergenes"
-                                multiple
-                                value={selectedAllergenes}
-                                onChange={handleChange}
-                                className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                            >
-                                {allergenes.map((allergene) => (
-                                    <MenuItem key={allergene} value={allergene}>{allergene}</MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </div>
-                    <div className="flex flex-col">
-                        <label htmlFor="image" className="text-lg font-bold">Image:</label>
-                        <input
-                            type="file"
-                            id="image"
-                            name="image"
-                            accept="image/*"
-                            onChange={handleImageChange}
-                            ref={imageInputRef}
+                            {menuOptions.map((menu) => (
+                                <MenuItem key={menu} value={menu}>{menu}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </div>
+                <div className="flex flex-col">
+                    <label htmlFor="selectedAllergenes" className="text-lg font-bold">Allergènes:</label>
+                    <FormControl>
+                        <InputLabel id="allergenes-label"></InputLabel>
+                        <Select
+                            labelId="allergenes-label"
+                            id="selectedAllergenes"
+                            name="selectedAllergenes"
+                            multiple
+                            value={selectedAllergenes}
+                            onChange={handleChange}
                             className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                        />
-                    </div>
-                    <div>
-                        <button type="submit"
-                                className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Créer
-                            le produit
-                        </button>
-                    </div>
-                </form>
-                <p>{saveStatus}</p>
-            </div>
-        );
+                        >
+                            {allergenes.map((allergene) => (
+                                <MenuItem key={allergene} value={allergene}>{allergene}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </div>
+                <div className="flex flex-col">
+                    <label htmlFor="image" className="text-lg font-bold">Image:</label>
+                    <input
+                        type="file"
+                        id="image"
+                        name="image"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        ref={imageInputRef}
+                        className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                    />
+                </div>
+                <div>
+                    <button type="submit"
+                            className="w-full px-6 py-2 bg-primary text-white font-semibold rounded-md hover:bg-primary-dark focus:outline-none focus:bg-primary-dark">
+                        Créer le produit
+                    </button>
+                </div>
+            </form>
+            <p>{saveStatus}</p>
+        </div>
+    );
+
 }

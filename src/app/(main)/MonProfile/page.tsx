@@ -91,10 +91,10 @@ const InfoPerso: React.FC = () => {
                 breadcrumb={pageHeader.breadcrumb}
                 className={pageHeader.className}
             />
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                {error && <div className="text-red-500">{error}</div>}
-                {successMessage && <div className="text-green-500">{successMessage}</div>}
-                <div className="flex flex-col">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+                {error && <div className="text-red-500 mb-4">{error}</div>}
+                {successMessage && <div className="text-green-500 mb-4">{successMessage}</div>}
+                <div className="flex flex-col gap-2">
                     <label htmlFor="firstName" className="text-lg font-bold">Prénom:</label>
                     <input
                         type="text"
@@ -105,7 +105,7 @@ const InfoPerso: React.FC = () => {
                         className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
                     />
                 </div>
-                <div className="flex flex-col">
+                <div className="flex flex-col gap-2">
                     <label htmlFor="lastName" className="text-lg font-bold">Nom:</label>
                     <input
                         type="text"
@@ -116,7 +116,7 @@ const InfoPerso: React.FC = () => {
                         className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
                     />
                 </div>
-                <div className="flex flex-col">
+                <div className="flex flex-col gap-2">
                     <label htmlFor="email" className="text-lg font-bold">Email:</label>
                     <input
                         type="email"
@@ -127,15 +127,18 @@ const InfoPerso: React.FC = () => {
                         className="px-4 py-2 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed"
                     />
                 </div>
-                <div>
-                    <button type="submit" className="border border-bg-primary text-bg-primary px-4 py-2 mr-4 rounded-md hover:bg-primary hover:text-white focus:outline-none focus:bg-primary focus:text-white">Mettre à jour </button>
+                <div className="flex justify-end mt-4">
+                    <button
+                        type="submit"
+                        className="border border-primary text-current px-4 py-2 rounded-lg hover:text-primary focus:text-primary transition duration-300">
+                        Mettre à jour
+                    </button>
                 </div>
             </form>
-            <div className="mt-4 text-center">
+            <div className="mt-8 text-center">
                 <button
                     onClick={handlePasswordReset}
-                    className="w-full bg-primary text-white font-semibold py-2 rounded-lg hover:bg-blue-600 transition duration-300"
-                >
+                    className="border border-primary text-current px-4 py-2 rounded-lg hover:text-primary focus:text-primary transition duration-300">
                     Changer le mot de passe
                 </button>
                 {resetMessage && <p className="mt-4 text-center text-green-600">{resetMessage}</p>}

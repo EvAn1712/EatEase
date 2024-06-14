@@ -55,13 +55,13 @@ const ChoixItems: React.FC<ChoixItemsProps> = ({ formule, selectedItems, onItems
             name: "Choix Accompagnement 1 : ",
             open: isAccompagnement1Open,
             setOpen: setIsAccompagnement1Open,
-            typeProduit: ["dessert", "entree", "boisson"],
+            typeProduit: ["dessert", "entree", "boisson","boisson_froide","patisseries"],
         },
         {
             name: "Choix Accompagnement 2 : ",
             open: isAccompagnement2Open,
             setOpen: setIsAccompagnement2Open,
-            typeProduit: ["dessert", "entree", "boisson"],
+            typeProduit: ["dessert", "entree", "boisson","boisson_froide","patisseries"],
         },
     ];
     

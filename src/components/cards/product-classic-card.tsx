@@ -8,7 +8,6 @@ import { CartItem, PosProduct } from '@/types';
 import { toCurrency } from '@/utils/to-currency';
 import { PiMinus, PiPlus } from 'react-icons/pi';
 import { useCart } from '@/store/quick-cart/cart.context';
-import Modal from '@/app/(main)/modal/page'; // Assurez-vous d'importer le bon chemin pour votre composant Modal
 
 interface ProductProps {
   product: PosProduct;
@@ -19,14 +18,12 @@ export default function ProductClassicCard({
   product,
   className,
 }: ProductProps) {
-  const { name, description, price, image, salePrice, discount, allergenes } = product;
+  const { name, description, price, image, salePrice, allergenes } = product;
 
   const { addItemToCart, isInCart } = useCart();
   
-  // État pour gérer la modal d'ajout au panier
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // État pour gérer l'option sélectionnée
   const [selectedOption, setSelectedOption] = useState('Simple');
 
   const openModal = () => setIsModalOpen(true);
@@ -55,14 +52,6 @@ export default function ProductClassicCard({
       
           </button>
         </div>
-        {discount ? (
-          <Text
-            as="span"
-            className="absolute start-5 top-5 rounded-lg bg-white px-2.5 py-1.5 text-xs font-semibold dark:bg-gray-200 dark:text-gray-700"
-          >
-            {discount}% de remise
-          </Text>
-        ) : null}
       </div>
 
       <div className="pt-3">
@@ -74,12 +63,7 @@ export default function ProductClassicCard({
           Allergènes : {allergenes ? allergenes.join(', ') : 'Aucun'}
         </Text>
         <div className="mt-2 flex items-center font-semibold text-gray-900">
-          {toCurrency(Number(salePrice))}
-          {price && (
-            <del className="ps-1.5 text-[13px] font-normal text-gray-500">
-              {toCurrency(Number(price))}
-            </del>
-          )}
+          {toCurrency(Number(price))}
         </div>
         <div className="mt-3">
           {isInCart(product.id) ? (
@@ -94,46 +78,6 @@ export default function ProductClassicCard({
           )}
         </div>
       </div>
-
-      {/* Modal pour ajouter au panier
-      <Modal show={isModalOpen} onClose={closeModal}>
-        <div>
-          <h2 className="text-xl font-semibold">Choisissez une option</h2>
-          <div className="mt-4">
-            <label className="inline-flex items-center">
-              <input
-                type="radio"
-                className="form-radio"
-                name="option"
-                value="Simple"
-                checked={selectedOption === 'Simple'}
-                onChange={handleOptionChange}
-              />
-              <span className="ml-2">Simple</span>
-            </label>
-            <label className="inline-flex items-center ml-6">
-              <input
-                type="radio"
-                className="form-radio"
-                name="option"
-                value="Menu"
-                checked={selectedOption === 'Menu'}
-                onChange={handleOptionChange}
-              />
-              <span className="ml-2">Menu</span>
-            </label>
-          </div>
-          <Button
-            onClick={() => {
-              addItemToCart(product, 1);
-              closeModal();
-            }}
-            className="mt-4 w-full"
-          >
-            Ajouter au panier
-          </Button>
-        </div>
-      </Modal> */}
     </div>
   );
 }

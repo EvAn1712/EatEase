@@ -5,7 +5,7 @@ import {
   updateProfile,
   onAuthStateChanged,
   sendEmailVerification,
-  signOut
+  signOut, User
 } from 'firebase/auth';
 import { auth, useAuthContext } from '../authContext';
 import { useRouter } from 'next/navigation';
@@ -24,7 +24,7 @@ const SignupForm = () => {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -34,7 +34,7 @@ const SignupForm = () => {
     return () => unsubscribe();
   }, []);
 
-  const validatePassword = (password) => {
+  const validatePassword = (password : string) => {
     if (password.length < 8) {
       return "Le mot de passe doit contenir au moins 8 caractères.";
     }
@@ -53,7 +53,7 @@ const SignupForm = () => {
     return null;
   };
 
-  const validateEmail = (email) => {
+  const validateEmail = (email : string) => {
     const emailDomain = email.split('@')[1];
     if (emailDomain !== 'epfedu.fr' && emailDomain !== 'epfadmin.fr') {
       return "L'adresse e-mail doit se terminer par @epfedu.fr ou @epfadmin.fr";
@@ -85,7 +85,7 @@ const SignupForm = () => {
       await sendEmailVerification(userCredential.user);
       setMessage('Inscription réussie! Vérifiez votre e-mail pour valider votre compte.');
       await signOut(auth);
-    } catch (error) {
+    } catch (error : any) {
       if (error.code === 'auth/email-already-in-use') {
         setError("Un compte est déjà associé à cette adresse e-mail. Veuillez vous connecter.");
       } else {

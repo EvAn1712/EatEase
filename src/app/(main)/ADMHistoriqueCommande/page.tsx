@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import PageHeader from '@/app/shared/page-header';
 import { useAdminCheck } from "@/app/(main)/authContext";
 import { getDatabase, ref, get, update } from "firebase/database";
+import email from "next-auth/core/lib/email/signin";
 
 const CommandesEnCours: React.FC = () => {
     const [commandesEnCours, setCommandesEnCours] = useState<any[]>([]);
@@ -26,7 +27,7 @@ const CommandesEnCours: React.FC = () => {
                         return commandeDate.getDate() === today.getDate() &&
                             commandeDate.getMonth() === today.getMonth() &&
                             commandeDate.getFullYear() === today.getFullYear() &&
-                            commande.statut === false; // false signifies "in progress"
+                            commande.statut === false;
                     });
                 setCommandesEnCours(commandesList);
             } else {
@@ -41,10 +42,10 @@ const CommandesEnCours: React.FC = () => {
         const db = getDatabase();
         const commandesRef = ref(db, `CLICommande/${id}`);
 
-        await update(commandesRef, { statut: true }); // Update the status in the database
+        await update(commandesRef, { statut: true });
 
         setCommandesEnCours(prevCommandes =>
-            prevCommandes.filter(commande => commande.id !== id) // Remove the command from state
+            prevCommandes.filter(commande => commande.id !== id)
         );
     };
 
@@ -69,14 +70,19 @@ const CommandesEnCours: React.FC = () => {
             <PageHeader
                 title="Commandes en Cours"
                 breadcrumb={[]}
-                className="[&_h2]:font-lexend [&_h2]:font-bold"
+                className="font-lexend font-bold"
             />
-            <div className="flex overflow-x-auto mt-5 gap-4">
+            <div className="flex flex-wrap gap-4 overflow-x-auto mt-5">
                 {commandesEnCours.map(commande => (
-                    <div key={commande.id} className="flex flex-col items-center justify-center bg-gray-200 p-4 shadow-lg rounded-lg w-64">
-                        <h2 className="font-bold text-lg">Commande en cours :{commande.id}</h2>
-                        <p className="text-gray-700">{new Date(commande.orderTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }).replace(':', 'h')}</p>
-                        <p className="text-gray-700">Détails du produit:</p>
+                    <div key={commande.id}
+                         className="flex flex-col items-center justify-center border border-primary p-4 shadow-lg rounded-lg w-64">
+                        <h2 className="font-bold text-lg mb-2">Commande :</h2>
+                        <h1 className="font-bold text-lg mb-2">{commande.userEmail.split('@')[0]}</h1>
+                        <p className="text-gray-700 mb-2">{new Date(commande.orderTime).toLocaleTimeString([], {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        }).replace(':', 'h')}</p>
+                        <p className="text-gray-700 mb-2">Détails du produit :</p>
                         <ul className="mb-4">
                             {commande.productDetails.map((product: any, index: number) => (
                                 <li key={index}>{product.quantity} {product.name}</li>
@@ -84,11 +90,11 @@ const CommandesEnCours: React.FC = () => {
                         </ul>
                         <button
                             onClick={() => handleEffectuerClick(commande.id)}
-                            className="mb-4 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none focus:bg-green-600"
+                            className="bg-green-500 text-white px-4 py-2 rounded-full border-2 border-green-500 hover:bg-green-600 hover:border-green-600 hover:text-white focus:outline-none focus:bg-green-600 focus:border-green-600 focus:text-white"
                         >
                             Valider
                         </button>
-                        <p className="text-gray-700 font-bold">Total: {commande.total} €</p>
+                        <p className="text-gray-700 font-bold mt-2">Total : {commande.total} €</p>
                     </div>
                 ))}
             </div>

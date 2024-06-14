@@ -118,47 +118,47 @@ const ProductListAdmin: React.FC = () => {
             </div>
         );
     }
-        return (
-            <div className="w-4/5 mx-auto py-8">
-                <h2 className="text-2xl font-bold mb-4">Liste des produits</h2>
-                <input
-                    type="text"
-                    placeholder="Rechercher un produit"
-                    value={searchText}
-                    onChange={handleSearchChange}
-                    className="mb-4 p-2 border border-gray-300 rounded-md"
-                />
-                <div className="flex flex-col gap-4">
-                    {filteredAndSortedProducts.map((product: IProduct) => (
-                        <div key={product.id}
-                             className="flex flex-row border border-gray-300 rounded-md p-4 items-center">
-                            <div className="flex flex-col flex-grow">
+    return (
+        <div className="w-4/5 mx-auto py-8">
+            <h2 className="text-2xl font-bold mb-6">Liste des produits</h2>
+            <input
+                type="text"
+                placeholder="Rechercher un produit"
+                value={searchText}
+                onChange={handleSearchChange}
+                className="mb-6 p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {filteredAndSortedProducts.map((product: IProduct) => (
+                    <div key={product.id} className="flex flex-col border border-gray-300 rounded-md p-4">
+                        <div className="flex flex-row gap-4 items-center">
+                            {product.imageUrl && (
+                                <img src={product.imageUrl} alt={product.nom} className="w-32 h-32 object-cover rounded-md" />
+                            )}
+                            <div className="flex flex-col flex-grow gap-2">
                                 <h3 className="text-xl font-bold">{product.nom}</h3>
                                 <p><span className="font-bold underline">Prix:</span> {product.prix} €</p>
                                 <p><span className="font-bold underline">Description:</span> {product.description}</p>
-                                <p><span className="font-bold underline">Type de produit:</span> {product.typeProduit}
-                                </p>
-                                <p><span
-                                    className="font-bold underline">Menus:</span> {product.idMenus && Array.isArray(product.idMenus) ? product.idMenus.map(menuId => menus[menuId]).join(', ') : 'Aucun'}
-                                </p>
-                                <p><span
-                                    className="font-bold underline">Allergènes:</span> {product.allergenes ? product.allergenes.join(', ') : 'Aucun'}
-                                </p>
+                                <p><span className="font-bold underline">Type de produit:</span> {product.typeProduit}</p>
+                                <p><span className="font-bold underline">Menus:</span> {product.idMenus && Array.isArray(product.idMenus) ? product.idMenus.map(menuId => menus[menuId]).join(', ') : 'Aucun'}</p>
+                                <p><span className="font-bold underline">Allergènes:</span> {product.allergenes ? product.allergenes.join(', ') : 'Aucun'}</p>
                                 <p><span className="font-bold underline">Stock:</span> {product.stock}</p>
-                                <button onClick={() => handleDelete(product.id)}
-                                        className="p-2 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 focus:outline-none focus:bg-red-600 my-2 flex items-center justify-center"
-                                        style={{maxWidth: '40px', minHeight: '10px'}}>
-                                    <FaTrash/>
-                                </button>
                             </div>
-                            {product.imageUrl && (
-                                <img src={product.imageUrl} alt={product.nom} className="w-32 h-32 object-cover"/>
-                            )}
                         </div>
-                    ))}
-                </div>
+                        <div className="flex justify-center mt-4">
+                            <button onClick={() => handleDelete(product.id)}
+                                    className="p-2 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 focus:outline-none focus:bg-red-600">
+                                <FaTrash />
+                            </button>
+                        </div>
+                    </div>
+                ))}
             </div>
-        );
+        </div>
+    );
+
+
+
 
 };
 

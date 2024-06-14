@@ -136,7 +136,7 @@ export default function POSDrawerView({
   );
 }
 
-const TAX_PERCENTAGE = 5;
+const TAX_PERCENTAGE = 0;
 
 export function PriceCalculation() {
   const { items } = useCart();
@@ -144,8 +144,8 @@ export function PriceCalculation() {
     (acc, item) => acc + (item?.salePrice ?? item.price) * item.quantity,
     0
   );
-  const tax = total * (TAX_PERCENTAGE / 100);
-  const subTotal = total + tax;
+  const tax = total;
+  const subTotal = total;
 
   return (
     <div className="mb-7 space-y-3.5">

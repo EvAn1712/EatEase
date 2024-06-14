@@ -87,7 +87,7 @@ const PasserCommande: React.FC = () => {
                 if (produitSnapshot.exists()) {
                     const produitData = produitSnapshot.val();
                     const quantiteCommandee = parseInt(item.quantite);
-                    if (!isNaN(quantiteCommandee) && quantiteCommandee >= 0) {
+                    if (!isNaN(quantiteCommandee) && quantiteCommandee) {
                         const nouveauStock = produitData.stock + quantiteCommandee;
                         await set(produitRef, { ...produitData, stock: nouveauStock });
                     } else {
@@ -128,22 +128,20 @@ const PasserCommande: React.FC = () => {
             </div>
         );
     }
-    
-
     return (
-        <div className="w-80 mx-auto py-8">
-            <PageHeader title={pageHeader.title} breadcrumb={pageHeader.breadcrumb} className="[&_h2]:font-lexend [&_h2]:font-bold" />
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <div className="w-full max-w-lg mx-auto py-8">
+            <h2 className="text-2xl font-bold mb-4">Liste des produits</h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
                 {commande.map((item, index) => (
-                    <div key={index} className="flex flex-col gap-4">
-                        <div className="flex items-center gap-4">
-                            <div className="flex flex-col flex-1">
+                    <div key={index} className="bg-white shadow-md rounded-lg p-4">
+                        <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+                            <div className="flex-1">
                                 <label htmlFor={`produit-${index}`} className="text-lg font-bold">Produit:</label>
                                 <select
                                     id={`produit-${index}`}
                                     value={item.produitId}
                                     onChange={(e) => handleChange(index, 'produitId', e.target.value)}
-                                    className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                                    className="block w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
                                 >
                                     <option value="" disabled>Sélectionnez un produit</option>
                                     {produitArray && Object.keys(produitArray).map((key) => (
@@ -153,49 +151,56 @@ const PasserCommande: React.FC = () => {
                                     ))}
                                 </select>
                             </div>
-                            <div className="flex flex-col flex-1">
+                            <div className="flex-1 mt-4 md:mt-0 md:ml-4">
                                 <label htmlFor={`quantite-${index}`} className="text-lg font-bold">Quantité:</label>
                                 <input
                                     type="number"
                                     id={`quantite-${index}`}
                                     value={item.quantite}
                                     onChange={(e) => handleChange(index, 'quantite', e.target.value)}
-                                    className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                                    className="block w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
                                 />
                             </div>
+                        </div>
+                        <div className="flex justify-end mt-4 md:justify-start">
                             <button
                                 type="button"
                                 onClick={() => handleRemoveProduct(index)}
-                                className="px-4 py-2 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 focus:outline-none focus:bg-red-600"
+                                className="px-3 py-2 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 focus:outline-none focus:bg-red-600"
                             >
                                 Retirer
                             </button>
                         </div>
                     </div>
                 ))}
-                <button
-                    type="button"
-                    onClick={handleAddProduct}
-                    className="px-6 py-2 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600 focus:outline-none focus:bg-green-600"
-                >
-                    Ajouter un Produit en plus
-                </button>
-                <button
-                    type="button"
-                    onClick={fetchLastCommande}
-                    className="px-6 py-2 bg-yellow-500 text-white font-semibold rounded-md hover:bg-yellow-600 focus:outline-none focus:bg-yellow-600"
-                >
-                    Dernière commande
-                </button>
+                <div className="flex justify-between">
+                    <button
+                        type="button"
+                        onClick={handleAddProduct}
+                        className="px-4 py-2 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600 focus:outline-none focus:bg-green-600"
+                    >
+                        Ajouter un Produit en plus
+                    </button>
+                    <button
+                        type="button"
+                        onClick={fetchLastCommande}
+                        className="px-4 py-2 bg-yellow-500 text-white font-semibold rounded-md hover:bg-yellow-600 focus:outline-none focus:bg-yellow-600"
+                    >
+                        Dernière commande
+                    </button>
+                </div>
                 <button
                     type="submit"
-                    className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
+                    className="w-full mt-4 px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
                 >
                     Passer la Commande
                 </button>
             </form>
         </div>
     );
+
+
+
 };
 
 export default PasserCommande;
