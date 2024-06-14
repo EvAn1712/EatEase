@@ -32,7 +32,7 @@ const ChoixFormule: React.FC<ChoixFormuleProps> = ({ onFormuleChange }) => {
             {isOpen && (
                 <Read
                     databaseName="Menu"
-                    attributes={['nom', 'prix']}
+                    attributes={['nom', 'prix', 'imageUrl']}
                     filter={{ typeProduit: "none", menu: "none" }}
                     onItemChange={handleMenuDataChange}
                     showItem={true}

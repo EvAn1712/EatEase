@@ -121,7 +121,7 @@ function PostSidebar({
               onClick={handleOrder}
               disabled={!user}
             >
-              Commander
+              Commander Point of sale
             </Button>
           </div>
         </div>

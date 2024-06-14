@@ -9,14 +9,14 @@ export const menuItems = [
         name: 'Accueil',
         href: '/point-of-sale',
         icon: <PiCreditCardDuotone />,
-        allowedDomains: ['gmail.com', 'epfedu.fr'], // Domaines autorisés
+       // allowedDomains: ['gmail.com', 'epfedu.fr'], // Domaines autorisés
 
     },
  {
     name: 'Ajout de Produit',
     href: '/ADMAjoutProduit',
     icon: <PiCreditCardDuotone />,
-    allowedDomains: ['gmail.com'], // Domaines autorisés
+   // allowedDomains: ['gmail.com'], // Domaines autorisés
   },
   {
     name: 'Mon profil',
@@ -34,19 +34,19 @@ export const menuItems = [
     name: 'Stock',
     href: '/ADMStock',
     icon: <PiCreditCardDuotone />,
-    allowedDomains: ['gmail.com'], // Domaines autorisés
+   // allowedDomains: ['gmail.com'], // Domaines autorisés
   },
  {
     name: 'Liste de Produits',
     href: '/ADMListProduit',
     icon: <PiCreditCardDuotone />,
-    allowedDomains: ['gmail.com'], // Domaines autorisés
+   // allowedDomains: ['gmail.com'], // Domaines autorisés
   },
     {
-        name: 'Historique de Commande',
+        name: 'Commandes en cours',
         href: '/ADMHistoriqueCommande',
         icon: <PiCreditCardDuotone />,
-        allowedDomains: ['gmail.com'], // Domaines autorisés
+       // allowedDomains: ['gmail.com'], // Domaines autorisés
     }
 ];
 

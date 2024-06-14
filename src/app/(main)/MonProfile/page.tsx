@@ -128,7 +128,7 @@ const InfoPerso: React.FC = () => {
                     />
                 </div>
                 <div>
-                    <button type="submit" className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Mettre à jour </button>
+                    <button type="submit" className="border border-bg-primary text-bg-primary px-4 py-2 mr-4 rounded-md hover:bg-primary hover:text-white focus:outline-none focus:bg-primary focus:text-white">Mettre à jour </button>
                 </div>
             </form>
             <div className="mt-4 text-center">

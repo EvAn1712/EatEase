@@ -143,7 +143,7 @@ export default function ADMAjoutProduit() {
                     <a href="/point-of-sale" onClick={() => {
                         window.location.href = '/point-of-sale';
                     }}
-                       className="bg-blue-500 text-white px-4 py-2 mr-4 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">
+                    className="border border-bg-primary text-bg-primary px-4 py-2 mr-4 rounded-md hover:bg-primary hover:text-white focus:outline-none focus:bg-primary focus:text-white">
                         Accueil
                     </a>
                 </div>

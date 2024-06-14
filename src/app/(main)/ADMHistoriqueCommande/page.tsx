@@ -74,7 +74,7 @@ const CommandesEnCours: React.FC = () => {
             <div className="flex overflow-x-auto mt-5 gap-4">
                 {commandesEnCours.map(commande => (
                     <div key={commande.id} className="flex flex-col items-center justify-center bg-gray-200 p-4 shadow-lg rounded-lg w-64">
-                        <h2 className="font-bold text-lg">Commande {commande.id}</h2>
+                        <h2 className="font-bold text-lg">Commande en cours :{commande.id}</h2>
                         <p className="text-gray-700">{new Date(commande.orderTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }).replace(':', 'h')}</p>
                         <p className="text-gray-700">Détails du produit:</p>
                         <ul className="mb-4">

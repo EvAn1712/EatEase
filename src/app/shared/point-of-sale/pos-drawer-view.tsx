@@ -7,9 +7,9 @@ import cn from '@/utils/class-names';
 import { useCart } from '@/store/quick-cart/cart.context';
 import POSOrderProducts from '@/app/shared/point-of-sale/pos-order-products';
 import DrawerHeader from '@/app/shared/drawer-header';
-import app from '@/app/(main)/firebase-config'; // Assurez-vous que ce chemin est correct
+import app from '@/app/(main)/firebase-config';
 import { getDatabase, ref, set, push } from 'firebase/database';
-import { AuthContextType, auth, useAuthContext } from '@/app/(main)/authContext'; // Importation du contexte d'authentification
+import { AuthContextType, useAuthContext } from '@/app/(main)/authContext';
 
 type POSOrderTypes = {
   className?: string;
@@ -29,7 +29,8 @@ export default function POSDrawerView({
   clearItemFromCart,
 }: POSOrderTypes) {
   const [loading, setLoading] = useState(false);
-  const { user } = useAuthContext() as AuthContextType;// Utilisation du contexte d'authentification
+  const { user } = useAuthContext() as AuthContextType;
+  const { resetCart } = useCart();
 
   async function handleOrder() {
     if (!user) {
@@ -43,34 +44,36 @@ export default function POSDrawerView({
       const db = getDatabase(app);
       const orderRef = ref(db, 'CLICommande');
       const newOrderRef = push(orderRef);
-      const orderId = newOrderRef.key;
-      const productIds = orderedItems.map(item => item.id);
       const orderTime = new Date().toISOString();
       const userEmail = user.email;
-    // Afficher les données de la commande dans la console
-    console.log('Données de la commande :');
-    console.log('ID de la commande :', orderId);
-    console.log('IDs des produits :', productIds);
-    console.log('Heure de la commande :', orderTime);
-    console.log('Adresse e-mail de l\'utilisateur :', userEmail);
+      const statut = false;
+      const total = orderedItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+
+      const productDetails = orderedItems.map(i => ({
+        id: i.id,
+        name: i.name,
+        quantity: i.quantity,
+      }));
+
       await set(newOrderRef, {
-        orderId,
-        productIds,
+        productDetails,
         orderTime,
         userEmail,
+        total,
+        statut,
+        type: 'MENU',
       });
 
+      toast.success(<Text as="b">Commande passée avec succès !</Text>);
+      resetCart();
       setLoading(false);
-      console.log('createOrder data ->', orderedItems);
-      toast.success(<Text as="b">Commande confirmée</Text>);
-      onOrderSuccess && onOrderSuccess();
+      if (onOrderSuccess) onOrderSuccess();
     } catch (error) {
       console.error('Error creating order:', error);
-      toast.error(<Text as="b">Erreur lors de la confirmation de la commande</Text>);
+      toast.error(<Text as="b">Erreur lors de la création de la commande</Text>);
       setLoading(false);
     }
-  }
-
+  };
   return (
     <div
       className={cn(
@@ -150,7 +153,6 @@ export function PriceCalculation() {
         <span className="text-gray-500">Total</span>
         <span className="font-medium text-gray-900">€{total.toFixed(2)}</span>
       </p>
-  
       <p className="flex items-center justify-between">
         <span className="text-gray-500">TVA</span>
         <span className="font-medium text-gray-900">€{tax.toFixed(2)}</span>

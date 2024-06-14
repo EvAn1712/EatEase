@@ -77,6 +77,12 @@ const Historique: React.FC = () => {
                                 <p className="text-xl">
                                     Produits: {commande.productDetails.map((product: any) => `${product.name} (x${product.quantity})`).join(', ')}
                                 </p>
+                                {commande.type === 'MENU' && commande.formule && (
+                                    <div className="mt-2">
+                                        <h6 className="font-bold">Formule: {commande.formule.nom}</h6>
+                                        <p className="text-lg">Prix: €{commande.formule.price}</p>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     ))
