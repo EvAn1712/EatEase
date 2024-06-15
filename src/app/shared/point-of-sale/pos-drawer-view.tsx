@@ -4,7 +4,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import type { CartItem } from '@/types';
 import toast from 'react-hot-toast';
-import { Button, EmptyProductBoxIcon, Title, Text } from 'rizzui';
+import {Button, EmptyProductBoxIcon, Title, Text, Modal} from 'rizzui';
 import cn from '@/utils/class-names';
 import { useCart } from '@/store/quick-cart/cart.context';
 import POSOrderProducts from '@/app/shared/point-of-sale/pos-order-products';
@@ -23,7 +23,7 @@ type POSOrderTypes = {
   clearItemFromCart: (id: number) => void;
 };
 
-const stripePromise = loadStripe('pk_live_51PEqU6DdEvvvbJGgXqfrLZLMT1EzUNDNHSvBTyd3lj7qYqLsJ5cmuh6BNffHhxufZpTxT2TA4tzY1q5J0v4K8gBl00XVWNqvF9');
+const stripePromise = loadStripe('pk_test_TYooMQauvdEDq54NiTphI7jx'); // Clé API publique de test
 
 export default function POSDrawerView({
                                         className,
@@ -38,6 +38,7 @@ export default function POSDrawerView({
   const { user } = useAuthContext() as AuthContextType;
   const { resetCart } = useCart();
   const paymentRef = useRef<HTMLDivElement>(null);
+  const [showOrderSuccessModal, setShowOrderSuccessModal] = useState(false); // État pour contrôler l'affichage de la modal
 
   async function handleOrder() {
     if (!user) {
@@ -46,21 +47,19 @@ export default function POSDrawerView({
     }
 
     setShowPaymentForm(true);
-    paymentRef.current?.scrollIntoView({ behavior: 'smooth' });
+    paymentRef.current?.scrollIntoView( { behavior: 'smooth' });
   }
 
-  const handlePaymentSuccess = async (amount: number, description: string, paymentMethodId: string) => {
+  const handlePaymentSuccess = async (amount: number, description: string, paymentMethodId: string, paymentSuccess: boolean) => {
     setLoading(true);
-
     try {
       const db = getDatabase(app);
       const orderRef = ref(db, 'CLICommande');
       const newOrderRef = push(orderRef);
       const orderTime = new Date().toISOString();
       const userEmail = user?.email;
-      const statut = false;
+      const statut = paymentSuccess;
       const total = orderedItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-
       const productDetails = orderedItems.map(i => ({
         id: i.id,
         name: i.name,
@@ -77,10 +76,8 @@ export default function POSDrawerView({
       });
 
       toast.success(<Text as="b">Commande passée avec succès !</Text>);
-      resetCart();
-      setLoading(false);
-      if (onOrderSuccess) onOrderSuccess();
-      setShowPaymentForm(false);
+      setShowOrderSuccessModal(true);
+
     } catch (error) {
       console.error('Error creating order:', error);
       toast.error(<Text as="b">Erreur lors de la création de la commande</Text>);
@@ -155,6 +152,27 @@ export default function POSDrawerView({
               </div>
             </div>
         )}
+          <Modal isOpen={showOrderSuccessModal} onClose={() => setShowOrderSuccessModal(false)}>
+              <div className="p-5">
+                  <Title as="h2" className="text-lg font-semibold mb-3">
+                      Commande passée avec succès !
+                  </Title>
+                  <Text>
+                      Vous pouvez venir récupérer votre commande dans 15 minutes mais elle sera considérée comme abandonnée après 1 heure. Aucun remboursement possible.
+                  </Text>
+                  <div className="flex justify-end mt-5">
+                      <Button onClick={() => {
+                          setShowOrderSuccessModal(false);
+                          resetCart();
+                          setLoading(false);
+                          if (onOrderSuccess) onOrderSuccess();
+                          setShowPaymentForm(false);
+                      }}>
+                          Fermer
+                      </Button>
+                  </div>
+              </div>
+          </Modal>
       </div>
   );
 }
