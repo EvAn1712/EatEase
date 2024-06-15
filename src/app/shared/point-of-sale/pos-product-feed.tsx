@@ -1,7 +1,7 @@
-'use client';
+// 'use client';
 
 import { useState, useEffect } from 'react';
-import { Empty, SearchNotFoundIcon, Button } from 'rizzui';
+import { Empty, SearchNotFoundIcon, Button, Title } from 'rizzui';
 import ProductClassicCard from '@/components/cards/product-classic-card';
 import { posFilterValue } from '@/app/shared/point-of-sale/pos-search';
 import { useAtomValue } from 'jotai';
@@ -17,7 +17,7 @@ interface IProduct {
   nom: string;
   prix: number;
   description: string;
-  typeProduit: string;
+  typeProduit: string; // Ajout du typeProduit dans l'interface
   idMenu: string;
   allergenes: string[];
   imageUrl: string;
@@ -37,6 +37,7 @@ export interface IPosProduct {
   size: number;
   discount: number;
   allergenes: string[];
+  typeProduit: string;
 }
 
 async function fetchProductsFromFirebase(): Promise<IPosProduct[]> {
@@ -46,28 +47,26 @@ async function fetchProductsFromFirebase(): Promise<IPosProduct[]> {
 
   if (snapshot.exists()) {
     const productsData = snapshot.val();
-    return Object.keys(productsData).map((key) => {
-      const product: IProduct = {
-        id: key,
-        ...productsData[key],
-      };
+    const products: IProduct[] = Object.keys(productsData).map((key) => ({
+      id: key,
+      ...productsData[key],
+    }));
 
-      // Convert IProduct to IPosProduct
-      return {
-        id: Math.floor(Math.random() * 1000000),
-        originalId: product.id,
-        name: product.nom,
-        description: product.description,
-        image: product.imageUrl,
-        price: product.prix,
-        salePrice: product.prix * 0.9, // Example sale price 10% off
-        quantity: product.stock,
-        size: 50, // Example size
-        discount: 5, // Example discount percentage
-        allergenes: product.allergenes,
-      };
-    });
-    
+    // Convert IProduct to IPosProduct and include typeProduit
+    return products.map((product) => ({
+      id: Math.floor(Math.random() * 1000000),
+      originalId: product.id,
+      name: product.nom,
+      description: product.description,
+      image: product.imageUrl,
+      price: product.prix,
+      salePrice: product.prix * 0.9, // Example sale price 10% off
+      quantity: product.stock,
+      size: 50, // Example size
+      discount: 5, // Example discount percentage
+      allergenes: product.allergenes,
+      typeProduit: product.typeProduit, // Ajout du type de produit
+    }));
   } else {
     console.log('No data available');
     return [];
@@ -92,7 +91,7 @@ export default function POSProductsFeed() {
   console.log(products);
 
   let productItemsFiltered = [...products].sort((a, b) =>
-    a.name.localeCompare(b.name)
+      a.name.localeCompare(b.name)
   );
 
   if (searchText.length > 0) {
@@ -103,8 +102,17 @@ export default function POSProductsFeed() {
   }
 
   productItemsFiltered = hasSearchedParams()
-    ? shuffle(productItemsFiltered)
-    : productItemsFiltered;
+      ? shuffle(productItemsFiltered)
+      : productItemsFiltered;
+
+  // Group products by typeProduit
+  const groupedProducts: { [key: string]: IPosProduct[] } = {};
+  productItemsFiltered.forEach((product) => {
+    if (!groupedProducts[product.typeProduit]) {
+      groupedProducts[product.typeProduit] = [];
+    }
+    groupedProducts[product.typeProduit].push(product);
+  });
 
   function handleLoadMore() {
     setLoading(true);
@@ -115,38 +123,47 @@ export default function POSProductsFeed() {
   }
 
   return (
-    <>
-      {productItemsFiltered?.length ? (
-        <div className="grid grid-cols-2 gap-x-4 gap-y-6 @md:grid-cols-[repeat(auto-fill,minmax(210px,1fr))] @xl:gap-x-6 @xl:gap-y-12 @4xl:grid-cols-[repeat(auto-fill,minmax(270px,1fr))]">
-          {productItemsFiltered
-            ?.slice(0, nextPage)
-            ?.map((product) => (
-              <ProductClassicCard key={product.id} product={product}>
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  width={500}
-                  height={500}
-                  layout="responsive"
-                />
-              </ProductClassicCard>
-            ))}
-        </div>
-      ) : (
-        <Empty
-          image={<SearchNotFoundIcon />}
-          text="Aucun résultat"
-          className="h-full justify-center"
-        />
-      )}
+      <>
+        {Object.keys(groupedProducts).length > 0 ? (
+            <>
+              {Object.keys(groupedProducts).map((typeProduit, index) => (
+                  <div key={index} className="mb-8">
+                    <Title as="h2" className="text-xl mb-4">
+                      <span style={{ textDecoration: 'underline', fontWeight: 'bold' }}>{typeProduit.toUpperCase()}</span>
+                    </Title>
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-6 @md:grid-cols-[repeat(auto-fill,minmax(210px,1fr))] @xl:gap-x-6 @xl:gap-y-12 @4xl:grid-cols-[repeat(auto-fill,minmax(270px,1fr))]">
+                      {groupedProducts[typeProduit]
+                          ?.slice(0, nextPage)
+                          ?.map((product) => (
+                              <ProductClassicCard key={product.id} product={product}>
+                                <Image
+                                    src={product.image}
+                                    alt={product.name}
+                                    width={500}
+                                    height={500}
+                                    layout="responsive"
+                                />
+                              </ProductClassicCard>
+                          ))}
+                    </div>
+                  </div>
+              ))}
+            </>
+        ) : (
+            <Empty
+                image={<SearchNotFoundIcon />}
+                text="Aucun résultat"
+                className="h-full justify-center"
+            />
+        )}
 
-      {nextPage < productItemsFiltered?.length ? (
-        <div className="mb-4 mt-5 flex flex-col items-center xs:pt-6 sm:pt-8">
-          <Button isLoading={isLoading} onClick={handleLoadMore}>
-            Voir plus
-          </Button>
-        </div>
-      ) : null}
-    </>
+        {nextPage < productItemsFiltered?.length ? (
+            <div className="mb-4 mt-5 flex flex-col items-center xs:pt-6 sm:pt-8">
+              <Button isLoading={isLoading} onClick={handleLoadMore}>
+                Voir plus
+              </Button>
+            </div>
+        ) : null}
+      </>
   );
 }

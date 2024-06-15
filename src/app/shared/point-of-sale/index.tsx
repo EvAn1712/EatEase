@@ -5,6 +5,8 @@ import POSProductsFeed from '@/app/shared/point-of-sale/pos-product-feed';
 import PostSidebar from './pos-sidebar';
 import { useCart } from '@/store/quick-cart/cart.context';
 import cn from '@/utils/class-names';
+import React from "react";
+import POSDrawer from "@/app/shared/point-of-sale/pos-drawer";
 
 export default function POSPageView() {
   const { items, removeItemFromCart, clearItemFromCart } = useCart();
@@ -14,22 +16,11 @@ export default function POSPageView() {
       <div
         className={cn(
           'col-span-full',
-          !!items?.length && 'xl:col-span-8 2xl:col-span-9'
+          !!items?.length
         )}
       >
-       
         <POSProductsFeed />
       </div>
-      {!!items?.length && (
-        <aside className="sticky hidden self-start rounded-lg border border-muted xl:top-24 xl:col-span-4 xl:block 2xl:top-[98px] 2xl:col-span-3">
-          <PostSidebar
-            removeItemFromCart={removeItemFromCart}
-            clearItemFromCart={clearItemFromCart}
-            orderedItems={items}
-            simpleBarClassName="pe-3 xl:pe-7"
-          />
-        </aside>
-      )}
     </div>
   );
 }

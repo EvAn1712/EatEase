@@ -29,7 +29,7 @@ export default function PointOfSalePage() {
           <PosSearch />
         </PageHeader>
         <POSPageView />
-        <POSDrawer className="xl:hidden" />
+        <POSDrawer />
       </div>
     </CartProvider>
   );

@@ -40,7 +40,7 @@ function PostSidebar({
       const db = getDatabase(app);
       const orderRef = ref(db, 'CLICommande');
       const newOrderRef = push(orderRef);
-      const productDetails = 
+      const productDetails =
         orderedItems.map(item => ({
         id: item.originalId,
         quantity: item.quantity,
@@ -51,24 +51,24 @@ function PostSidebar({
       const statut = false;
       // Fonction pour calculer le prix total du panier
   const total = items.reduce(
-    (acc, item) => acc + (item?.salePrice ?? item.price) * item.quantity,
+    (acc, item) => acc + ( item.price) * item.quantity,
     0
   );
   const tax = total * 0.05;
-  const subTotal = parseFloat((total + tax).toFixed(2));
+  const subTotal = parseFloat((total).toFixed(2));
 
       await set(newOrderRef, {
         productDetails,
         orderTime,
         userEmail,
         total: subTotal,
-        statut, 
+        statut,
       });
 
       setLoading(false);
       console.log('createOrder data ->', orderedItems);
       toast.success(<Text as="b">Commande confirmée</Text>);
-      resetCart(); // Réinitialiser le panier après la commande
+      resetCart();
     } catch (error) {
       console.error('Error creating order:', error);
       toast.error(<Text as="b">Erreur lors de la confirmation de la commande</Text>);
