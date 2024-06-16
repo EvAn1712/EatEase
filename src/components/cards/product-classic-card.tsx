@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
-import { Title, Text, Button, Modal } from 'rizzui';
+import { Title, Text, Button } from 'rizzui';
 import cn from '@/utils/class-names';
 import { CartItem, PosProduct } from '@/types';
 import { toCurrency } from '@/utils/to-currency';
@@ -20,14 +20,10 @@ export default function ProductClassicCard({
 }: ProductProps) {
   const { name, description, price, image, salePrice, allergenes, quantity } = product;
   const { addItemToCart, isInCart } = useCart();
-  
-  const [isStockModalOpen, setIsStockModalOpen] = useState(false);
 
   const handleAddToCart = () => {
     if (quantity > 0) {
       addItemToCart(product, 1);
-    } else {
-      setIsStockModalOpen(true);
     }
   };
 
@@ -44,11 +40,11 @@ export default function ProductClassicCard({
             sizes="(max-width: 768px) 100vw"
             className="h-full w-full object-cover"
           />
-          <button
-            className="font-mono font-bold absolute top-2 right-2 text-red-500 rounded-full w-10 h-10 flex items-center justify-center focus:outline-none"
-          >
-      
-          </button>
+          {quantity === 0 && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
+              <span className="text-white font-bold">Indisponible</span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -67,27 +63,12 @@ export default function ProductClassicCard({
           {isInCart(product.id) ? (
             <QuantityControl item={product} />
           ) : (
-            <Button onClick={handleAddToCart} className="w-full" variant="outline">
-              Ajouter
+            <Button onClick={handleAddToCart} className="w-full" variant="outline" disabled={quantity === 0}>
+              {quantity > 0 ? 'Ajouter' : 'Indisponible'}
             </Button>
           )}
         </div>
       </div>
-
-      {/* Modal for stock alert */}
-      <Modal isOpen={isStockModalOpen} onClose={() => setIsStockModalOpen(false)}>
-        <div className="p-5">
-          <Title as="h2" className="text-lg font-semibold mb-3">
-            Stock épuisé
-          </Title>
-          <Text>Ce produit est actuellement en rupture de stock.</Text>
-          <div className="flex justify-end mt-5">
-            <Button onClick={() => setIsStockModalOpen(false)}>
-              Fermer
-            </Button>
-          </div>
-        </div>
-      </Modal>
     </div>
   );
 }
