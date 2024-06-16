@@ -23,8 +23,9 @@ interface IProduct {
   imageUrl: string;
   stock: number;
   [key: string]: any;
+  OrderType: 'Simple';
 }
-
+// site
 export interface IPosProduct {
   id: number;
   originalId: string;
@@ -38,38 +39,39 @@ export interface IPosProduct {
   discount: number;
   allergenes: string[];
   typeProduit: string;
+  OrderType: 'Simple';
 }
-
 async function fetchProductsFromFirebase(): Promise<IPosProduct[]> {
   const db = getDatabase();
   const productsRef = ref(db, 'Produit');
   const snapshot = await get(productsRef);
 
   if (snapshot.exists()) {
-    const productsData = snapshot.val();
-    const products: IProduct[] = Object.keys(productsData).map((key) => ({
-      id: key,
-      ...productsData[key],
-    }));
+      const productsData = snapshot.val();
+      const products: IProduct[] = Object.keys(productsData).map((key) => ({
+          id: key,
+          ...productsData[key],
+      }));
 
-    // Convert IProduct to IPosProduct and include typeProduit
-    return products.map((product) => ({
-      id: Math.floor(Math.random() * 1000000),
-      originalId: product.id,
-      name: product.nom,
-      description: product.description,
-      image: product.imageUrl,
-      price: product.prix,
-      salePrice: product.prix * 0.9, // Example sale price 10% off
-      quantity: product.stock,
-      size: 50, // Example size
-      discount: 5, // Example discount percentage
-      allergenes: product.allergenes,
-      typeProduit: product.typeProduit, // Ajout du type de produit
-    }));
+      // Convert IProduct to IPosProduct and include typeProduit
+      return products.map((product) => ({
+          id: Math.floor(Math.random() * 1000000),
+          originalId: product.id,
+          name: product.nom,
+          description: product.description,
+          image: product.imageUrl,
+          price: product.prix,
+          salePrice: product.prix * 0.9, // Example sale price 10% off
+          quantity: product.stock,
+          size: 50, // Example size
+          discount: 5, // Example discount percentage
+          allergenes: product.allergenes,
+          typeProduit: product.typeProduit, // Ajout du type de produit
+          OrderType: 'Simple', // ou 'Menu' si c'est une formule
+      }));
   } else {
-    console.log('No data available');
-    return [];
+      console.log('No data available');
+      return [];
   }
 }
 

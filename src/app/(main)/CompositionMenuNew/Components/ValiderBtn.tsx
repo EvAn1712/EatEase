@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { useCart } from '@/store/quick-cart/cart.context';
 import { CartItem as Item } from '@/types';
@@ -52,9 +50,11 @@ const ValiderBtn: React.FC<ValiderBtnProps> = ({ items, formule }) => {
             return;
         }
 
+        // Formule ajoutée
         const item: Item = {
-            size: 0,
-            id: 1,
+            OrderType: 'Menu',
+            id: 1, // ou une autre valeur unique
+            originalId: formule.id,
             name: formuleData.nom,
             price: formuleData.prix,
             quantity: 1,
@@ -64,41 +64,6 @@ const ValiderBtn: React.FC<ValiderBtnProps> = ({ items, formule }) => {
 
         addItemToCart(item, item.quantity);
         setShowContent(true);
-
-        // // Enregistrer la formule et les produits dans Firebase
-        // try {
-        //     const db = getDatabase(app);
-        //     const orderRef = ref(db, 'CLICommande');
-        //     const newOrderRef = push(orderRef);
-        //     const orderTime = new Date().toISOString();
-        //     const userEmail = user.email;
-        //     const statut = false;
-        //     const total = item.price;
-
-        //     const productDetails = items.map(i => ({
-        //         id: i.id,
-        //         name: i.nom,
-        //         quantity: 1,
-        //     }));
-
-        //     await set(newOrderRef, {
-        //         formule: {
-        //             id: formule.id,
-        //             nom: formule.nom,
-        //             price: formuleData.prix,
-        //         },
-        //         productDetails,
-        //         orderTime,
-        //         userEmail,
-        //         total,
-        //         statut,
-        //         type: 'MENU',
-        //     });
-
-        //     console.log('Order saved to Firebase');
-        // } catch (error) {
-        //     console.error('Error saving order to Firebase:', error);
-        // }
     };
 
     const isFormuleComplete = () => {
@@ -114,11 +79,6 @@ const ValiderBtn: React.FC<ValiderBtnProps> = ({ items, formule }) => {
 
     const isButtonDisabled = loading || !user || !isFormuleComplete();
 
-    console.log('loading:', loading);
-    console.log('user:', user);
-    console.log('isFormuleComplete:', isFormuleComplete());
-    console.log('isButtonDisabled:', isButtonDisabled);
-
     return (
         <div className="mt-3 flex justify-end">
             <button 
@@ -128,13 +88,6 @@ const ValiderBtn: React.FC<ValiderBtnProps> = ({ items, formule }) => {
             >
                 Ajouter au panier
             </button>
-            {/* {showContent && (
-                <div>
-                    <p>ID: {formuleData.id}</p>
-                    <p>Name: {formuleData.nom}</p>
-                    <p>Price: {formuleData.prix}</p>
-                </div>
-            )} */}
         </div>
     );
 };

@@ -69,15 +69,18 @@ const Historique: React.FC = () => {
                                     <small className={`text-xl block ${!commande.statut ? 'text-red-600' : 'text-green-600'}`}>
                                         {commande.statut ? 'Reçue' : 'En cours'}
                                     </small>
-                                    {commande.type === 'MENU' ? 'MENU' : 'SIMPLE'}
-                                    <span className="text-2xl font-bold  block mt-2">€{commande.total}</span>
+                                    <span className="text-2xl font-bold block mt-2">€{commande.total}</span>
                                 </div>
                             </div>
                             <div className="mt-4">
                                 <p className="text-xl">
-                                    Produits: {commande.productDetails.map((product: any) => `${product.name} (x${product.quantity})`).join(', ')}
+                                    Produits: {commande.productDetails.map((product: any) => (
+                                        <span key={product.id}>
+                                            {product.name} (x{product.quantity}) - {product.OrderType === 'Menu' ? 'Menu' : 'Simple'}
+                                        </span>
+                                    ))}
                                 </p>
-                                {commande.type === 'MENU' && commande.formule && (
+                                {commande.productDetails.some((product: any) => product.OrderType === 'Menu') && commande.formule && (
                                     <div className="mt-2">
                                         <h6 className="font-bold">Formule: {commande.formule.nom}</h6>
                                         <p className="text-lg">Prix: €{commande.formule.price}</p>

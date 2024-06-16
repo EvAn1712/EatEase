@@ -1,4 +1,3 @@
-"use client";
 import React, { useState, useRef, useEffect } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
@@ -10,7 +9,7 @@ import { useCart } from '@/store/quick-cart/cart.context';
 import POSOrderProducts from '@/app/shared/point-of-sale/pos-order-products';
 import DrawerHeader from '@/app/shared/drawer-header';
 import app from '@/app/(main)/firebase-config';
-import { getDatabase, ref, set, push } from 'firebase/database';
+import { getDatabase, ref, set, push, update, get } from 'firebase/database';
 import { AuthContextType, useAuthContext } from '@/app/(main)/authContext';
 import PaymentForm from '@/app/(main)/PaymentForm.js';
 
@@ -23,7 +22,7 @@ type POSOrderTypes = {
   clearItemFromCart: (id: number) => void;
 };
 
-const stripePromise = loadStripe('pk_test_TYooMQauvdEDq54NiTphI7jx'); // Clé API publique de test
+const stripePromise = loadStripe('pk_test_TYooMQauvdEDq54NiTphI7jx');
 
 export default function POSDrawerView({
   className,
@@ -38,7 +37,7 @@ export default function POSDrawerView({
   const { user } = useAuthContext() as AuthContextType;
   const { resetCart } = useCart();
   const paymentRef = useRef<HTMLDivElement>(null);
-  const [showOrderSuccessModal, setShowOrderSuccessModal] = useState(false); // État pour contrôler l'affichage de la modal
+  const [showOrderSuccessModal, setShowOrderSuccessModal] = useState(false);
 
   useEffect(() => {
     if (showPaymentForm) {
@@ -55,6 +54,29 @@ export default function POSDrawerView({
     setShowPaymentForm(true);
   }
 
+  const updateStock = async (products) => {
+    const db = getDatabase(app);
+
+    try {
+      for (const product of products) {
+        const productRef = ref(db, `Produit/${product.originalId}`);
+        const snapshot = await get(productRef);
+
+        if (snapshot.exists()) {
+          const currentStock = snapshot.val().stock;
+          const newStock = currentStock - product.quantity;
+          await update(productRef, { stock: newStock });
+          console.log(`Updated stock for ${product.name} to ${newStock}`);
+        } else {
+          console.error(`Product ${product.name} not found in database.`);
+        }
+      }
+    } catch (error) {
+      console.error('Error updating stock:', error);
+      throw error;
+    }
+  };
+
   const handlePaymentSuccess = async (amount: number, description: string, paymentMethodId: string, paymentSuccess: boolean) => {
     setLoading(true);
     try {
@@ -69,7 +91,12 @@ export default function POSDrawerView({
         id: i.id,
         name: i.name,
         quantity: i.quantity,
+        originalId: i.originalId,  // Assuming you have this field to reference the product in the database
+        OrderType: i.OrderType,
       }));
+
+      // Log OrderType for each item
+      orderedItems.forEach(item => console.log('OrderType:', item.OrderType));
 
       await set(newOrderRef, {
         productDetails,
@@ -77,15 +104,17 @@ export default function POSDrawerView({
         userEmail,
         total,
         statut,
-        type: 'MENU',
       });
+
+      // Update the stock
+      await updateStock(productDetails);
 
       toast.success(<Text as="b">Commande passée avec succès !</Text>);
       setShowOrderSuccessModal(true);
 
     } catch (error) {
-      console.error('Error creating order:', error);
-      toast.error(<Text as="b">Erreur lors de la création de la commande</Text>);
+      console.error('Error creating order or updating stock:', error);
+      toast.error(<Text as="b">Erreur lors de la création de la commande ou de la mise à jour du stock</Text>);
       setLoading(false);
     }
   };
@@ -97,10 +126,11 @@ export default function POSDrawerView({
   const tax = total * (TAX_PERCENTAGE / 100);
   const subTotal = total + tax;
   const formattedSubTotal = subTotal.toFixed(2);
+
   return (
     <div
       className={cn(
-        'sticky top-3 flex h-[calc(100vh-120px)] flex-col justify-between rounded-lg border border-muted pb-7 xl:top-24 overflow-hidden', // Modifié ici
+        'sticky top-3 flex h-[calc(100vh-120px)] flex-col justify-between rounded-lg border border-muted pb-7 xl:top-24 overflow-hidden',
         className
       )}
     >
@@ -139,7 +169,7 @@ export default function POSDrawerView({
                 <Elements stripe={stripePromise}>
                   <PaymentForm
                     onPaymentSuccess={handlePaymentSuccess}
-                    amount={formattedSubTotal} 
+                    amount={formattedSubTotal}
                   />
                 </Elements>
               </div>

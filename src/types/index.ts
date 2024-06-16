@@ -38,6 +38,7 @@ export type ProductColor = {
 };
 
 export interface CartItem {
+  OrderType: string; // Correct attribute
   id: number;
   originalId: string;
   name: string;
@@ -65,6 +66,7 @@ export type Product = {
   thumbnail: string;
   colors?: ProductColor[];
   sizes?: number[];
+  OrderType: 'Simple' | 'Menu';
 };
 
 export type PosProduct = {
@@ -78,6 +80,7 @@ export type PosProduct = {
   quantity: number;
   size: number;
   allergenes: string[];
+  OrderType: 'Simple' | 'Menu';
 };
 
 export interface CalendarEvent {
