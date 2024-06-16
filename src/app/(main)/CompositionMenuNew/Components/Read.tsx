@@ -11,6 +11,7 @@ interface Item {
     typeProduit?: string;
     imageUrl?: string;
     idMenus?: string[];
+    stock?: number; // Added stock property
 }
 
 interface Props {
@@ -80,8 +81,10 @@ const Read: React.FC<Props> = ({ databaseName, attributes, filter, onItemChange,
     }, [resizeHandler]);
 
     const handleItemClick = useCallback((item: Item) => {
-        setSelectedProduct(item);
-        onItemChange({ id: item.id, nom: item.nom });
+        if (item.stock !== 0) { // Ensure the item is not out of stock
+            setSelectedProduct(item);
+            onItemChange({ id: item.id, nom: item.nom });
+        }
     }, [onItemChange]);
 
     return (
@@ -90,7 +93,9 @@ const Read: React.FC<Props> = ({ databaseName, attributes, filter, onItemChange,
                 {items.map((item) => (
                     <li
                         key={item.id}
-                        className={`flex flex-col justify-between bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition duration-200 ease-in-out transform hover:-translate-y-1 hover:scale-105 cursor-pointer ${
+                        className={`flex flex-col justify-between bg-white shadow-md rounded-lg overflow-hidden ${
+                            item.stock === 0 ? 'cursor-not-allowed opacity-50' : 'hover:shadow-lg transition duration-200 ease-in-out transform hover:-translate-y-1 hover:scale-105 cursor-pointer'
+                        } ${
                             selectedProduct?.id === item.id ? 'border-2 border-red-500' : ''
                         }`}
                         style={{ width: '200px' }} // Fixed width for all cards
@@ -103,6 +108,11 @@ const Read: React.FC<Props> = ({ databaseName, attributes, filter, onItemChange,
                             {attributes.includes("prix") && (
                                 <div className="mb-1">
                                     {item.prix} €
+                                </div>
+                            )}
+                            {item.stock === 0 && (
+                                <div className="text-red-500 font-bold">
+                                    Indisponible
                                 </div>
                             )}
                         </div>
