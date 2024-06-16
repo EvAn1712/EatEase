@@ -96,7 +96,7 @@ export default function POSDrawerView({
   );
   const tax = total * (TAX_PERCENTAGE / 100);
   const subTotal = total + tax;
-
+  const formattedSubTotal = subTotal.toFixed(2);
   return (
     <div
       className={cn(
@@ -139,6 +139,7 @@ export default function POSDrawerView({
                 <Elements stripe={stripePromise}>
                   <PaymentForm
                     onPaymentSuccess={handlePaymentSuccess}
+                    amount={formattedSubTotal} 
                   />
                 </Elements>
               </div>
