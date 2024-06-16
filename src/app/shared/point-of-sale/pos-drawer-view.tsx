@@ -4,7 +4,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import type { CartItem } from '@/types';
 import toast from 'react-hot-toast';
-import {Button, EmptyProductBoxIcon, Title, Text, Modal} from 'rizzui';
+import { Button, EmptyProductBoxIcon, Title, Text, Modal } from 'rizzui';
 import cn from '@/utils/class-names';
 import { useCart } from '@/store/quick-cart/cart.context';
 import POSOrderProducts from '@/app/shared/point-of-sale/pos-order-products';
@@ -26,13 +26,13 @@ type POSOrderTypes = {
 const stripePromise = loadStripe('pk_test_TYooMQauvdEDq54NiTphI7jx'); // Clé API publique de test
 
 export default function POSDrawerView({
-                                        className,
-                                        simpleBarClassName,
-                                        orderedItems,
-                                        onOrderSuccess,
-                                        removeItemFromCart,
-                                        clearItemFromCart,
-                                      }: POSOrderTypes) {
+  className,
+  simpleBarClassName,
+  orderedItems,
+  onOrderSuccess,
+  removeItemFromCart,
+  clearItemFromCart,
+}: POSOrderTypes) {
   const [loading, setLoading] = useState(false);
   const [showPaymentForm, setShowPaymentForm] = useState(false);
   const { user } = useAuthContext() as AuthContextType;
@@ -47,7 +47,7 @@ export default function POSDrawerView({
     }
 
     setShowPaymentForm(true);
-    paymentRef.current?.scrollIntoView( { behavior: 'smooth' });
+    paymentRef.current?.scrollIntoView({ behavior: 'smooth' });
   }
 
   const handlePaymentSuccess = async (amount: number, description: string, paymentMethodId: string, paymentSuccess: boolean) => {
@@ -86,94 +86,95 @@ export default function POSDrawerView({
   };
 
   return (
-      <div
-          className={cn(
-              'sticky top-3 flex h-[calc(100vh-120px)] flex-col justify-between rounded-lg border border-muted pb-7 xl:top-24',
-              className
-          )}
-      >
-        <DrawerHeader
-            heading="Panier"
-            onClose={() => (onOrderSuccess ? onOrderSuccess() : () => null)}
-        />
-        <div className="px-5 pb-0 pe-3 lg:px-7 lg:pb-0 flex-1 overflow-y-auto">
-          {!!orderedItems?.length && (
-              <>
-                <POSOrderProducts
-                    orderedItems={orderedItems}
-                    removeItemFromCart={removeItemFromCart}
-                    clearItemFromCart={clearItemFromCart}
-                    itemClassName="pe-4"
-                    simpleBarClassName={simpleBarClassName}
-                    showControls
-                />
-                <div className="border-t border-gray-300 p-5 pb-0 lg:p-7">
-                  <PriceCalculation />
-                  <div className="flex flex-col gap-4">
-                    <Button
-                        className="h-11 w-full"
-                        isLoading={loading}
-                        onClick={handleOrder}
-                    >
-                      Commander
-                    </Button>
-                  </div>
-                </div>
-                {showPaymentForm && (
-                    <div className="p-5 lg:p-7" ref={paymentRef}>
-                      <Elements stripe={stripePromise}>
-                        <PaymentForm
-                            onPaymentSuccess={handlePaymentSuccess}
-                        />
-                      </Elements>
-                    </div>
-                )}
-              </>
-          )}
-        </div>
-        {!orderedItems?.length && (
-            <div className="flex h-full flex-col justify-between">
-              <span />
-              <div>
-                <EmptyProductBoxIcon className="mx-auto h-auto w-52 text-gray-400" />
-                <Title as="h5" className="mt-6 text-center">
-                  Panier vide
-                </Title>
-                <Text className="mt-1 text-center">Ajouter au moins un article ! </Text>
-              </div>
-              <div className="px-4">
+    <div
+      className={cn(
+        'sticky top-3 flex h-[calc(100vh-120px)] flex-col justify-between rounded-lg border border-muted pb-7 xl:top-24',
+        className
+      )}
+    >
+      <DrawerHeader
+        heading="Panier"
+        onClose={() => (onOrderSuccess ? onOrderSuccess() : () => null)}
+      />
+      <div className="px-5 pb-0 pe-3 lg:px-7 lg:pb-0 flex-1 overflow-y-auto">
+        {!!orderedItems?.length && (
+          <>
+            <POSOrderProducts
+              orderedItems={orderedItems}
+              removeItemFromCart={removeItemFromCart}
+              clearItemFromCart={clearItemFromCart}
+              itemClassName="pe-4"
+              simpleBarClassName={simpleBarClassName}
+              showControls
+            />
+            <div className="border-t border-gray-300 p-5 pb-0 lg:p-7">
+              <PriceCalculation />
+              <div className="flex flex-col gap-4">
                 <Button
-                    className="w-full"
-                    variant="flat"
-                    onClick={() => (onOrderSuccess ? onOrderSuccess() : () => null)}
+                  className={cn("h-11 w-full", { "opacity-50 cursor-not-allowed": !user })}
+                  isLoading={loading}
+                  onClick={handleOrder}
+                  disabled={!user}
                 >
-                  Retour
+                  Commander
                 </Button>
               </div>
             </div>
-        )}
-          <Modal isOpen={showOrderSuccessModal} onClose={() => setShowOrderSuccessModal(false)}>
-              <div className="p-5">
-                  <Title as="h2" className="text-lg font-semibold mb-3">
-                      Commande passée avec succès !
-                  </Title>
-                  <Text>
-                      Vous pouvez venir récupérer votre commande dans 15 minutes mais elle sera considérée comme abandonnée après 1 heure. Aucun remboursement possible.
-                  </Text>
-                  <div className="flex justify-end mt-5">
-                      <Button onClick={() => {
-                          setShowOrderSuccessModal(false);
-                          resetCart();
-                          setLoading(false);
-                          if (onOrderSuccess) onOrderSuccess();
-                          setShowPaymentForm(false);
-                      }}>
-                          Fermer
-                      </Button>
-                  </div>
+            {showPaymentForm && (
+              <div className="p-5 lg:p-7" ref={paymentRef}>
+                <Elements stripe={stripePromise}>
+                  <PaymentForm
+                    onPaymentSuccess={handlePaymentSuccess}
+                  />
+                </Elements>
               </div>
-          </Modal>
+            )}
+          </>
+        )}
       </div>
+      {!orderedItems?.length && (
+        <div className="flex h-full flex-col justify-between">
+          <span />
+          <div>
+            <EmptyProductBoxIcon className="mx-auto h-auto w-52 text-gray-400" />
+            <Title as="h5" className="mt-6 text-center">
+              Panier vide
+            </Title>
+            <Text className="mt-1 text-center">Ajouter au moins un article ! </Text>
+          </div>
+          <div className="px-4">
+            <Button
+              className="w-full"
+              variant="flat"
+              onClick={() => (onOrderSuccess ? onOrderSuccess() : () => null)}
+            >
+              Retour
+            </Button>
+          </div>
+        </div>
+      )}
+      <Modal isOpen={showOrderSuccessModal} onClose={() => setShowOrderSuccessModal(false)}>
+        <div className="p-5">
+          <Title as="h2" className="text-lg font-semibold mb-3">
+            Commande passée avec succès !
+          </Title>
+          <Text>
+            Vous pouvez venir récupérer votre commande dans 15 minutes mais elle sera considérée comme abandonnée après 1 heure. Aucun remboursement possible.
+          </Text>
+          <div className="flex justify-end mt-5">
+            <Button onClick={() => {
+              setShowOrderSuccessModal(false);
+              resetCart();
+              setLoading(false);
+              if (onOrderSuccess) onOrderSuccess();
+              setShowPaymentForm(false);
+            }}>
+              Fermer
+            </Button>
+          </div>
+        </div>
+      </Modal>
+    </div>
   );
 }
 
@@ -182,26 +183,26 @@ const TAX_PERCENTAGE = 0;
 export function PriceCalculation() {
   const { items } = useCart();
   const total = items.reduce(
-      (acc, item) => acc + item.price * item.quantity,
-      0
+    (acc, item) => acc + item.price * item.quantity,
+    0
   );
   const tax = total * (TAX_PERCENTAGE / 100);
   const subTotal = total + tax;
 
   return (
-      <div className="mb-7 space-y-3.5">
-        <p className="flex items-center justify-between">
-          <span className="text-gray-500">Total</span>
-          <span className="font-medium text-gray-900">€{total.toFixed(2)}</span>
-        </p>
-        <p className="flex items-center justify-between">
-          <span className="text-gray-500">TVA</span>
-          <span className="font-medium text-gray-900">€{tax.toFixed(2)}</span>
-        </p>
-        <p className="flex items-center justify-between border-t border-gray-300 pt-3.5 text-base font-semibold">
-          <span className="text-gray-900">Total:</span>
-          <span className="text-gray-900">€{subTotal.toFixed(2)}</span>
-        </p>
-      </div>
+    <div className="mb-7 space-y-3.5">
+      <p className="flex items-center justify-between">
+        <span className="text-gray-500">Total</span>
+        <span className="font-medium text-gray-900">€{total.toFixed(2)}</span>
+      </p>
+      <p className="flex items-center justify-between">
+        <span className="text-gray-500">TVA</span>
+        <span className="font-medium text-gray-900">€{tax.toFixed(2)}</span>
+      </p>
+      <p className="flex items-center justify-between border-t border-gray-300 pt-3.5 text-base font-semibold">
+        <span className="text-gray-900">Total:</span>
+        <span className="text-gray-900">€{subTotal.toFixed(2)}</span>
+      </p>
+    </div>
   );
 }
