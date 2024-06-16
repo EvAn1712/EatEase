@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import type { CartItem } from '@/types';
@@ -40,6 +40,12 @@ export default function POSDrawerView({
   const paymentRef = useRef<HTMLDivElement>(null);
   const [showOrderSuccessModal, setShowOrderSuccessModal] = useState(false); // État pour contrôler l'affichage de la modal
 
+  useEffect(() => {
+    if (showPaymentForm) {
+      paymentRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [showPaymentForm]);
+
   async function handleOrder() {
     if (!user) {
       toast.error(<Text as="b">Vous devez être connecté pour passer une commande</Text>);
@@ -47,7 +53,6 @@ export default function POSDrawerView({
     }
 
     setShowPaymentForm(true);
-    paymentRef.current?.scrollIntoView({ behavior: 'smooth' });
   }
 
   const handlePaymentSuccess = async (amount: number, description: string, paymentMethodId: string, paymentSuccess: boolean) => {
@@ -88,7 +93,7 @@ export default function POSDrawerView({
   return (
     <div
       className={cn(
-        'sticky top-3 flex h-[calc(100vh-120px)] flex-col justify-between rounded-lg border border-muted pb-7 xl:top-24',
+        'sticky top-3 flex h-[calc(100vh-120px)] flex-col justify-between rounded-lg border border-muted pb-7 xl:top-24 overflow-hidden', // Modifié ici
         className
       )}
     >
@@ -96,7 +101,7 @@ export default function POSDrawerView({
         heading="Panier"
         onClose={() => (onOrderSuccess ? onOrderSuccess() : () => null)}
       />
-      <div className="px-5 pb-0 pe-3 lg:px-7 lg:pb-0 flex-1 overflow-y-auto">
+      <div className="px-5 pb-0 pe-3 lg:px-7 lg:pb-0 flex-1">
         {!!orderedItems?.length && (
           <>
             <POSOrderProducts
