@@ -43,7 +43,7 @@ const PaymentForm = ({ onPaymentSuccess, amount }) => {
                 },
                 body: JSON.stringify({
                     amount: amount * 100, // Convertir en centimes
-                    description,
+                    
                     payment_method: paymentMethod.id,
                 }),
             });
@@ -87,7 +87,7 @@ const PaymentForm = ({ onPaymentSuccess, amount }) => {
                     <span className="font-medium text-gray-700">Montant à payer :</span>
                     <strong className="text-lg">{amount}€</strong>
                 </div>
-                <p className="text-gray-600">{description}</p>
+                
             </div>
             <form onSubmit={handleSubmit}>
                 <h2 className="text-xl font-semibold mb-4">Détails de paiement</h2>
