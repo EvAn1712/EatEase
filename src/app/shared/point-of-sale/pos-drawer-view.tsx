@@ -107,8 +107,10 @@ export default function POSDrawerView({
       <DrawerHeader
         heading="Panier"
         onClose={() => (onOrderSuccess ? onOrderSuccess() : () => null)}
+        onResetCart={resetCart}
+        showResetButton={orderedItems.length > 0}
       />
-      <div className="px-5 pb-0 pe-3 lg:px-7 lg:pb-0 flex-1">
+      <div className="px-5 pb-0 pe-3 lg:px-7 lg:pb-0 flex-1 overflow-y-auto">
         {!!orderedItems?.length && (
           <>
             <POSOrderProducts
@@ -123,7 +125,7 @@ export default function POSDrawerView({
               <PriceCalculation />
               <div className="flex flex-col gap-4">
                 <Button
-                  className={cn("h-11 w-full", { "opacity-50 cursor-not-allowed": !user })}
+                  className="h-11 w-full"
                   isLoading={loading}
                   onClick={handleOrder}
                   disabled={!user}
@@ -137,7 +139,6 @@ export default function POSDrawerView({
                 <Elements stripe={stripePromise}>
                   <PaymentForm
                     onPaymentSuccess={handlePaymentSuccess}
-                    amount={subTotal.toFixed(2)} // Passer le montant calculé ici
                   />
                 </Elements>
               </div>
