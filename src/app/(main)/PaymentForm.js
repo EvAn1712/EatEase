@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
-const PaymentForm = ({ onPaymentSuccess }) => {
+const PaymentForm = ({ onPaymentSuccess, amount }) => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [errors, setErrors] = useState({});
-    const amount = 0.5;
-    const description = 'Description du menu acheter';
+    const description = 'Description du menu acheté';
 
     const stripe = useStripe();
     const elements = useElements();
