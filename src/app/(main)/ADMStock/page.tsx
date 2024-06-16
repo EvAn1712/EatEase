@@ -1,9 +1,10 @@
 "use client";
 import React, { useState, useEffect } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 import PageHeader from '@/app/shared/page-header';
 import app from "../firebase-config";
 import { getDatabase, ref, get, push, set, query, orderByKey, limitToLast } from "firebase/database";
-import {useAdminCheck} from "@/app/(main)/authContext";
+import { useAdminCheck } from "@/app/(main)/authContext";
 
 interface ICommande {
     produitId: string;
@@ -81,24 +82,49 @@ const PasserCommande: React.FC = () => {
         event.preventDefault();
         try {
             const db = getDatabase(app);
+            let notificationMessages: string[] = [];
+            let allProductsUpdated = false;
+
             for (const item of commande) {
-                const produitRef = ref(db, `Produit/${item.produitId}`);
-                const produitSnapshot = await get(produitRef);
-                if (produitSnapshot.exists()) {
-                    const produitData = produitSnapshot.val();
-                    const quantiteCommandee = parseInt(item.quantite);
-                    if (!isNaN(quantiteCommandee) && quantiteCommandee) {
-                        const nouveauStock = produitData.stock + quantiteCommandee;
-                        await set(produitRef, { ...produitData, stock: nouveauStock });
-                    } else {
-                        console.error(`Invalid quantity for product ${item.produitId}`);
+                if (item.produitId === "tout") {
+                    allProductsUpdated = true;
+                    const produitRefs = ref(db, "Produit");
+                    const produitSnapshots = await get(produitRefs);
+                    if (produitSnapshots.exists()) {
+                        const produits = produitSnapshots.val();
+                        const quantiteCommandee = parseInt(item.quantite);
+                        if (!isNaN(quantiteCommandee) && quantiteCommandee) {
+                            for (const key in produits) {
+                                const produitData = produits[key];
+                                const nouveauStock = produitData.stock + quantiteCommandee;
+                                await set(ref(db, `Produit/${key}`), { ...produitData, stock: nouveauStock });
+                            }
+                            notificationMessages.push(`Vous avez bien ajouté ${quantiteCommandee} unités à tous les produits`);
+                        } else {
+                            console.error(`Invalid quantity for all products`);
+                        }
                     }
                 } else {
-                    console.error(`Product ${item.produitId} not found`);
+                    const produitRef = ref(db, `Produit/${item.produitId}`);
+                    const produitSnapshot = await get(produitRef);
+                    if (produitSnapshot.exists()) {
+                        const produitData = produitSnapshot.val();
+                        const quantiteCommandee = parseInt(item.quantite);
+                        if (!isNaN(quantiteCommandee) && quantiteCommandee) {
+                            const nouveauStock = produitData.stock + quantiteCommandee;
+                            await set(produitRef, { ...produitData, stock: nouveauStock });
+                            notificationMessages.push(`Vous avez bien ajouté ${quantiteCommandee} ${produitData.nom}`);
+                        } else {
+                            console.error(`Invalid quantity for product ${item.produitId}`);
+                        }
+                    } else {
+                        console.error(`Product ${item.produitId} not found`);
+                    }
                 }
             }
+
             await addCommande();
-            console.log('Commande soumise:', { commande });
+            notificationMessages.forEach(message => toast.success(message));
             setCommande([{ produitId: '', quantite: '' }]);
         } catch (error) {
             console.error("Error submitting order:", error);
@@ -128,8 +154,10 @@ const PasserCommande: React.FC = () => {
             </div>
         );
     }
+
     return (
         <div className="w-full max-w-lg mx-auto py-8">
+            <Toaster />
             <h2 className="text-2xl font-bold mb-4">Liste des produits</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
                 {commande.map((item, index) => (
@@ -144,6 +172,7 @@ const PasserCommande: React.FC = () => {
                                     className="block w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
                                 >
                                     <option value="" disabled>Sélectionnez un produit</option>
+                                    <option value="tout">Tous les produits</option>
                                     {produitArray && Object.keys(produitArray).map((key) => (
                                         <option key={key} value={key}>
                                             {produitArray[key].nom}
@@ -198,9 +227,6 @@ const PasserCommande: React.FC = () => {
             </form>
         </div>
     );
-
-
-
 };
 
 export default PasserCommande;
