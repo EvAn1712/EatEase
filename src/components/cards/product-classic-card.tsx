@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { Title, Text, Button } from 'rizzui';
+import { Title, Text, Button, Modal } from 'rizzui';
 import cn from '@/utils/class-names';
 import { CartItem, PosProduct } from '@/types';
 import { toCurrency } from '@/utils/to-currency';
@@ -18,19 +18,17 @@ export default function ProductClassicCard({
   product,
   className,
 }: ProductProps) {
-  const { name, description, price, image, salePrice, allergenes } = product;
-
+  const { name, description, price, image, salePrice, allergenes, quantity } = product;
   const { addItemToCart, isInCart } = useCart();
   
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isStockModalOpen, setIsStockModalOpen] = useState(false);
 
-  const [selectedOption, setSelectedOption] = useState('Simple');
-
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
-
-  const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedOption(event.target.value);
+  const handleAddToCart = () => {
+    if (quantity > 0) {
+      addItemToCart(product, 1);
+    } else {
+      setIsStockModalOpen(true);
+    }
   };
 
   return (
@@ -69,15 +67,27 @@ export default function ProductClassicCard({
           {isInCart(product.id) ? (
             <QuantityControl item={product} />
           ) : (
-            <Button onClick={() => {
-              addItemToCart(product, 1);
-              closeModal();
-            }} className="w-full" variant="outline">
+            <Button onClick={handleAddToCart} className="w-full" variant="outline">
               Ajouter
             </Button>
           )}
         </div>
       </div>
+
+      {/* Modal for stock alert */}
+      <Modal isOpen={isStockModalOpen} onClose={() => setIsStockModalOpen(false)}>
+        <div className="p-5">
+          <Title as="h2" className="text-lg font-semibold mb-3">
+            Stock épuisé
+          </Title>
+          <Text>Ce produit est actuellement en rupture de stock.</Text>
+          <div className="flex justify-end mt-5">
+            <Button onClick={() => setIsStockModalOpen(false)}>
+              Fermer
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
